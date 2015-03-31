@@ -1,10 +1,11 @@
-package src.de.tud.gdi1.dropofwater.ui;
+package src.de.tud.gdi1.risk.ui;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import src.de.tud.gdi1.risk.controller.GameController;
 import eea.engine.entity.StateBasedEntityManager;
 
 /**
@@ -21,7 +22,7 @@ public class Launch extends StateBasedGame {
     
     public Launch()
     {
-        super("Drop of Water");
+        super("Risk");
     }
  
     public static void main(String[] args) throws SlickException
@@ -37,7 +38,6 @@ public class Launch extends StateBasedGame {
     	
     	// Setze dieses StateBasedGame in einen App Container (oder Fenster)
         AppGameContainer app = new AppGameContainer(new Launch());
- 
         // Lege die Einstellungen des Fensters fest und starte das Fenster
         // (nicht aber im Vollbildmodus)
         app.setDisplayMode(800, 600, false);

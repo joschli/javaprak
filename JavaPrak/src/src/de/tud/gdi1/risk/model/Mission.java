@@ -1,3 +1,4 @@
+package src.de.tud.gdi1.risk.model;
 import java.util.ArrayList;
 
 

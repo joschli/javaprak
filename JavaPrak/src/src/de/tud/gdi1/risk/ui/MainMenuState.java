@@ -1,4 +1,4 @@
-package src.de.tud.gdi1.dropofwater.ui;
+package src.de.tud.gdi1.risk.ui;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -8,9 +8,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import src.de.tud.gd1.risk.factory.ButtonFactory;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
+import eea.engine.component.RenderComponent;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -31,7 +33,7 @@ public class MainMenuState extends BasicGameState {
 	private StateBasedEntityManager entityManager; 	// zugehoeriger entityManager
 	
 	private final int distance = 100;
-    private final int start_Position = 180;
+    private final int start_Position = 150;
     
     MainMenuState( int sid ) {
        stateID = sid;
@@ -43,48 +45,28 @@ public class MainMenuState extends BasicGameState {
      */
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
+    	ButtonFactory buttonFactory;
     	// Hintergrund laden
     	Entity background = new Entity("menu");	// Entitaet fuer Hintergrund
     	background.setPosition(new Vector2f(400,300));	// Startposition des Hintergrunds
-    	background.addComponent(new ImageRenderComponent(new Image("/assets/menu.png"))); // Bildkomponente
-    	    	
-    	// Hintergrund-Entitaet an StateBasedEntityManager uebergeben
+    	background.addComponent(new ImageRenderComponent(new Image("assets/background.png"))); // Bildkomponente
+   
+    	// Action von New Game Button
     	entityManager.addEntity(stateID, background);
-    	
-    	/* Neues Spiel starten-Entitaet */
-    	String new_Game = "Neues Spiel starten";
-    	Entity new_Game_Entity = new Entity(new_Game);
-    	
-    	// Setze Position und Bildkomponente
-    	new_Game_Entity.setPosition(new Vector2f(218, 190));
-    	new_Game_Entity.setScale(0.28f);
-    	new_Game_Entity.addComponent(new ImageRenderComponent(new Image("assets/entry.png")));
-    	
-    	// Erstelle das Ausloese-Event und die zugehoerige Action
     	ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	Action new_Game_Action = new ChangeStateInitAction(Launch.GAMEPLAY_STATE);
-    	mainEvents.addAction(new_Game_Action);
-    	new_Game_Entity.addComponent(mainEvents);
     	
-    	// Fuege die Entity zum StateBasedEntityManager hinzu
-    	entityManager.addEntity(this.stateID, new_Game_Entity);
-    	
-    	/* Beenden-Entitaet */
-    	Entity quit_Entity = new Entity("Beenden");
-    	
-    	// Setze Position und Bildkomponente
-    	quit_Entity.setPosition(new Vector2f(218, 290));
-    	quit_Entity.setScale(0.28f);
-    	quit_Entity.addComponent(new ImageRenderComponent(new Image("assets/entry.png")));
-    	
-    	// Erstelle das Ausloese-Event und die zugehoerige Action
+    	// Action von Beenden Button
     	ANDEvent mainEvents_q = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	Action quit_Action = new QuitAction();
-    	mainEvents_q.addAction(quit_Action);
-    	quit_Entity.addComponent(mainEvents_q);
+    
+    	// Neues Spiel Button
+    	buttonFactory = new ButtonFactory("Neues Spiel", new_Game_Action, start_Position);
+    	entityManager.addEntity(this.stateID, buttonFactory.createEntity());
     	
-    	// Fuege die Entity zum StateBasedEntityManager hinzu
-    	entityManager.addEntity(this.stateID, quit_Entity);
+    	// Beenden Button
+    	buttonFactory.updateFactory("Beenden", quit_Action, start_Position+distance);
+    	entityManager.addEntity(this.stateID, buttonFactory.createEntity());
     	
     }
 
@@ -107,8 +89,10 @@ public class MainMenuState extends BasicGameState {
 		
 		int counter = 0;
 		
-		g.drawString("Neues Spiel", 110, start_Position+counter*distance); counter++;
-		g.drawString("Beenden", 110, start_Position+counter*distance); counter++;
+		g.drawString("Neues Spiel", 245, start_Position+counter*distance);
+		counter++;
+		g.drawString("Beenden", 245, start_Position+counter*distance);
+		counter++;
 	}
 
 	@Override
