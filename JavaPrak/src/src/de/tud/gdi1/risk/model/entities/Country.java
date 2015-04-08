@@ -25,6 +25,7 @@ public class Country extends Entity {
 		troops = 0;
 		this.name = name;
 		this.cardValue = cardValue;
+		owner = null;
 	}
 	
 	public void setNeighbors(ArrayList<Country> neighbors)
@@ -74,6 +75,10 @@ public class Country extends Entity {
 
 	public void addTroops(int force) {
 		this.troops += force;
+	}
+
+	public boolean hasOwner() {
+		return owner != null;
 	}
 	
 }

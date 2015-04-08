@@ -63,4 +63,10 @@ public class GameMap {
 		return countries;
 	}
 	
+	public ArrayList<Continent> getContinents()
+	{
+		return continents;
+		
+	}
+	
 }

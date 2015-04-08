@@ -23,4 +23,19 @@ public class Continent {
 		return countries;
 	}
 	
+	public boolean isOwned(Player player){
+		for(Country x : countries)
+		{
+			if(!x.isOwner(player)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public int getBonusTroops()
+	{
+		return bonusTroops;
+	}
+	
 }

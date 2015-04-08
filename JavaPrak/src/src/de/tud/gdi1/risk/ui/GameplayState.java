@@ -9,31 +9,15 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import src.de.tud.gd1.risk.factory.CountryFactory;
 import src.de.tud.gdi1.risk.controller.GameController;
-import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Country;
-import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
-import eea.engine.action.basicactions.DestroyEntityAction;
-import eea.engine.action.basicactions.MoveDownAction;
-import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
-import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
-import eea.engine.event.basicevents.LeavingScreenEvent;
-import eea.engine.event.basicevents.LoopEvent;
-import eea.engine.event.basicevents.MouseClickedEvent;
-import eea.engine.event.basicevents.MouseEnteredEvent;
 
-/**
- * @author Timo Bähr
- *
- * Diese Klasse repraesentiert das Spielfenster, indem ein Wassertropfen
- * erscheint und nach unten faellt.
- */
+
 public class GameplayState extends BasicGameState {
 
 	private int stateID; 							// Identifier dieses BasicGameState
@@ -42,8 +26,9 @@ public class GameplayState extends BasicGameState {
 	private UserInterface userInterface;
 	private Country selectedCountry_1, selectedCountry_2;
 	private boolean reinforce = false;
+	private boolean attackButtonPressed = false;
 	
-    GameplayState( int sid) {
+    public GameplayState( int sid) {
        stateID = sid;
        entityManager = StateBasedEntityManager.getInstance();
        userInterface = new UserInterface();
@@ -132,13 +117,17 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public boolean attackButtonPressed() {
-		// TODO Auto-generated method stub
+		if(attackButtonPressed)
+		{
+			attackButtonPressed = false;
+			return true;
+		}
 		return false;
 	}
 
 	public Country[] getSelectedCountries() {
-		// TODO Auto-generated method stub
-		return null;
+		Country[] ret = {selectedCountry_1, selectedCountry_2};		
+		return ret;
 	}
 
 	public int getAttackDiceCount() {
@@ -161,15 +150,6 @@ public class GameplayState extends BasicGameState {
 		
 	}
 
-	public Vector2f[] getAttackMoves() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean attackMoveSelected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	public void enableNextPhase() {
 		// TODO Auto-generated method stub
@@ -210,5 +190,35 @@ public class GameplayState extends BasicGameState {
 		// TODO Auto-generated method stub
 		
 	}
-		
+
+	public void AttackEvent() {
+		attackButtonPressed = true;
+	}
+
+	public void requestTroopMovement(int i, int j) {
+		// TODO Auto-generated method stub
+		userInterface.requestTroopMovement(i,j);
+	}
+
+	public boolean troopMovementSelected() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public int getTroopMovement() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public Country getStartTroopCountry() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean startTroopPlaced() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 }

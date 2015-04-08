@@ -12,7 +12,6 @@ import src.de.tud.gd1.risk.factory.ButtonFactory;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
-import eea.engine.component.RenderComponent;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;

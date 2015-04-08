@@ -104,4 +104,9 @@ public class UserInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	public void requestTroopMovement(int min, int max) {
+		// TODO Auto-generated method stub
+		
+	}
 }

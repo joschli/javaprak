@@ -1,9 +1,10 @@
 package src.de.tud.gdi1.risk.controller;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import org.newdawn.slick.geom.Vector2f;
 
 import src.de.tud.gdi1.risk.model.Card;
+import src.de.tud.gdi1.risk.model.Continent;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Options;
 import src.de.tud.gdi1.risk.model.Player;
@@ -16,6 +17,7 @@ public class GameController {
 	private Player[] players;
 	private int state = 0;
 	private int currentPlayer;
+	private int startTroops;
 	private GameplayState view;
 	private Options options;
 	private ArrayList<Card> cards;
@@ -23,8 +25,9 @@ public class GameController {
 	private static final int REINFORCEMENT_PHASE = 0;
 	private static final int ATTACKING_PHASE = 1;
 	private static final int FORTIFYING_PHASE = 2;
+	private static final int STARTING_PHASE = 3;
 	private boolean forcesAdded = false;
-	private boolean dicesRolled = false;
+	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
 	
 	public GameController(GameplayState view){
@@ -35,6 +38,7 @@ public class GameController {
 		this.view = view;
 		this.cards = new ArrayList<Card>();
 		this.currentPlayer = 0;
+		this.state = 3;
 	}
 	
 	public GameMap getMap(){
@@ -71,21 +75,32 @@ public class GameController {
 			
 			break;
 		case ATTACKING_PHASE: 
-			if(view.attackButtonPressed() && !dicesRolled)
+			if(view.attackButtonPressed())
 			{
+				//countries[0] = defender
+				//countries[1] = attacker
 				countries = view.getSelectedCountries();
 				attackDices = this.rollDice(view.getAttackDiceCount());
-				defenseDices = this.rollDice(view.getDefenseDiceCount());
+				defenseDices = this.rollDice(countries[0].getTroops() > 1 ? 2 : 1);
 				view.setAttackDices(attackDices);
 				view.setDefenseDices(defenseDices);
-				dicesRolled = true;
-			}
-			else if(dicesRolled && view.attackMoveSelected())
-			{
-				Vector2f[] attack = view.getAttackMoves();
-				this.attack(attack);
-				dicesRolled = false;
+				
+				//Request number of troops to move into conquered area
+				if(this.attack())
+				{
+					countryConquered = true;
+					if(countries[1].getTroops() < view.getAttackDiceCount())
+						view.requestTroopMovement(countries[1].getTroops()-1, countries[1].getTroops()-1);
+					else
+						view.requestTroopMovement(view.getAttackDiceCount(), countries[1].getTroops()-1);
+				}
 				view.resetUI();
+			}
+			else if(view.troopMovementSelected())
+			{
+				int troopsMoved = view.getTroopMovement();
+				countries[1].moveTroops(troopsMoved);
+				countries[0].addTroops(troopsMoved);
 			}
 			else if(view.nextPhaseButtonPressed())
 			{
@@ -114,36 +129,88 @@ public class GameController {
 				this.endTurn();
 			}
 			break;
+		case STARTING_PHASE:
+			if(view.startTroopPlaced())
+			{
+				Country country = view.getStartTroopCountry();
+				country.addTroops(1);
+				if(currentPlayer == players.length-1)
+				{
+					currentPlayer = 0;
+					startTroops--;
+					if(startTroops == 0)
+					{
+						state = REINFORCEMENT_PHASE;
+						view.resetUI();
+					}
+				}
+				else
+					currentPlayer++;
+				
+				
+			}
+			break;
 		}
 		view.updateUserInterface();
 	}
 	
-	private void attack(Vector2f[] attack) {
-		for(Vector2f a : attack)
+	/* Calculates the attack 
+	 * returns true if Country is conquered, returns false if country is not conquered
+	 * 
+	 */
+	
+	private boolean attack() {
+
+		Arrays.sort(attackDices);
+		Arrays.sort(defenseDices);
+		
+		for(int i = 0; i < attackDices.length && i < defenseDices.length; i++)
 		{
-			if(defenseDices[(int) a.x] >= attackDices[(int) a.y])
+			if(attackDices[i] > defenseDices[i])
 			{
-				countries[1].moveTroops(defenseDices[(int) a.x]);
+				countries[0].moveTroops(1);
 			}
 			else
 			{
-				countries[0].moveTroops(attackDices[(int) a.y]);
+				countries[1].moveTroops(1);
 			}
 		}
+		
+		//If Defender has no Troops left the country is successfully conquered and the attacker may move troops
+		if(countries[0].getTroops() == 0)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	private void addForces(int currentPlayer) {
-		players[currentPlayer].addReinforcement(5);
+		players[currentPlayer].addReinforcement(players[currentPlayer].getOwnedCountries() > 11 ? players[currentPlayer].getOwnedCountries()/3 : 3);
+		for(Continent x : map.getContinents())
+		{
+			if(x.isOwned(players[currentPlayer]))
+				players[currentPlayer].addReinforcement(x.getBonusTroops());
+		}
 	}
 
 	public Player getTurnPlayer(){
 		return players[currentPlayer];
 	}
 	
+	/* Ends the turn and resets state and chooses next player
+	 * Players that conquered a country in their turn will also get a random Card
+	 * 
+	 */
 	public void endTurn()
 	{
 		if(state != REINFORCEMENT_PHASE)
 		{
+			if(countryConquered) 
+			{
+				countryConquered = false;
+				int random = (int) (Math.random() * cards.size());
+				players[currentPlayer].addCard(cards.remove(random));
+			}
 			if(currentPlayer == players.length-1)
 				currentPlayer = 0;
 			else
@@ -158,7 +225,6 @@ public class GameController {
 		view.setReinforce(false);
 		attackDices = null;
 		defenseDices = null;
-		dicesRolled = false;
 		view.disableNextPhase();
 		view.resetUI();
 	}
@@ -166,8 +232,9 @@ public class GameController {
 	public void init() {
 		map = new GameMap();
 		createCards(map.getCountries());
-		givePlayerCards();
+		assignCountries();
 		view.updateUserInterface();
+		startTroops = (2 * map.getCountries().size())/players.length;
 	}
 
 	private void createCards(ArrayList<Country> countries) {
@@ -177,12 +244,21 @@ public class GameController {
 		}
 	}
 
-	private void givePlayerCards() {
+	private void assignCountries() {
+		Country[] c = map.getCountries().toArray(new Country[map.getCountries().size()]);
 		int index = 0;
-		while(!cards.isEmpty()){
-			int random = (int) (Math.random() * cards.size());
-			players[index].addCard(cards.remove(random));
-			index = index == 0 ? 1 : 0;
+		int playerIndex = 0;
+		while(index < c.length)
+		{
+			int random = (int) (Math.random() * c.length);
+			while(c[random].hasOwner())
+			{
+				random = (int) (Math.random() * c.length);
+			}
+			c[random].setOwner(players[playerIndex]);
+			
+			playerIndex = (playerIndex == players.length-1) ? 0 : playerIndex++;
+			index++;
 		}
 	}
 	

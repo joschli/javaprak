@@ -15,7 +15,7 @@ public class AttackAction implements Action{
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
 			GameplayState state = (GameplayState) sb.getCurrentState();
-			//state.AttackEvent();
+			state.AttackEvent();
 		}
 	}
 
