@@ -1,5 +1,8 @@
 package src.de.tud.gdi1.risk.ui;
 
+import java.util.ArrayList;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -27,7 +30,7 @@ public class GameplayState extends BasicGameState {
 	private Country selectedCountry_1, selectedCountry_2;
 	private boolean reinforce = false;
 	private boolean attackButtonPressed = false;
-	
+	private ArrayList<Country> countries;
     public GameplayState( int sid) {
        stateID = sid;
        entityManager = StateBasedEntityManager.getInstance();
@@ -56,9 +59,12 @@ public class GameplayState extends BasicGameState {
     	entityManager.addEntity(stateID, esc_Listener);
     	gameController = new GameController(this);
     	gameController.init();
+    	/*
     	for(Entity e : gameController.getMap().getCountries())
     		entityManager.addEntity(stateID, e);
-    	updateUserInterface();
+    	*/
+    	countries = gameController.getMap().getCountries();
+    	updateUserInterface(0);
     }
 
     /**
@@ -68,12 +74,15 @@ public class GameplayState extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities aktualisieren
     	entityManager.updateEntities(container, game, delta);
+    	for(Country c: countries)
+    		c.update(container, game, delta);
     	gameController.update();
     	userInterface.update(container, game, delta);
 	}
     
-    public void updateUserInterface() {
+    public void updateUserInterface(int state) {
 		userInterface.updateData(gameController.getTurnPlayer());
+		userInterface.updateTurnData(state);
 	}
 
 	/**
@@ -82,7 +91,13 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities rendern
+		
 		entityManager.renderEntities(container, game, g);
+		for(Country c: countries)
+		{
+			g.setColor(new Color(255,0,0));
+			g.fillRect(c.getPosition().x-c.getSize().x/2, c.getPosition().y-c.getSize().y/2, c.getSize().x, c.getSize().y);
+		}
 		userInterface.render(container, game, g);
 	}
 
@@ -219,6 +234,23 @@ public class GameplayState extends BasicGameState {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	public void selectCountry(Country ownerEntity) {
+		//userInterface.updateSelection(ownerEntity);
+		System.out.println("Country selected= " + ownerEntity.getName());
+		if(!userInterface.getFirstCountrySelected() && ownerEntity.isOwner(gameController.getTurnPlayer()))
+		{
+			userInterface.updateSelection(ownerEntity);
+		}
+		else if(userInterface.getFirstCountrySelected() && !ownerEntity.isOwner(gameController.getTurnPlayer()))
+		{
+			userInterface.updateSelection(ownerEntity);
+		}
+		
+		System.out.println("Owner: " + ownerEntity.getOwner().getName());
+			
+	}
+	
 
 
 }

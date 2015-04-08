@@ -38,23 +38,17 @@ public class CountryFactory implements IEntityFactory {
 	@Override
 	public Entity createEntity()
 	{
-		try
-		{
-			float scale = 0.312f;
-			country = new Country(name, cardValue);
-			country.setPosition(position);
-			country.setScale(scale);
-			country.addComponent(new ImageRenderComponent(new Image("assets/country.jpg")));
-			ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-			mainEvents.addAction(new SelectAction());
-			country.addComponent(mainEvents);
-			return country;
-		}
-		catch(SlickException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		float scale = 0.312f;
+		country = new Country(name, cardValue);
+		country.setPosition(position);
+		
+		country.setSize(new Vector2f(100,100));
+		country.setScale(scale);
+		//country.addComponent(new ImageRenderComponent(new Image("assets/country.jpg")));
+		ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		mainEvents.addAction(new SelectAction());
+		country.addComponent(mainEvents);
+		return country;
 	}
 	
 	public void updateFactory(String name, int cardValue, Vector2f position)

@@ -151,7 +151,7 @@ public class GameController {
 			}
 			break;
 		}
-		view.updateUserInterface();
+		view.updateUserInterface(state);
 	}
 	
 	/* Calculates the attack 
@@ -233,7 +233,7 @@ public class GameController {
 		map = new GameMap();
 		createCards(map.getCountries());
 		assignCountries();
-		view.updateUserInterface();
+		view.updateUserInterface(state);
 		startTroops = (2 * map.getCountries().size())/players.length;
 	}
 
@@ -256,10 +256,15 @@ public class GameController {
 				random = (int) (Math.random() * c.length);
 			}
 			c[random].setOwner(players[playerIndex]);
-			
-			playerIndex = (playerIndex == players.length-1) ? 0 : playerIndex++;
+			playerIndex = (playerIndex == players.length-1) ? 0 : playerIndex+1;
 			index++;
 		}
+		
+		for(int i = 0; i < c.length; ++i)
+		{
+			System.out.println("Country: " + c[i].getName() + " | Owner: " + c[i].getOwner().getName());
+		}
+		map.setCountries(c);
 	}
 	
 	public int[] rollDice(int diceCount)

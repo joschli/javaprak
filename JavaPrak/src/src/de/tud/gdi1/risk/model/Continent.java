@@ -37,5 +37,18 @@ public class Continent {
 	{
 		return bonusTroops;
 	}
+
+	public void updateCountries(Country[] c) {
+		for(int i = 0; i < c.length; i++)
+		{
+			for(Country country : countries)
+			{
+				if(country.getID() == c[i].getID())
+				{
+					country.setOwner(c[i].getOwner());
+				}
+			}
+		}
+	}
 	
 }

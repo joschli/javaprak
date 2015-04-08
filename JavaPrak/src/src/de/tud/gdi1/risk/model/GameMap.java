@@ -69,4 +69,10 @@ public class GameMap {
 		
 	}
 	
+	public void setCountries(Country[] c)
+	{
+		for(Continent conti : continents)
+			conti.updateCountries(c);
+	}
+	
 }

@@ -80,5 +80,9 @@ public class Country extends Entity {
 	public boolean hasOwner() {
 		return owner != null;
 	}
+
+	public Player getOwner() {
+		return owner;
+	}
 	
 }

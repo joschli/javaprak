@@ -6,19 +6,42 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import eea.engine.entity.Entity;
+
 public class UISelection extends UIElement {
 
+	private Entity selectedEntity = null;
+	
 	public UISelection(String entityID) {
 		super(entityID);
 		this.setVisible(true);
 	}
+	
+	public void selectEntity(Entity entity)
+	{
+		this.selectedEntity = entity;
+	}
 
+	public void resetSelection()
+	{
+		this.selectedEntity = null;
+	}
+	
+	public boolean hasEntitySelected()
+	{
+		return this.selectedEntity != null;
+	}
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
-		if(this.isVisible())
+		if(this.selectedEntity != null)
 		{
-			g.setColor(Color.red);
-			g.drawRect(this.getPosition().x-(this.getSize().x/2), this.getPosition().y-(this.getSize().x / 2), this.getSize().x, this.getSize().y);
+			g.setColor(Color.black);
+			g.setLineWidth(20);
+			g.drawRect(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
 		}
+	}
+
+	public Entity getSelectedEntity() {
+		return this.selectedEntity;
 	}
 }
