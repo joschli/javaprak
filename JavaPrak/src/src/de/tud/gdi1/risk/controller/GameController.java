@@ -205,6 +205,12 @@ public class GameController {
 	{
 		if(state != REINFORCEMENT_PHASE)
 		{
+			if(players[currentPlayer].checkMissionForWin())
+			{
+				//TODO: WIN
+				
+			}
+			
 			if(countryConquered) 
 			{
 				countryConquered = false;
@@ -232,7 +238,6 @@ public class GameController {
 	public void init() {
 		map = new GameMap();
 		createCards(map.getCountries());
-		assignCountries();
 		view.updateUserInterface(state);
 		startTroops = (2 * map.getCountries().size())/players.length;
 	}
@@ -244,29 +249,7 @@ public class GameController {
 		}
 	}
 
-	private void assignCountries() {
-		Country[] c = map.getCountries().toArray(new Country[map.getCountries().size()]);
-		int index = 0;
-		int playerIndex = 0;
-		while(index < c.length)
-		{
-			int random = (int) (Math.random() * c.length);
-			while(c[random].hasOwner())
-			{
-				random = (int) (Math.random() * c.length);
-			}
-			c[random].setOwner(players[playerIndex]);
-			playerIndex = (playerIndex == players.length-1) ? 0 : playerIndex+1;
-			index++;
-		}
-		
-		for(int i = 0; i < c.length; ++i)
-		{
-			System.out.println("Country: " + c[i].getName() + " | Owner: " + c[i].getOwner().getName());
-		}
-		map.setCountries(c);
-	}
-	
+
 	public int[] rollDice(int diceCount)
 	{
 		int[] dices = new int[diceCount];
@@ -275,5 +258,9 @@ public class GameController {
 			dices[i] = (int) (Math.random() * 6);
 		}
 		return dices;	
+	}
+
+	public int getState() {
+		return state;
 	}
 }
