@@ -238,15 +238,16 @@ public class GameplayState extends BasicGameState {
 	public void selectCountry(Country ownerEntity) {
 		//userInterface.updateSelection(ownerEntity);
 		System.out.println("Country selected= " + ownerEntity.getName());
-		if(!userInterface.getFirstCountrySelected() && ownerEntity.isOwner(gameController.getTurnPlayer()))
-		{
-			userInterface.updateSelection(ownerEntity);
+		if(ownerEntity != null){
+			if((userInterface.getFirstCountrySelected() == null || userInterface.getFirstCountrySelected().getID() == ownerEntity.getID()) && ownerEntity.isOwner(gameController.getTurnPlayer()))
+			{
+				userInterface.updateSelection(ownerEntity);
+			}
+			else if(userInterface.getFirstCountrySelected() != null && !ownerEntity.isOwner(gameController.getTurnPlayer()))
+			{
+				userInterface.updateSelection(ownerEntity);
+			}
 		}
-		else if(userInterface.getFirstCountrySelected() && !ownerEntity.isOwner(gameController.getTurnPlayer()))
-		{
-			userInterface.updateSelection(ownerEntity);
-		}
-		
 		System.out.println("Owner: " + ownerEntity.getOwner().getName());
 			
 	}

@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
+import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
@@ -27,7 +28,7 @@ public class UserInterface {
 	private UIButton turnButton;
 	private UISelection selection_1;
 	private UISelection selection_2;
-	private boolean firstCountrySelected = false;
+	private Entity firstCountrySelected = null;
 
 	public UserInterface()
 	{
@@ -100,7 +101,7 @@ public class UserInterface {
 		{
 			selection_1.resetSelection();
 			selection_2.resetSelection();
-			firstCountrySelected = false;
+			firstCountrySelected = null;
 		}
 		else if(selection_2.hasEntitySelected() && selection_2.getSelectedEntity().getPosition().equals(country.getPosition()))
 			selection_2.resetSelection();
@@ -109,7 +110,7 @@ public class UserInterface {
 		}
 		else{
 			selection_1.selectEntity(country);
-			firstCountrySelected = true;
+			firstCountrySelected = country;
 		}
 		System.out.println("Selector1:" + selection_1.hasEntitySelected());
 		System.out.println("Selector2:" + selection_2.hasEntitySelected());
@@ -125,7 +126,7 @@ public class UserInterface {
 		
 	}
 	
-	public boolean getFirstCountrySelected()
+	public Entity getFirstCountrySelected()
 	{
 		return firstCountrySelected;
 	}

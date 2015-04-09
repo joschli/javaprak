@@ -21,9 +21,10 @@ public class GameMap {
 		loadMap(path);
 	}
 	
-	public GameMap()
+	public GameMap(Player[] players)
 	{
 		this.continents = new ArrayList<Continent>();
+		this.players = players;
 		init();
 		assignCountries();
 		initPossibleMissions();
@@ -44,13 +45,21 @@ public class GameMap {
 		Continent B = new Continent(1);
 		Continent C = new Continent(3);
 		countryFactory = new CountryFactory("a", 1, new Vector2f(200,200));
-		A.addCountry(countryFactory.createEntity());
+		Country a = (Country) countryFactory.createEntity();
+		A.addCountry(a);
+		countries.add(a);
 		countryFactory.updateFactory("b", 1, new Vector2f(200,360));
-		B.addCountry(countryFactory.createEntity());
+		Country b = (Country) countryFactory.createEntity();
+		B.addCountry(b);
+		countries.add(b);
 		countryFactory.updateFactory("c", 5, new Vector2f(360, 200));
-		C.addCountry(countryFactory.createEntity());
+		Country c = (Country) countryFactory.createEntity();
+		C.addCountry(c);
+		countries.add(c);
 		countryFactory.updateFactory("d", 10, new Vector2f(360,360));
-		C.addCountry(countryFactory.createEntity());
+		Country d = (Country) countryFactory.createEntity();
+		C.addCountry(d);
+		countries.add(d);
 		
 		continents.add(A);
 		continents.add(B);
@@ -141,4 +150,5 @@ public class GameMap {
 		}
 		
 	}
+
 }

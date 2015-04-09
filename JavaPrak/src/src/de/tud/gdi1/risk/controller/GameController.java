@@ -236,7 +236,7 @@ public class GameController {
 	}
 
 	public void init() {
-		map = new GameMap();
+		map = new GameMap(players);
 		createCards(map.getCountries());
 		view.updateUserInterface(state);
 		startTroops = (2 * map.getCountries().size())/players.length;
