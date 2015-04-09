@@ -17,6 +17,7 @@ import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
+import src.de.tud.gd1.risk.actions.AttackAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Country;
@@ -25,32 +26,46 @@ public class UserInterface {
 	
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
 	private UILabel playerName, phaseName;
-	private UIButton turnButton;
+	private UIButton turnButton, attackButton;
 	private UISelection selection_1;
 	private UISelection selection_2;
+	private UIWindow attackWindow;
 	private Entity firstCountrySelected = null;
 
 	public UserInterface()
 	{
 		// Player Label
 		playerName = new UILabel("PlayerName", null, null, new Vector2f(50,50));
-		phaseName = new UILabel("PhaseName", null, null, new Vector2f(150,50));
+		phaseName = new UILabel("PhaseName", null, Color.red, new Vector2f(150,50));
 		// End Turn Button
-		turnButton = new UIButton("TurnButton", new Vector2f(200, 500), new Color(Color.black));
+		turnButton = new UIButton("TurnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		attackButton = new UIButton("AttackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
 		turnButton.addComponent(turnEvent);
-		
+		ANDEvent attackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		attackEvent.addAction(new AttackAction());
+		attackButton.addComponent(attackEvent);
 		selection_1 = new UISelection("Selection1");
 		selection_2 = new UISelection("Selection2");
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
 		
+		// Window Overlay for ReinforcementState
+		attackWindow = new UIWindow("reinforcementWindow", new Vector2f(400, 300), new Vector2f(400, 300));
+		attackWindow.addLabel("Description", "Attack Window", 150, 30, Color.red);
+		attackWindow.addLabel("DiceCount", "1", 195, 50, Color.red);
+		attackWindow.addButton("plusButton", "+", 110, 50, 20, 20, new Vector2f(5,0), Color.red, new ANDEvent());
+		
+		
 		components.add(playerName);
 		components.add(phaseName);
 		components.add(turnButton);
+		components.add(attackButton);
 		components.add(selection_1);
 		components.add(selection_2);
+		components.add(attackWindow);
+		attackWindow.setVisible(false);
 	}
 	
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
@@ -60,7 +75,9 @@ public class UserInterface {
 	}
 
 	public void updateData(Player turnPlayer) {
-		playerName.update(turnPlayer.getName(), turnPlayer.getColor());
+		
+		playerName.setLabelName(turnPlayer.getName());
+		playerName.setColor(turnPlayer.getColor());
 	}
 	
 	public void updateTurnData(int state)
@@ -81,12 +98,13 @@ public class UserInterface {
 			labelName = "STARTINGPHASE";
 			break;
 		}
-		phaseName.update(labelName, Color.red);
+		phaseName.setLabelName(labelName);
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta)
 	{
-		turnButton.update(container, game, delta);
+		for(UIElement element : components)
+			element.update(container, game, delta);
 	}
 	
 	public ArrayList<UIElement> getElements()
@@ -129,5 +147,14 @@ public class UserInterface {
 	public Entity getFirstCountrySelected()
 	{
 		return firstCountrySelected;
+	}
+
+	public void showAttackWindow() {
+		System.out.println("Hallo");
+		attackWindow.setVisible(true);
+	}
+
+	public boolean getCountriesSelected() {
+		return selection_1.hasEntitySelected() && selection_2.hasEntitySelected();
 	}
 }

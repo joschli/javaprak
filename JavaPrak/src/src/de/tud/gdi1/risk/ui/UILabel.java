@@ -8,25 +8,30 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class UILabel extends UIElement{
 
-	private Color color;
+	public Color color;
 	private String labelName;
 	
 	public UILabel(String entityID, String labelName, Color color, Vector2f position) {
 		super(entityID);
 		this.labelName = labelName;
-		this.setPosition(position);
-	}
-	
-	public void update(String labelName, Color color)
-	{
 		this.color = color;
-		this.labelName = labelName;
+		this.setPosition(position);
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		g.setColor(color);
 		g.drawString(labelName, this.getPosition().x, this.getPosition().y);
+	}
+	
+	public void setLabelName(String labelName)
+	{
+		this.labelName = labelName;
+	}
+	
+	public void setColor(Color color)
+	{
+		this.color = color;
 	}
 
 	

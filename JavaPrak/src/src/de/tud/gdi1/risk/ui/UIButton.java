@@ -16,13 +16,15 @@ public class UIButton extends UIElement{
 	
 	private Color color;
 	private ImageRenderComponent renderComponent;
-	private int padding = 10;
+	private Vector2f padding;
+	private UILabel label;
 	
-	public UIButton(String entityID, Vector2f position, Color color) {
+	public UIButton(String entityID, String buttonName, Vector2f position, Vector2f size, Vector2f padding, Color buttonColor, Color labelColor) {
 		super(entityID);
 		this.setPosition(position);
-		this.color = color;
+		this.color = buttonColor;
 		this.setScale(0.312f);
+		this.padding = padding;
 		/*
 		try {
 			this.renderComponent = new ImageRenderComponent(new Image("assets/entry.png"));
@@ -33,8 +35,9 @@ public class UIButton extends UIElement{
 		renderComponent.setOwnerEntity(this);
 		*/
 		//this.setSize(renderComponent.getSize());
-		
-		this.setSize(new Vector2f(128, 32));
+		this.setSize(size);
+		label = new UILabel(entityID+"Label", buttonName, labelColor, new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
+		label.setVisible(true);
 	}
 	
 	public void setRenderComponent(ImageRenderComponent renderComponent)
@@ -52,11 +55,24 @@ public class UIButton extends UIElement{
 			renderComponent.render(container, game, g);
 		else 
 		{
-			g.setColor(Color.gray);
+			g.setColor(color);
 			g.fillRect(x, y, this.getSize().x, this.getSize().y);
 		}
-		g.setColor(color);
-		g.drawString(this.getID(), x+padding, y+padding);
+		label.render(container, game, g);
 	}
 
+	
+	public void setButtonColor(Color color)
+	{
+		this.color = color;
+	}
+	public void setLabelName(String labelName)
+	{
+		this.label.setLabelName(labelName);
+	}
+	
+	public void setLabelColor(Color color)
+	{
+		this.label.setColor(color);
+	}
 }

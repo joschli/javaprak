@@ -16,7 +16,7 @@ public class AttackAction implements Action{
 		{
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			state.AttackEvent();
+			System.out.println("ATTACK!");
 		}
 	}
-
 }

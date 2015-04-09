@@ -207,7 +207,13 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void AttackEvent() {
-		attackButtonPressed = true;
+		System.out.println(userInterface.getCountriesSelected());
+		if(userInterface.getCountriesSelected())
+		{
+			attackButtonPressed = true;
+			userInterface.showAttackWindow();
+		}
+		
 	}
 
 	public void requestTroopMovement(int i, int j) {
