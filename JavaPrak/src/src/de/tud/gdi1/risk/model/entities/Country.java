@@ -1,12 +1,5 @@
 package src.de.tud.gdi1.risk.model.entities;
 import java.util.ArrayList;
-
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.state.StateBasedGame;
-
 import src.de.tud.gdi1.risk.model.Player;
 import eea.engine.entity.Entity;
 

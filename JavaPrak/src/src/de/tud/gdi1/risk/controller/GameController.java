@@ -13,34 +13,41 @@ import src.de.tud.gdi1.risk.ui.GameplayState;
 
 
 public class GameController {
+	
 	private GameMap map;
-	private Player[] players;
 	private int state = 0;
 	private int currentPlayer;
 	private int startTroops;
 	private GameplayState view;
 	private Options options;
-	private ArrayList<Card> cards;
 	private Country[] countries;	
+	
 	private static final int REINFORCEMENT_PHASE = 0;
 	private static final int ATTACKING_PHASE = 1;
 	private static final int FORTIFYING_PHASE = 2;
 	private static final int STARTING_PHASE = 3;
+	
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
 	
 	public GameController(GameplayState view){
+		this.view = view;
 		options = Options.getInstance();
-		players = new Player[options.getPlayerCount()];
+		Player[] players = new Player[options.getPlayerCount()];
 		for(int i = 0; i < players.length; i++)
 			players[i] = new Player(options.getColor(i), "Player " + i);
-		this.view = view;
-		this.cards = new ArrayList<Card>();
 		this.currentPlayer = 0;
 		this.state = 3;
+		map = new GameMap(players);
+		startTroops = (2 * map.getCountries().size())/players.length;	
 	}
 	
+	public void init()
+	{
+		view.updateUserInterface(state);		
+	}
+
 	public GameMap getMap(){
 		return map;
 	}
@@ -55,8 +62,8 @@ public class GameController {
 			if(view.isReinforceButtonPushed())
 			{
 				view.getSelectedCountry().addForce(view.getReinforcement());
-				players[currentPlayer].substractReinforcement(view.getReinforcement());
-				if(players[currentPlayer].getReinforcement() == 0)
+				map.getPlayer(currentPlayer).substractReinforcement(view.getReinforcement());
+				if(map.getPlayer(currentPlayer).getReinforcement() == 0)
 				{
 					view.disableReinforcement();
 					view.enableNextPhase();
@@ -134,7 +141,7 @@ public class GameController {
 			{
 				Country country = view.getStartTroopCountry();
 				country.addTroops(1);
-				if(currentPlayer == players.length-1)
+				if(currentPlayer == map.getPlayers().length-1)
 				{
 					currentPlayer = 0;
 					startTroops--;
@@ -185,16 +192,16 @@ public class GameController {
 	}
 
 	private void addForces(int currentPlayer) {
-		players[currentPlayer].addReinforcement(players[currentPlayer].getOwnedCountries() > 11 ? players[currentPlayer].getOwnedCountries()/3 : 3);
+		map.getPlayer(currentPlayer).addReinforcement(map.getPlayer(currentPlayer).getOwnedCountries() > 11 ? map.getPlayer(currentPlayer).getOwnedCountries()/3 : 3);
 		for(Continent x : map.getContinents())
 		{
-			if(x.isOwned(players[currentPlayer]))
-				players[currentPlayer].addReinforcement(x.getBonusTroops());
+			if(x.isOwned(map.getPlayer(currentPlayer), map.getCountries()))
+				map.getPlayer(currentPlayer).addReinforcement(x.getBonusTroops());
 		}
 	}
 
 	public Player getTurnPlayer(){
-		return players[currentPlayer];
+		return map.getPlayer(currentPlayer);
 	}
 	
 	/* Ends the turn and resets state and chooses next player
@@ -205,7 +212,7 @@ public class GameController {
 	{
 		if(state != REINFORCEMENT_PHASE)
 		{
-			if(players[currentPlayer].checkMissionForWin())
+			if(map.getPlayer(currentPlayer).checkMissionForWin())
 			{
 				//TODO: WIN
 				
@@ -214,10 +221,9 @@ public class GameController {
 			if(countryConquered) 
 			{
 				countryConquered = false;
-				int random = (int) (Math.random() * cards.size());
-				players[currentPlayer].addCard(cards.remove(random));
+				map.getPlayer(currentPlayer).addCard(map.getRandomCard());
 			}
-			if(currentPlayer == players.length-1)
+			if(currentPlayer == map.getPlayers().length-1)
 				currentPlayer = 0;
 			else
 				currentPlayer++;
@@ -228,27 +234,13 @@ public class GameController {
 	private void reset() {
 		state = 0;
 		forcesAdded = false;
+		countryConquered = false;
 		view.setReinforce(false);
 		attackDices = null;
 		defenseDices = null;
 		view.disableNextPhase();
 		view.resetUI();
 	}
-
-	public void init() {
-		map = new GameMap(players);
-		createCards(map.getCountries());
-		view.updateUserInterface(state);
-		startTroops = (2 * map.getCountries().size())/players.length;
-	}
-
-	private void createCards(ArrayList<Country> countries) {
-		for(Country c : countries)
-		{
-			cards.add(new Card(c, c.getCardValue()));
-		}
-	}
-
 
 	public int[] rollDice(int diceCount)
 	{

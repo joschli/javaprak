@@ -2,31 +2,30 @@ package src.de.tud.gdi1.risk.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import eea.engine.entity.Entity;
 import src.de.tud.gdi1.risk.model.entities.Country;
 
 
 public class Continent {
-	private ArrayList<Country> countries = new ArrayList<Country>();
+	private ArrayList<Integer> countries = new ArrayList<Integer>();
 	private int bonusTroops;
 	
 	public Continent(int bonusTroops){
 		this.bonusTroops = bonusTroops;
 	}
 	
-	public void addCountry(Entity entity)
+	public void addCountry(int index)
 	{
-		countries.add((Country) entity);
+		countries.add(index);
 	}
 
-	public Collection<? extends Country> getCountries() {
+	public Collection<Integer> getCountries() {
 		return countries;
 	}
 	
-	public boolean isOwned(Player player){
-		for(Country x : countries)
+	public boolean isOwned(Player player, ArrayList<Country> realCountries){
+		for(int x : countries)
 		{
-			if(!x.isOwner(player)){
+			if(!realCountries.get(x).isOwner(player)){
 				return false;
 			}
 		}
@@ -38,17 +37,6 @@ public class Continent {
 		return bonusTroops;
 	}
 
-	public void updateCountries(Country[] c) {
-		for(int i = 0; i < c.length; i++)
-		{
-			for(Country country : countries)
-			{
-				if(country.getID() == c[i].getID())
-				{
-					country.setOwner(c[i].getOwner());
-				}
-			}
-		}
-	}
+
 	
 }

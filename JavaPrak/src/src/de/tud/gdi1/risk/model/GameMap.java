@@ -14,7 +14,7 @@ public class GameMap {
 	private Player[] players;
 	private Mission[] missions;
 	private ArrayList<Country> countries = new ArrayList<Country>();
-	 //TODO: Hash Map Countries?
+	private ArrayList<Card> cards = new ArrayList<Card>();
 	
 	//Constructor for loading a map from a txt file
 	public GameMap(String path){
@@ -24,10 +24,12 @@ public class GameMap {
 	public GameMap(Player[] players)
 	{
 		this.continents = new ArrayList<Continent>();
-		this.players = players;
+		this.players = new Player[players.length];
+		this.players =	players;
 		init();
 		assignCountries();
 		initPossibleMissions();
+		createCards();
 	}
 	
 	//loads a Map txt-file and creates the continents and countries for it
@@ -46,19 +48,19 @@ public class GameMap {
 		Continent C = new Continent(3);
 		countryFactory = new CountryFactory("a", 1, new Vector2f(200,200));
 		Country a = (Country) countryFactory.createEntity();
-		A.addCountry(a);
+		A.addCountry(0);
 		countries.add(a);
 		countryFactory.updateFactory("b", 1, new Vector2f(200,360));
 		Country b = (Country) countryFactory.createEntity();
-		B.addCountry(b);
+		B.addCountry(1);
 		countries.add(b);
 		countryFactory.updateFactory("c", 5, new Vector2f(360, 200));
 		Country c = (Country) countryFactory.createEntity();
-		C.addCountry(c);
+		C.addCountry(2);
 		countries.add(c);
 		countryFactory.updateFactory("d", 10, new Vector2f(360,360));
 		Country d = (Country) countryFactory.createEntity();
-		C.addCountry(d);
+		C.addCountry(3);
 		countries.add(d);
 		
 		continents.add(A);
@@ -73,12 +75,6 @@ public class GameMap {
 	
 	public ArrayList<Country> getCountries()
 	{
-		ArrayList<Country> countries = new ArrayList<Country>();
-		
-		for(Continent c : continents)
-		{
-			countries.addAll(c.getCountries());
-		}
 		return countries;
 	}
 	
@@ -88,11 +84,22 @@ public class GameMap {
 		
 	}
 	
-	public void setCountries(Country[] c)
+	public void setCountries(ArrayList<Country> c)
 	{
-		for(Continent conti : continents)
-			conti.updateCountries(c);
+		countries = c;
 	}
+	
+	public Player[] getPlayers()
+	{
+		return players;
+	}
+	
+	public Player getPlayer(int index)
+	{
+		return players[index];
+	}
+	
+	
 	
 	private void assignCountries() {
 		
@@ -151,4 +158,17 @@ public class GameMap {
 		
 	}
 
+
+
+	private void createCards() {
+		for(Country c : countries)
+		{
+			cards.add(new Card(c, c.getCardValue()));
+		}
+	}
+
+	public Card getRandomCard() {
+		int random = (int) (Math.random() * cards.size());
+		return cards.remove(random);
+	}
 }
