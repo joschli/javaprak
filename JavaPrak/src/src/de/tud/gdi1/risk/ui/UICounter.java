@@ -40,9 +40,11 @@ public class UICounter extends UIElement {
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
-		increaseButton.render(container,game,g);
-		decreaseButton.render(container,game,g);
-		count.render(container, game, g);
+		if(this.isVisible()){
+			increaseButton.render(container,game,g);
+			decreaseButton.render(container,game,g);
+			count.render(container, game, g);
+		}
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta)

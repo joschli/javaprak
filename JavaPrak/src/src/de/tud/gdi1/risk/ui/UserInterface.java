@@ -26,18 +26,24 @@ import src.de.tud.gdi1.risk.model.entities.Country;
 public class UserInterface {
 	
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
-	private UILabel playerName, phaseName;
+	private UILabel playerName, phaseName, reinforcementCount;
 	private UIButton turnButton, attackButton;
 	private UISelection selection_1;
 	private UISelection selection_2;
 	private UIWindow attackWindow;
 	private Entity firstCountrySelected = null;
+	private GameMap map;
+	private int height, width;
+	private int currentPlayer, state;
 
 	public UserInterface(int height, int width)
 	{
+		this.height = height;
+		this.width = width;
 		// Player Label
 		playerName = new UILabel("PlayerName", null, null, new Vector2f(50,50));
 		phaseName = new UILabel("PhaseName", null, Color.red, new Vector2f(150,50));
+		reinforcementCount = new UILabel("ReinforcementCount", null, null, new Vector2f(350, 50));
 		// End Turn Button
 		turnButton = new UIButton("TurnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		attackButton = new UIButton("AttackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
@@ -60,6 +66,7 @@ public class UserInterface {
 		
 		components.add(playerName);
 		components.add(phaseName);
+		components.add(reinforcementCount);
 		components.add(turnButton);
 		components.add(attackButton);
 		components.add(selection_1);
@@ -74,32 +81,42 @@ public class UserInterface {
 			element.render(container, game, g);
 	}
 
-	public void updateData(Player turnPlayer) {
-		
-		playerName.setLabelName(turnPlayer.getName());
-		playerName.setColor(turnPlayer.getColor());
-	}
-	
-	public void updateTurnData(int state)
-	{
+	public void updateData(int state, GameMap map, int currentPlayer) {
+		this.currentPlayer = currentPlayer;
+		this.state = state;
+		this.map = map;
+		playerName.setLabelName(map.getPlayer(currentPlayer).getName());
+		for(UIElement element : components)
+			if(element instanceof UILabel)
+			{
+				UILabel label = (UILabel) element;
+				label.setColor(map.getPlayer(currentPlayer).getColor());
+			}
 		String labelName = "";
 		switch(state)
 		{
 		case 0:
 			labelName = "REINFORCEMENT";
+			this.reinforcementCount.setVisible(true);
+			this.reinforcementCount.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
+			
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
 			attackButton.setVisible(true);
+			this.reinforcementCount.setVisible(false);
 			break;
 		case 2:
 			labelName = "FORTIFY";
 			break;
 		case 3:
 			labelName = "STARTINGPHASE";
+			this.reinforcementCount.setVisible(true);
+			this.reinforcementCount.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
 			break;
 		}
 		phaseName.setLabelName(labelName);
+		
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta)
@@ -167,5 +184,10 @@ public class UserInterface {
 
 	public boolean isAttackWindowVisible() {
 		return this.attackWindow.isVisible();
+	}
+
+	public void reset() {
+		selection_1.resetSelection();
+		selection_2.resetSelection();
 	}
 }

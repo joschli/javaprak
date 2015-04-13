@@ -13,6 +13,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import src.de.tud.gdi1.risk.controller.GameController;
+import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.component.render.ImageRenderComponent;
@@ -31,6 +32,7 @@ public class GameplayState extends BasicGameState {
 	private boolean reinforce = false;
 	private boolean attackButtonPressed = false;
 	private ArrayList<Country> countries;
+
     public GameplayState( int sid) {
        stateID = sid;
        entityManager = StateBasedEntityManager.getInstance();
@@ -46,7 +48,7 @@ public class GameplayState extends BasicGameState {
     	// Hintergrund laden
     	Entity background = new Entity("background");	// Entitaet fuer Hintergrund
     	background.setPosition(new Vector2f(400,300));	// Startposition des Hintergrunds
-    	background.addComponent(new ImageRenderComponent(new Image("assets/background.png"))); // Bildkomponente
+    	background.addComponent(new ImageRenderComponent(new Image("assets/background.jpg"))); // Bildkomponente
     	    	
     	// Hintergrund-Entitaet an StateBasedEntityManager uebergeben
     	entityManager.addEntity(stateID, background);
@@ -64,7 +66,7 @@ public class GameplayState extends BasicGameState {
     		entityManager.addEntity(stateID, e);
     	*/
     	countries = gameController.getMap().getCountries();
-    	updateUserInterface(0);
+    	updateUserInterface(gameController.getState(), gameController.getMap(), gameController.getCurrentPlayerIndex());
     }
 
     /**
@@ -80,9 +82,8 @@ public class GameplayState extends BasicGameState {
     	userInterface.update(container, game, delta);
 	}
     
-    public void updateUserInterface(int state) {
-		userInterface.updateData(gameController.getTurnPlayer());
-		userInterface.updateTurnData(state);
+    public void updateUserInterface(int state, GameMap map, int currentPlayer) {
+		userInterface.updateData(state, map, currentPlayer);
 	}
 
 	/**
@@ -191,9 +192,9 @@ public class GameplayState extends BasicGameState {
 		
 	}
 
-	public boolean endTurnButtonPressed() {
-		// TODO Auto-generated method stub
-		return false;
+	public void endTurnButtonPressed() {
+		gameController.endTurn();
+		this.resetUI();
 	}
 
 	public boolean fortifyButtonPressed() {
@@ -207,7 +208,7 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void resetUI() {
-		// TODO Auto-generated method stub
+		userInterface.reset();
 		
 	}
 

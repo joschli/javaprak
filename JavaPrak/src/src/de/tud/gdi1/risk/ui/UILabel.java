@@ -20,8 +20,11 @@ public class UILabel extends UIElement{
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
-		g.setColor(color);
-		g.drawString(labelName, this.getPosition().x, this.getPosition().y);
+		if(this.isVisible()){
+			g.setColor(color);
+			g.drawString(labelName, this.getPosition().x, this.getPosition().y);
+			
+		}
 	}
 	
 	public void setLabelName(String labelName)
