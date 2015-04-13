@@ -19,6 +19,7 @@ import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 import src.de.tud.gd1.risk.actions.AttackAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
+import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Country;
 
@@ -32,7 +33,7 @@ public class UserInterface {
 	private UIWindow attackWindow;
 	private Entity firstCountrySelected = null;
 
-	public UserInterface()
+	public UserInterface(int height, int width)
 	{
 		// Player Label
 		playerName = new UILabel("PlayerName", null, null, new Vector2f(50,50));
@@ -46,16 +47,15 @@ public class UserInterface {
 		ANDEvent attackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		attackEvent.addAction(new AttackAction());
 		attackButton.addComponent(attackEvent);
+		attackButton.setVisible(false);
 		selection_1 = new UISelection("Selection1");
 		selection_2 = new UISelection("Selection2");
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
-		
 		// Window Overlay for ReinforcementState
-		attackWindow = new UIWindow("reinforcementWindow", new Vector2f(400, 300), new Vector2f(400, 300));
-		attackWindow.addLabel("Description", "Attack Window", 150, 30, Color.red);
-		attackWindow.addLabel("DiceCount", "1", 195, 50, Color.red);
-		attackWindow.addButton("plusButton", "+", 110, 50, 20, 20, new Vector2f(5,0), Color.red, new ANDEvent());
+		attackWindow = new UIWindow("reinforcementWindow", new Vector2f(width-100, height-150), new Vector2f(200, 300));
+		attackWindow.addLabel("Description", "Attack Window", 50, 15, Color.red);
+		attackWindow.addCounter("Counter", 50, 50, 3, 1);
 		
 		
 		components.add(playerName);
@@ -90,12 +90,15 @@ public class UserInterface {
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
+			attackButton.setVisible(true);
 			break;
 		case 2:
 			labelName = "FORTIFY";
 			break;
 		case 3:
 			labelName = "STARTINGPHASE";
+			selection_1.setVisible(false);
+			selection_2.setVisible(false);
 			break;
 		}
 		phaseName.setLabelName(labelName);
@@ -150,8 +153,8 @@ public class UserInterface {
 	}
 
 	public void showAttackWindow() {
-		System.out.println("Hallo");
 		attackWindow.setVisible(true);
+		attackWindow.setCounter((Country) selection_1.getSelectedEntity());
 	}
 
 	public boolean getCountriesSelected() {

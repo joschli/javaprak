@@ -34,7 +34,7 @@ public class GameplayState extends BasicGameState {
     public GameplayState( int sid) {
        stateID = sid;
        entityManager = StateBasedEntityManager.getInstance();
-       userInterface = new UserInterface();
+       
     }
     
     /**
@@ -42,7 +42,7 @@ public class GameplayState extends BasicGameState {
      */
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
-    	
+    	userInterface = new UserInterface(container.getHeight(), container.getWidth());
     	// Hintergrund laden
     	Entity background = new Entity("background");	// Entitaet fuer Hintergrund
     	background.setPosition(new Vector2f(400,300));	// Startposition des Hintergrunds
@@ -91,12 +91,18 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities rendern
-		
+		g.setLineWidth(1);
 		entityManager.renderEntities(container, game, g);
 		for(Country c: countries)
 		{
-			g.setColor(new Color(255,0,0));
+			g.setColor(c.getOwner().getColor());
 			g.fillRect(c.getPosition().x-c.getSize().x/2, c.getPosition().y-c.getSize().y/2, c.getSize().x, c.getSize().y);
+			
+			g.setColor(c.getOwner().getColor());
+			g.fillRect(c.getPosition().x-16, c.getPosition().y-16, 32, 32);
+			g.setColor(Color.black);
+			g.drawRect(c.getPosition().x-16, c.getPosition().y-16, 32, 32);
+			g.drawString(new Integer(c.getTroops()).toString(), c.getPosition().x-5, c.getPosition().y-8);
 		}
 		userInterface.render(container, game, g);
 	}
@@ -244,7 +250,9 @@ public class GameplayState extends BasicGameState {
 	public void selectCountry(Country ownerEntity) {
 		//userInterface.updateSelection(ownerEntity);
 		System.out.println("Country selected= " + ownerEntity.getName());
-		if(ownerEntity != null){
+		System.out.println("Owner: " + ownerEntity.getOwner().getName());
+		
+		if(ownerEntity != null && gameController.getState() == 1){
 			if((userInterface.getFirstCountrySelected() == null || userInterface.getFirstCountrySelected().getID() == ownerEntity.getID()) && ownerEntity.isOwner(gameController.getTurnPlayer()))
 			{
 				userInterface.updateSelection(ownerEntity);
@@ -254,8 +262,12 @@ public class GameplayState extends BasicGameState {
 				userInterface.updateSelection(ownerEntity);
 			}
 		}
-		System.out.println("Owner: " + ownerEntity.getOwner().getName());
-			
+		else if(ownerEntity != null && gameController.getState() == 3)
+		{
+			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
+				gameController.setReinforceCountry(ownerEntity);
+		}
+		
 	}
 	
 

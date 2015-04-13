@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 import eea.engine.event.ANDEvent;
@@ -29,7 +30,7 @@ public class UIWindow extends UIElement{
 		if(this.isVisible())
 		{
 			g.setColor(Color.black);
-			g.fillRect(this.getPosition().x-this.getPosition().x/2, this.getPosition().y - this.getPosition().y/2, this.getSize().x, this.getSize().y);
+			g.fillRect(relativePosition.x, relativePosition.y, this.getSize().x, this.getSize().y);
 			for(UIElement element : components)
 			{
 				element.render(container, game, g);
@@ -47,6 +48,12 @@ public class UIWindow extends UIElement{
 		UIButton button = new UIButton(name, content, new Vector2f(this.relativePosition.x + x,this.relativePosition.y + y), new Vector2f(width,height), padding, color.gray, color);
 		button.addComponent(event);
 		components.add(button);
+	}
+	
+	public void addCounter(String name, float x, float y, int maxCount, int minCount)
+	{
+		UICounter counter = new UICounter(name, new Vector2f(this.relativePosition.x+x, this.relativePosition.y+y), maxCount, minCount);
+		components.add(counter);
 	}
 	
 	public void setUIButtonName(String ID, String content)
@@ -72,4 +79,22 @@ public class UIWindow extends UIElement{
 			}
 		}
 	}
+	
+	public void update(GameContainer container, StateBasedGame game, int delta)
+	{
+		for(UIElement uiElement : components)
+			uiElement.update(container, game, delta);
+	}
+
+	public void setCounter(Country country) {
+		for(UIElement uiElement : components)
+		{
+			if(uiElement instanceof UICounter)
+			{
+				UICounter counter = (UICounter) uiElement;
+				counter.setMaxCount(country.getTroops() >= 3? 3 : country.getTroops());
+			}
+		}
+	}
+	
 }

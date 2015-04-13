@@ -7,7 +7,7 @@ public class Options {
 
 	private static Options options = new Options();
 	private int playerCount;
-	private Color[] colors = {Color.red, Color.black, Color.blue, Color.yellow};
+	private Color[] colors = {Color.red, Color.gray, Color.blue, Color.yellow};
 	
 	private Options()
 	{

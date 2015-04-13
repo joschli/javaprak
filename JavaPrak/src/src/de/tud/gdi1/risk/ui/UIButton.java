@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import eea.engine.component.Component;
 import eea.engine.component.RenderComponent;
 import eea.engine.component.render.ImageRenderComponent;
+import eea.engine.entity.Entity;
 
 public class UIButton extends UIElement{
 	
@@ -18,6 +19,7 @@ public class UIButton extends UIElement{
 	private ImageRenderComponent renderComponent;
 	private Vector2f padding;
 	private UILabel label;
+	private Entity owner;
 	
 	public UIButton(String entityID, String buttonName, Vector2f position, Vector2f size, Vector2f padding, Color buttonColor, Color labelColor) {
 		super(entityID);
@@ -48,17 +50,19 @@ public class UIButton extends UIElement{
 	}
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
-		float x,y;
-		x = this.getPosition().x-this.getSize().x/2;
-		y = this.getPosition().y-this.getSize().y/2;
-		if(renderComponent != null)
-			renderComponent.render(container, game, g);
-		else 
-		{
-			g.setColor(color);
-			g.fillRect(x, y, this.getSize().x, this.getSize().y);
+		if(this.isVisible()){
+			float x,y;
+			x = this.getPosition().x-this.getSize().x/2;
+			y = this.getPosition().y-this.getSize().y/2;
+			if(renderComponent != null)
+				renderComponent.render(container, game, g);
+			else 
+			{
+				g.setColor(color);
+				g.fillRect(x, y, this.getSize().x, this.getSize().y);
+			}
+			label.render(container, game, g);
 		}
-		label.render(container, game, g);
 	}
 
 	
@@ -74,5 +78,15 @@ public class UIButton extends UIElement{
 	public void setLabelColor(Color color)
 	{
 		this.label.setColor(color);
+	}
+	
+	public void setOwner(Entity owner)
+	{
+		this.owner = owner;
+	}
+	
+	public Entity getOwner()
+	{
+		return this.owner;
 	}
 }

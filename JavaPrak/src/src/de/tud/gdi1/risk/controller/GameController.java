@@ -210,6 +210,17 @@ public class GameController {
 	 */
 	public void endTurn()
 	{
+		if(state == STARTING_PHASE)
+		{
+			if(currentPlayer == map.getPlayers().length-1){
+				if(map.getPlayer(currentPlayer).getReinforcement() == 0)
+					state = 0;
+				currentPlayer = 0;
+			}
+			else
+				currentPlayer++;
+			return;
+		}
 		if(state != REINFORCEMENT_PHASE)
 		{
 			if(map.getPlayer(currentPlayer).checkMissionForWin())
@@ -254,5 +265,13 @@ public class GameController {
 
 	public int getState() {
 		return state;
+	}
+
+	public void setReinforceCountry(Country ownerEntity) {
+		if(map.getPlayer(currentPlayer).getReinforcement() > 0){
+			ownerEntity.addTroops(1);
+			map.getPlayer(currentPlayer).substractReinforcement(1);
+			this.endTurn();
+		}
 	}
 }
