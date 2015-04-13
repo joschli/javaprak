@@ -26,12 +26,23 @@ public class GameMap {
 		this.continents = new ArrayList<Continent>();
 		this.players = new Player[players.length];
 		this.players =	players;
+		
 		init();
 		assignCountries();
 		initPossibleMissions();
 		createCards();
+		createReinforcements();
+		
 	}
 	
+	private void createReinforcements() {
+		for(Player p : players)
+		{
+			p.addReinforcement((2 * getCountries().size())/players.length);	
+				
+		}
+	}
+
 	//loads a Map txt-file and creates the continents and countries for it
 	private static void loadMap(String path){
 		
@@ -113,6 +124,7 @@ public class GameMap {
 				random = (int) (Math.random() * countries.size());
 			}
 			countries.get(random).setOwner(players[playerIndex]);
+			countries.get(random).addTroops(1);
 			playerIndex = (playerIndex == players.length-1) ? 0 : playerIndex+1;
 			index++;
 		}
