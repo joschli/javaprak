@@ -95,7 +95,7 @@ public class GameplayState extends BasicGameState {
 		entityManager.renderEntities(container, game, g);
 		for(Country c: countries)
 		{
-			g.setColor(c.getOwner().getColor());
+			g.setColor(c.getColor());
 			g.fillRect(c.getPosition().x-c.getSize().x/2, c.getPosition().y-c.getSize().y/2, c.getSize().x, c.getSize().y);
 			
 			g.setColor(c.getOwner().getColor());
@@ -147,8 +147,7 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public Country[] getSelectedCountries() {
-		Country[] ret = {selectedCountry_1, selectedCountry_2};		
-		return ret;
+		return userInterface.getSelectedCountries();
 	}
 
 	public int getAttackDiceCount() {
@@ -213,7 +212,6 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void AttackEvent() {
-		System.out.println(userInterface.getCountriesSelected());
 		if(userInterface.getCountriesSelected())
 		{
 			attackButtonPressed = true;
@@ -252,8 +250,8 @@ public class GameplayState extends BasicGameState {
 		System.out.println("Country selected= " + ownerEntity.getName());
 		System.out.println("Owner: " + ownerEntity.getOwner().getName());
 		
-		if(ownerEntity != null && gameController.getState() == 1){
-			if((userInterface.getFirstCountrySelected() == null || userInterface.getFirstCountrySelected().getID() == ownerEntity.getID()) && ownerEntity.isOwner(gameController.getTurnPlayer()))
+		if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isAttackWindowVisible()){
+			if((userInterface.getFirstCountrySelected() == null || userInterface.getFirstCountrySelected().getID() == ownerEntity.getID()) && ownerEntity.isOwner(gameController.getTurnPlayer()) && ownerEntity.getTroops() > 1)
 			{
 				userInterface.updateSelection(ownerEntity);
 			}
@@ -263,6 +261,11 @@ public class GameplayState extends BasicGameState {
 			}
 		}
 		else if(ownerEntity != null && gameController.getState() == 3)
+		{
+			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
+				gameController.setReinforceCountry(ownerEntity);
+		}
+		else if(ownerEntity != null && gameController.getState() == 0)
 		{
 			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
 				gameController.setReinforceCountry(ownerEntity);

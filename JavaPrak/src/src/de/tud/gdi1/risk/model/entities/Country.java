@@ -1,5 +1,8 @@
 package src.de.tud.gdi1.risk.model.entities;
 import java.util.ArrayList;
+
+import org.newdawn.slick.Color;
+
 import src.de.tud.gdi1.risk.model.Player;
 import eea.engine.entity.Entity;
 
@@ -11,6 +14,7 @@ public class Country extends Entity {
 	private int troops;
 	private Player owner;
 	private int cardValue;
+	private Color color;
 	
 	//owner bei initialisierung wird als Spieler "neutral" mitgegeben?
 	public Country(String name, int cardValue){
@@ -19,6 +23,7 @@ public class Country extends Entity {
 		this.name = name;
 		this.cardValue = cardValue;
 		owner = null;
+		this.color = null;
 	}
 	
 	public void setNeighbors(ArrayList<Country> neighbors)
@@ -78,4 +83,11 @@ public class Country extends Entity {
 		return owner;
 	}
 	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public Color getColor() {
+		return this.color;
+	}
 }

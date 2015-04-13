@@ -92,7 +92,7 @@ public class UIWindow extends UIElement{
 			if(uiElement instanceof UICounter)
 			{
 				UICounter counter = (UICounter) uiElement;
-				counter.setMaxCount(country.getTroops() >= 3? 3 : country.getTroops());
+				counter.setMaxCount(country.getTroops()-1 >= 3? 3 : country.getTroops());
 			}
 		}
 	}
