@@ -112,12 +112,11 @@ public class GameMap {
 	
 	public int getOwnedCountriesForPlayer(int index)
 	{
-		Player player = players[index];
 		int count = 0;
 		
 		for(Country c : getCountries())
 		{
-			if(c.isOwner(player))
+			if(c.isOwner(players[index]))
 				count++;
 		}
 		
