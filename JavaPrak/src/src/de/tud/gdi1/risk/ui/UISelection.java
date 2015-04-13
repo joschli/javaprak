@@ -33,7 +33,7 @@ public class UISelection extends UIElement {
 	}
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
-		if(this.selectedEntity != null)
+		if(this.selectedEntity != null && this.isVisible())
 		{
 			g.setColor(Color.green);
 			g.setLineWidth(5);

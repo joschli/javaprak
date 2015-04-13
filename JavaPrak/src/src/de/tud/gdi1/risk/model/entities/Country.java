@@ -47,7 +47,7 @@ public class Country extends Entity {
 	{
 		if(player == null)
 			throw new NullPointerException();
-		return owner.equals(player);
+		return owner.getName() == player.getName();
 	}
 	
 	public String getName()

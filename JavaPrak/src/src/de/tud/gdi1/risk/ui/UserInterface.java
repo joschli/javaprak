@@ -18,6 +18,8 @@ import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 import src.de.tud.gd1.risk.actions.AttackAction;
+import src.de.tud.gd1.risk.actions.CancelAttackAction;
+import src.de.tud.gd1.risk.actions.DiceAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Player;
@@ -26,26 +28,39 @@ import src.de.tud.gdi1.risk.model.entities.Country;
 public class UserInterface {
 	
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
-	private UILabel playerName, phaseName;
+	private UILabel playerName, phaseName, reinforcementCount;
 	private UIButton turnButton, attackButton;
 	private UISelection selection_1;
 	private UISelection selection_2;
 	private UIWindow attackWindow;
 	private Entity firstCountrySelected = null;
+	private GameMap map;
+	private int height, width;
+	private int currentPlayer, state;
 
 	public UserInterface(int height, int width)
 	{
+		this.height = height;
+		this.width = width;
 		// Player Label
 		playerName = new UILabel("PlayerName", null, null, new Vector2f(50,50));
 		phaseName = new UILabel("PhaseName", null, Color.red, new Vector2f(150,50));
+		reinforcementCount = new UILabel("ReinforcementCount", null, null, new Vector2f(350, 50));
 		// End Turn Button
 		turnButton = new UIButton("TurnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		attackButton = new UIButton("AttackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		
+		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
 		turnButton.addComponent(turnEvent);
 		ANDEvent attackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		attackEvent.addAction(new AttackAction());
+		ANDEvent diceEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		diceEvent.addAction(new DiceAction());
+		ANDEvent cancelAttackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		cancelAttackEvent.addAction(new CancelAttackAction());
+		//
 		attackButton.addComponent(attackEvent);
 		attackButton.setVisible(false);
 		selection_1 = new UISelection("Selection1");
@@ -56,10 +71,12 @@ public class UserInterface {
 		attackWindow = new UIWindow("reinforcementWindow", new Vector2f(width-100, height-150), new Vector2f(200, 300));
 		attackWindow.addLabel("Description", "Attack Window", 50, 15, Color.red);
 		attackWindow.addCounter("Counter", 50, 50, 3, 1);
-		
+		attackWindow.addButton("Dice", "Roll the dices", 114, 116, 128, 32, new Vector2f(10,10), Color.black, diceEvent);
+		attackWindow.addButton("Cancel", "Cancel", 114, 164, 128, 32, new Vector2f(10, 10), Color.black, cancelAttackEvent);
 		
 		components.add(playerName);
 		components.add(phaseName);
+		components.add(reinforcementCount);
 		components.add(turnButton);
 		components.add(attackButton);
 		components.add(selection_1);
@@ -74,32 +91,43 @@ public class UserInterface {
 			element.render(container, game, g);
 	}
 
-	public void updateData(Player turnPlayer) {
-		
-		playerName.setLabelName(turnPlayer.getName());
-		playerName.setColor(turnPlayer.getColor());
-	}
-	
-	public void updateTurnData(int state)
-	{
+	public void updateData(int state, GameMap map, int currentPlayer) {
+		this.currentPlayer = currentPlayer;
+		this.state = state;
+		this.map = map;
+		playerName.setLabelName(map.getPlayer(currentPlayer).getName());
+		for(UIElement element : components)
+			if(element instanceof UILabel)
+			{
+				UILabel label = (UILabel) element;
+				label.setColor(map.getPlayer(currentPlayer).getColor());
+			}
 		String labelName = "";
 		switch(state)
 		{
 		case 0:
 			labelName = "REINFORCEMENT";
+			this.reinforcementCount.setVisible(true);
+			this.reinforcementCount.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
+			
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
-			attackButton.setVisible(true);
+			if(!attackWindow.isVisible())
+				attackButton.setVisible(true);
+			this.reinforcementCount.setVisible(false);
 			break;
 		case 2:
 			labelName = "FORTIFY";
 			break;
 		case 3:
 			labelName = "STARTINGPHASE";
+			this.reinforcementCount.setVisible(true);
+			this.reinforcementCount.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
 			break;
 		}
 		phaseName.setLabelName(labelName);
+		
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta)
@@ -159,6 +187,22 @@ public class UserInterface {
 	public void showAttackWindow() {
 		attackWindow.setVisible(true);
 		attackWindow.setCounter((Country) selection_1.getSelectedEntity());
+		for(UIElement element : components)
+			if(element instanceof UIButton)
+			{
+				UIButton button = (UIButton) element;
+				button.setVisible(false);
+			}
+	}
+	
+	public void hideAttackWindow(){
+		for(UIElement element : components)
+			if(element instanceof UIButton)
+			{
+				UIButton button = (UIButton) element;
+				button.setVisible(true);
+			}
+		attackWindow.setVisible(false);
 	}
 
 	public boolean getCountriesSelected() {
@@ -167,5 +211,15 @@ public class UserInterface {
 
 	public boolean isAttackWindowVisible() {
 		return this.attackWindow.isVisible();
+	}
+
+	public void reset() {
+		selection_1.resetSelection();
+		selection_2.resetSelection();
+		attackWindow.setVisible(false);
+	}
+
+	public int getDiceCount() {
+		return attackWindow.getCounter();
 	}
 }

@@ -115,6 +115,7 @@ public class GameMap {
 
 		for (Country c : getCountries()) {
 			if (c.isOwner(players[index]))
+
 				count++;
 		}
 
@@ -144,10 +145,13 @@ public class GameMap {
 		}
 	}
 
-	private void initPossibleMissions() {
-		missions = new Mission[10];
-		// String missionText, Player player,
-		// ArrayList<Continent> continents, int countryCount
+	
+	private void initPossibleMissions()
+	{
+		missions = new Mission[5];
+		//String missionText, Player player,
+		//ArrayList<Continent> continents, int countryCount
+
 		missions[0] = new Mission("Defeat Player 0", players[0], null, -1);
 		missions[1] = new Mission("Defeat Player 1", players[1], null, -1);
 		ArrayList<Continent> con = new ArrayList<Continent>();

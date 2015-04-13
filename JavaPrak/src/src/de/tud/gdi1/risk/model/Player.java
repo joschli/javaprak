@@ -56,7 +56,7 @@ public class Player {
 	
 	public void addReinforcement(int reinforcement)
 	{
-		this.reinforcementUnits = reinforcement;
+		this.reinforcementUnits += reinforcement;
 	}
 	
 	public void substractReinforcement(int units)

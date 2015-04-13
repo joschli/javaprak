@@ -15,7 +15,7 @@ public class EndTurnAction implements Action{
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
 			GameplayState state = (GameplayState) sb.getCurrentState();
-			//state.fireEndTurnEvent();
+			state.endTurnButtonPressed();
 			System.out.println("END TURN");
 		}
 	}

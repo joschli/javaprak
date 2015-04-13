@@ -45,7 +45,7 @@ public class GameController {
 	
 	public void init()
 	{
-		view.updateUserInterface(state);		
+		view.updateUserInterface(state, map, currentPlayer);		
 	}
 
 	public GameMap getMap(){
@@ -59,6 +59,7 @@ public class GameController {
 		case REINFORCEMENT_PHASE:
 			if(!forcesAdded)
 				addForces(currentPlayer);
+			/*
 			if(view.isReinforceButtonPushed())
 			{
 				view.getSelectedCountry().addForce(view.getReinforcement());
@@ -79,9 +80,11 @@ public class GameController {
 				view.resetUI();
 				view.setNextPhaseButton(false);
 			}
+			*/
 			
 			break;
 		case ATTACKING_PHASE: 
+			/*
 			if(view.attackButtonPressed())
 			{
 				//countries[0] = defender
@@ -101,7 +104,7 @@ public class GameController {
 					else
 						view.requestTroopMovement(view.getAttackDiceCount(), countries[1].getTroops()-1);
 				}
-				view.resetUI();
+				//view.resetUI();
 			}
 			else if(view.troopMovementSelected())
 			{
@@ -115,7 +118,9 @@ public class GameController {
 				view.setNextPhaseButton(false);
 				view.resetUI();
 			}
+			*/
 			break;
+		
 		case FORTIFYING_PHASE:
 			if(view.fortifyButtonPressed())
 			{
@@ -131,10 +136,12 @@ public class GameController {
 				}
 				view.resetUI();
 			}
+			/*
 			else if(view.endTurnButtonPressed())
 			{
 				this.endTurn();
 			}
+			*/
 			break;
 		case STARTING_PHASE:
 			if(view.startTroopPlaced())
@@ -158,7 +165,7 @@ public class GameController {
 			}
 			break;
 		}
-		view.updateUserInterface(state);
+		view.updateUserInterface(state, map, currentPlayer);
 	}
 	
 	/* Calculates the attack 
@@ -195,11 +202,14 @@ public class GameController {
 		this.forcesAdded = true;
 		map.getPlayer(currentPlayer).addReinforcement(map.getOwnedCountriesForPlayer(currentPlayer) > 11 ? map.getOwnedCountriesForPlayer(currentPlayer)/3 : 3);
 
+		//map.getOwnedCountriesForPlayer(currentPlayer) > 11 ? map.getOwnedCountriesForPlayer(currentPlayer)/3 : 3
+		
 		for(Continent x : map.getContinents())
 		{
 			if(x.isOwned(map.getPlayer(currentPlayer), map.getCountries()))
 				map.getPlayer(currentPlayer).addReinforcement(x.getBonusTroops());
 		}
+		
 	}
 
 	public Player getTurnPlayer(){
@@ -281,5 +291,14 @@ public class GameController {
 			if(map.getPlayer(currentPlayer).getReinforcement() == 0)
 				this.state = 1;
 		}
+	}
+
+	public int getCurrentPlayerIndex() {
+		return currentPlayer;
+	}
+
+	public void rollDiceEvent(int diceCount, Country[] countries) {
+		// TODO ROLL THE DICE !!!!
+		System.out.println("ROLL THE DICE");
 	}
 }
