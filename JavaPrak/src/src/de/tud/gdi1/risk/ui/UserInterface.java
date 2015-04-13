@@ -151,6 +151,12 @@ public class UserInterface {
 	{
 		return firstCountrySelected;
 	}
+	
+	public Country[] getSelectedCountries()
+	{
+		Country[] c = {(Country) selection_1.getSelectedEntity(), (Country) selection_2.getSelectedEntity()};
+		return c;
+	}
 
 	public void showAttackWindow() {
 		attackWindow.setVisible(true);
@@ -159,5 +165,9 @@ public class UserInterface {
 
 	public boolean getCountriesSelected() {
 		return selection_1.hasEntitySelected() && selection_2.hasEntitySelected();
+	}
+
+	public boolean isAttackWindowVisible() {
+		return this.attackWindow.isVisible();
 	}
 }

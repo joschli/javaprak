@@ -192,7 +192,10 @@ public class GameController {
 	}
 
 	private void addForces(int currentPlayer) {
+		System.out.println("Hallo FORCES ADDED");
+		this.forcesAdded = true;
 		map.getPlayer(currentPlayer).addReinforcement(map.getPlayer(currentPlayer).getOwnedCountries() > 11 ? map.getPlayer(currentPlayer).getOwnedCountries()/3 : 3);
+		//System.out.println(map.getPlayer(currentPlayer).getReinforcement());
 		for(Continent x : map.getContinents())
 		{
 			if(x.isOwned(map.getPlayer(currentPlayer), map.getCountries()))
@@ -214,7 +217,7 @@ public class GameController {
 		{
 			if(currentPlayer == map.getPlayers().length-1){
 				if(map.getPlayer(currentPlayer).getReinforcement() == 0)
-					state = 0;
+					reset();
 				currentPlayer = 0;
 			}
 			else
@@ -268,10 +271,16 @@ public class GameController {
 	}
 
 	public void setReinforceCountry(Country ownerEntity) {
-		if(map.getPlayer(currentPlayer).getReinforcement() > 0){
+		if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == 3){
 			ownerEntity.addTroops(1);
 			map.getPlayer(currentPlayer).substractReinforcement(1);
 			this.endTurn();
+		}else if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == 0)
+		{
+			ownerEntity.addTroops(1);
+			map.getPlayer(currentPlayer).substractReinforcement(1);
+			if(map.getPlayer(currentPlayer).getReinforcement() == 0)
+				this.state = 1;
 		}
 	}
 }
