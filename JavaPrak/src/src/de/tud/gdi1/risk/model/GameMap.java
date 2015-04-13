@@ -1,6 +1,7 @@
 package src.de.tud.gdi1.risk.model;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
 
 import src.de.tud.gd1.risk.factory.CountryFactory;
@@ -32,9 +33,19 @@ public class GameMap {
 		initPossibleMissions();
 		createCards();
 		createReinforcements();
-		
+		colorizeCountries();
 	}
 	
+	private void colorizeCountries() {
+		for(Continent conti : continents)
+		{
+			for(int index : conti.getCountries())
+			{
+				countries.get(index).setColor(conti.getColor());
+			}
+		}
+	}
+
 	private void createReinforcements() {
 		for(Player p : players)
 		{
@@ -54,9 +65,9 @@ public class GameMap {
 	
 	public void init()
 	{
-		Continent A = new Continent(2);
-		Continent B = new Continent(1);
-		Continent C = new Continent(3);
+		Continent A = new Continent(2, Color.cyan);
+		Continent B = new Continent(1, Color.magenta);
+		Continent C = new Continent(3, Color.yellow);
 		countryFactory = new CountryFactory("a", 1, new Vector2f(200,200));
 		Country a = (Country) countryFactory.createEntity();
 		A.addCountry(0);
@@ -108,6 +119,21 @@ public class GameMap {
 	public Player getPlayer(int index)
 	{
 		return players[index];
+	}
+	
+	public int getOwnedCountriesForPlayer(int index)
+	{
+		Player player = players[index];
+		int count = 0;
+		
+		for(Country c : getCountries())
+		{
+			if(c.isOwner(player))
+				count++;
+		}
+		
+		return count;
+		
 	}
 	
 	

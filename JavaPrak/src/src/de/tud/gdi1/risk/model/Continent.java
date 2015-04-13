@@ -2,15 +2,18 @@ package src.de.tud.gdi1.risk.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.newdawn.slick.Color;
+
 import src.de.tud.gdi1.risk.model.entities.Country;
 
 
 public class Continent {
 	private ArrayList<Integer> countries = new ArrayList<Integer>();
 	private int bonusTroops;
-	
-	public Continent(int bonusTroops){
+	private Color color;
+	public Continent(int bonusTroops, Color color){
 		this.bonusTroops = bonusTroops;
+		this.color = color;
 	}
 	
 	public void addCountry(int index)
@@ -35,6 +38,10 @@ public class Continent {
 	public int getBonusTroops()
 	{
 		return bonusTroops;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 
 

@@ -97,8 +97,6 @@ public class UserInterface {
 			break;
 		case 3:
 			labelName = "STARTINGPHASE";
-			selection_1.setVisible(false);
-			selection_2.setVisible(false);
 			break;
 		}
 		phaseName.setLabelName(labelName);

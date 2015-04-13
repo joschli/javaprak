@@ -192,10 +192,9 @@ public class GameController {
 	}
 
 	private void addForces(int currentPlayer) {
-		System.out.println("Hallo FORCES ADDED");
 		this.forcesAdded = true;
-		map.getPlayer(currentPlayer).addReinforcement(map.getPlayer(currentPlayer).getOwnedCountries() > 11 ? map.getPlayer(currentPlayer).getOwnedCountries()/3 : 3);
-		//System.out.println(map.getPlayer(currentPlayer).getReinforcement());
+		map.getPlayer(currentPlayer).addReinforcement(map.getOwnedCountriesForPlayer(currentPlayer) > 11 ? map.getOwnedCountriesForPlayer(currentPlayer)/3 : 3);
+
 		for(Continent x : map.getContinents())
 		{
 			if(x.isOwned(map.getPlayer(currentPlayer), map.getCountries()))
