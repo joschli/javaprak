@@ -8,14 +8,12 @@ public class Player {
 	private Color color;
 	private String name;
 	private Mission mission;
-	private int ownedCountries;
 	private ArrayList<Card> cardlist;
 	private int reinforcementUnits;
 	
 	public Player(Color color, String name){
 		this.color = color;
 		this.name  = name;
-		this.ownedCountries = 0;
 		this.cardlist = new ArrayList<Card>();
 		this.reinforcementUnits = 0;
 	}
@@ -40,10 +38,7 @@ public class Player {
 		return mission.isFullfilled();
 	}
 	
-	public int getOwnedCountries(){
-		return ownedCountries;
-	}
-	
+
 	public void addCard(Card card)
 	{
 		cardlist.add(card);

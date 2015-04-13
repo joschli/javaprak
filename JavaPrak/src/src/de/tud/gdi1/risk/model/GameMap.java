@@ -110,6 +110,21 @@ public class GameMap {
 		return players[index];
 	}
 	
+	public int getOwnedCountriesForPlayer(int index)
+	{
+		Player player = players[index];
+		int count = 0;
+		
+		for(Country c : getCountries())
+		{
+			if(c.isOwner(player))
+				count++;
+		}
+		
+		return count;
+		
+	}
+	
 	
 	
 	private void assignCountries() {
