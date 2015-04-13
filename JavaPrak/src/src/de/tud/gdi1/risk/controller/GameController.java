@@ -84,6 +84,7 @@ public class GameController {
 			
 			break;
 		case ATTACKING_PHASE: 
+			/*
 			if(view.attackButtonPressed())
 			{
 				//countries[0] = defender
@@ -103,7 +104,7 @@ public class GameController {
 					else
 						view.requestTroopMovement(view.getAttackDiceCount(), countries[1].getTroops()-1);
 				}
-				view.resetUI();
+				//view.resetUI();
 			}
 			else if(view.troopMovementSelected())
 			{
@@ -117,7 +118,9 @@ public class GameController {
 				view.setNextPhaseButton(false);
 				view.resetUI();
 			}
+			*/
 			break;
+		
 		case FORTIFYING_PHASE:
 			if(view.fortifyButtonPressed())
 			{
@@ -292,5 +295,10 @@ public class GameController {
 
 	public int getCurrentPlayerIndex() {
 		return currentPlayer;
+	}
+
+	public void rollDiceEvent(int diceCount, Country[] countries) {
+		// TODO ROLL THE DICE !!!!
+		System.out.println("ROLL THE DICE");
 	}
 }

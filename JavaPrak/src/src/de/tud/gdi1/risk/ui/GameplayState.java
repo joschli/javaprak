@@ -215,7 +215,6 @@ public class GameplayState extends BasicGameState {
 	public void AttackEvent() {
 		if(userInterface.getCountriesSelected())
 		{
-			attackButtonPressed = true;
 			userInterface.showAttackWindow();
 		}
 		
@@ -272,6 +271,15 @@ public class GameplayState extends BasicGameState {
 				gameController.setReinforceCountry(ownerEntity);
 		}
 		
+	}
+
+	public void cancelAttack() {
+		userInterface.reset();
+	}
+
+	public void rollDices() {
+		// TODO GameController
+		gameController.rollDiceEvent(userInterface.getDiceCount(), userInterface.getSelectedCountries());
 	}
 	
 

@@ -96,5 +96,17 @@ public class UIWindow extends UIElement{
 			}
 		}
 	}
+
+	public int getCounter() {
+		for(UIElement uiElement : components)
+		{
+			if(uiElement instanceof UICounter)
+			{
+				UICounter counter = (UICounter) uiElement;
+				return counter.getCounter();
+			}
+		}
+		return 0;
+	}
 	
 }

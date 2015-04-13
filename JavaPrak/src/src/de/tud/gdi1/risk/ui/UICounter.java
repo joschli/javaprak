@@ -80,4 +80,8 @@ public class UICounter extends UIElement {
 	{
 		this.maxCount = maxCount;
 	}
+
+	public int getCounter() {
+		return this.currentCount;
+	}
 }

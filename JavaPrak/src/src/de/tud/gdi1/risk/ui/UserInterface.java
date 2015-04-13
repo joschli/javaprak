@@ -18,6 +18,8 @@ import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 import src.de.tud.gd1.risk.actions.AttackAction;
+import src.de.tud.gd1.risk.actions.CancelAttackAction;
+import src.de.tud.gd1.risk.actions.DiceAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Player;
@@ -47,11 +49,18 @@ public class UserInterface {
 		// End Turn Button
 		turnButton = new UIButton("TurnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		attackButton = new UIButton("AttackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		
+		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
 		turnButton.addComponent(turnEvent);
 		ANDEvent attackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		attackEvent.addAction(new AttackAction());
+		ANDEvent diceEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		diceEvent.addAction(new DiceAction());
+		ANDEvent cancelAttackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		cancelAttackEvent.addAction(new CancelAttackAction());
+		//
 		attackButton.addComponent(attackEvent);
 		attackButton.setVisible(false);
 		selection_1 = new UISelection("Selection1");
@@ -62,7 +71,8 @@ public class UserInterface {
 		attackWindow = new UIWindow("reinforcementWindow", new Vector2f(width-100, height-150), new Vector2f(200, 300));
 		attackWindow.addLabel("Description", "Attack Window", 50, 15, Color.red);
 		attackWindow.addCounter("Counter", 50, 50, 3, 1);
-		
+		attackWindow.addButton("Dice", "Roll the dices", 114, 116, 128, 32, new Vector2f(10,10), Color.black, diceEvent);
+		attackWindow.addButton("Cancel", "Cancel", 114, 164, 128, 32, new Vector2f(10, 10), Color.black, cancelAttackEvent);
 		
 		components.add(playerName);
 		components.add(phaseName);
@@ -103,7 +113,8 @@ public class UserInterface {
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
-			attackButton.setVisible(true);
+			if(!attackWindow.isVisible())
+				attackButton.setVisible(true);
 			this.reinforcementCount.setVisible(false);
 			break;
 		case 2:
@@ -176,6 +187,22 @@ public class UserInterface {
 	public void showAttackWindow() {
 		attackWindow.setVisible(true);
 		attackWindow.setCounter((Country) selection_1.getSelectedEntity());
+		for(UIElement element : components)
+			if(element instanceof UIButton)
+			{
+				UIButton button = (UIButton) element;
+				button.setVisible(false);
+			}
+	}
+	
+	public void hideAttackWindow(){
+		for(UIElement element : components)
+			if(element instanceof UIButton)
+			{
+				UIButton button = (UIButton) element;
+				button.setVisible(true);
+			}
+		attackWindow.setVisible(false);
 	}
 
 	public boolean getCountriesSelected() {
@@ -189,5 +216,10 @@ public class UserInterface {
 	public void reset() {
 		selection_1.resetSelection();
 		selection_2.resetSelection();
+		attackWindow.setVisible(false);
+	}
+
+	public int getDiceCount() {
+		return attackWindow.getCounter();
 	}
 }
