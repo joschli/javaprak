@@ -228,6 +228,12 @@ public class GameController {
 			System.out.println("Zu wenig Truppen um mit so vielen Würfeln anzugreifen");
 			return;
 		}
+		if(countries[1].getTroops() == 0)
+		{
+			//TODO: Show Error!
+			System.out.println("Länder ohne Truppen können nicht angegriffen werden");
+			return;
+		}
 		this.countries = countries;
 		attackDices = this.rollDice(diceCount);
 		defenseDices = this.rollDice(countries[1].getTroops() > 1 ? 2 : 1);
