@@ -111,10 +111,14 @@ public class GameMap {
 	}
 
 	public int getOwnedCountriesForPlayer(int index) {
+		return getOwnedCountriesForPlayer(players[index]);
+	}
+	
+	public int getOwnedCountriesForPlayer(Player player){
 		int count = 0;
 
 		for (Country c : getCountries()) {
-			if (c.isOwner(players[index]))
+			if (c.isOwner(player))
 
 				count++;
 		}
@@ -122,6 +126,19 @@ public class GameMap {
 		return count;
 
 	}
+	
+	public ArrayList<Country> getCountryListForPlayer(Player player)
+	{
+		ArrayList<Country> ret = new ArrayList<Country>();
+		for (Country c : getCountries()) {
+			if(c.isOwner(player))
+			{
+				ret.add(c);
+			}
+		}
+		return ret;
+	}
+	
 
 	private void assignCountries() {
 
@@ -152,19 +169,17 @@ public class GameMap {
 		//String missionText, Player player,
 		//ArrayList<Continent> continents, int countryCount
 
-		missions[0] = new Mission("Defeat Player 0", players[0], null, -1);
-		missions[1] = new Mission("Defeat Player 1", players[1], null, -1);
+		missions[0] = new Mission("Defeat Player 0", players[0]);
+		missions[1] = new Mission("Defeat Player 1", players[1]);
 		ArrayList<Continent> con = new ArrayList<Continent>();
 		con.add(continents.get(0));
 		con.add(continents.get(2));
-		missions[2] = new Mission("Conquer the following Continents: A,C",
-				null, con, -1);
+		missions[2] = new Mission("Conquer the following Continents: A,C", con);
 		con.clear();
 		con.add(continents.get(0));
 		con.add(continents.get(1));
-		missions[3] = new Mission("Conquer the following Continents: A,B",
-				null, con, -1);
-		missions[4] = new Mission("Conquer 4 Countries", null, null, 4);
+		missions[3] = new Mission("Conquer the following Continents: A,B", con);
+		missions[4] = new Mission("Conquer 4 Countries", 4);
 		/*
 		 * missions[5] = new Mission("Defeat Player 0", players[0], null, -1);
 		 * missions[6] = new Mission("Defeat Player 0", players[0], null, -1);

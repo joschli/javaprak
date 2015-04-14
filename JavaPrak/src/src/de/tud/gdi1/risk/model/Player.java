@@ -34,8 +34,8 @@ public class Player {
 		return mission.getMissionText();
 	}
 	
-	public boolean checkMissionForWin(){
-		return mission.isFullfilled();
+	public boolean checkMissionForWin(GameMap map){
+		return mission.isFullfilled(map,this);
 	}
 	
 

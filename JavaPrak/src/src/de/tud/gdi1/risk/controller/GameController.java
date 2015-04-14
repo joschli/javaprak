@@ -1,9 +1,5 @@
 package src.de.tud.gdi1.risk.controller;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-
-import src.de.tud.gdi1.risk.model.Card;
 import src.de.tud.gdi1.risk.model.Continent;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Options;
@@ -145,7 +141,7 @@ public class GameController {
 		}
 		if(state != REINFORCEMENT_PHASE)
 		{
-			if(map.getPlayer(currentPlayer).checkMissionForWin())
+			if(map.getPlayer(currentPlayer).checkMissionForWin(map))
 			{
 				//TODO: WIN
 				
