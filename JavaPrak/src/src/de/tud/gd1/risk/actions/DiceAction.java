@@ -16,7 +16,6 @@ public class DiceAction implements Action{
 		{
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			state.rollDices();
-			System.out.println("END TURN");
 		}
 	}
 

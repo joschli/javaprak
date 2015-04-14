@@ -1,7 +1,7 @@
 package src.de.tud.gdi1.risk.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Collections;
 
 import src.de.tud.gdi1.risk.model.Card;
 import src.de.tud.gdi1.risk.model.Continent;
@@ -17,7 +17,6 @@ public class GameController {
 	private GameMap map;
 	private int state = 0;
 	private int currentPlayer;
-	private int startTroops;
 	private GameplayState view;
 	private Options options;
 	private Country[] countries;	
@@ -40,7 +39,6 @@ public class GameController {
 		this.currentPlayer = 0;
 		this.state = 3;
 		map = new GameMap(players);
-		startTroops = (2 * map.getCountries().size())/players.length;	
 	}
 	
 	public void init()
@@ -48,162 +46,72 @@ public class GameController {
 		view.updateUserInterface(state, map, currentPlayer);		
 	}
 
-	public GameMap getMap(){
-		return map;
-	}
-	
+
 	public void update(){
 		
 		switch(state)
 		{
 		case REINFORCEMENT_PHASE:
 			if(!forcesAdded)
-				addForces(currentPlayer);
-			/*
-			if(view.isReinforceButtonPushed())
-			{
-				view.getSelectedCountry().addForce(view.getReinforcement());
-				map.getPlayer(currentPlayer).substractReinforcement(view.getReinforcement());
-				if(map.getPlayer(currentPlayer).getReinforcement() == 0)
-				{
-					view.disableReinforcement();
-					view.enableNextPhase();
-				}else 
-				{
-					view.setReinforce(false);
-					view.resetUI();
-				}
-			}
-			else if(view.nextPhaseButtonPressed())
-			{
-				state = ATTACKING_PHASE;
-				view.resetUI();
-				view.setNextPhaseButton(false);
-			}
-			*/
-			
-			break;
-		case ATTACKING_PHASE: 
-			/*
-			if(view.attackButtonPressed())
-			{
-				//countries[0] = defender
-				//countries[1] = attacker
-				countries = view.getSelectedCountries();
-				attackDices = this.rollDice(view.getAttackDiceCount());
-				defenseDices = this.rollDice(countries[0].getTroops() > 1 ? 2 : 1);
-				view.setAttackDices(attackDices);
-				view.setDefenseDices(defenseDices);
-				
-				//Request number of troops to move into conquered area
-				if(this.attack())
-				{
-					countryConquered = true;
-					if(countries[1].getTroops() < view.getAttackDiceCount())
-						view.requestTroopMovement(countries[1].getTroops()-1, countries[1].getTroops()-1);
-					else
-						view.requestTroopMovement(view.getAttackDiceCount(), countries[1].getTroops()-1);
-				}
-				//view.resetUI();
-			}
-			else if(view.troopMovementSelected())
-			{
-				int troopsMoved = view.getTroopMovement();
-				countries[1].moveTroops(troopsMoved);
-				countries[0].addTroops(troopsMoved);
-			}
-			else if(view.nextPhaseButtonPressed())
-			{
-				state = FORTIFYING_PHASE;
-				view.setNextPhaseButton(false);
-				view.resetUI();
-			}
-			*/
-			break;
-		
-		case FORTIFYING_PHASE:
-			if(view.fortifyButtonPressed())
-			{
-				countries = view.getSelectedCountries();
-				int force = view.getFortifyUnits();
-				if(countries[0].getTroops() > force)
-				{
-					if(countries[0].isNeighbor(countries[1]))
-					{
-						countries[0].moveTroops(force);
-						countries[1].addTroops(force);
-					}
-				}
-				view.resetUI();
-			}
-			/*
-			else if(view.endTurnButtonPressed())
-			{
-				this.endTurn();
-			}
-			*/
-			break;
-		case STARTING_PHASE:
-			if(view.startTroopPlaced())
-			{
-				Country country = view.getStartTroopCountry();
-				country.addTroops(1);
-				if(currentPlayer == map.getPlayers().length-1)
-				{
-					currentPlayer = 0;
-					startTroops--;
-					if(startTroops == 0)
-					{
-						state = REINFORCEMENT_PHASE;
-						view.resetUI();
-					}
-				}
-				else
-					currentPlayer++;
-				
-				
-			}
-			break;
+				addForces();
 		}
 		view.updateUserInterface(state, map, currentPlayer);
 	}
 	
-	/* Calculates the attack 
-	 * returns true if Country is conquered, returns false if country is not conquered
-	 * 
-	 */
 	
+	/**
+	 * Calculates the Result of an Attack
+	 * Uses Attackdices and Defensedices Arrays to do this
+	 * Sorts AttackDices and DefenseDices Arrays
+	 * Moves Troops depending on the results saved in AttackDices and DefenseDices
+	 * @return true if attack conquered a Country and the Defender has no Troops left, false if not
+	 */
 	private boolean attack() {
 
 		Arrays.sort(attackDices);
 		Arrays.sort(defenseDices);
+		reverse(attackDices);
+		reverse(defenseDices);
 		
 		for(int i = 0; i < attackDices.length && i < defenseDices.length; i++)
 		{
 			if(attackDices[i] > defenseDices[i])
 			{
-				countries[0].moveTroops(1);
+				countries[1].moveTroops(1);
 			}
 			else
 			{
-				countries[1].moveTroops(1);
+				countries[0].moveTroops(1);
 			}
 		}
 		
 		//If Defender has no Troops left the country is successfully conquered and the attacker may move troops
-		if(countries[0].getTroops() == 0)
+		if(countries[1].getTroops() == 0)
 		{
 			return true;
 		}
 		return false;
 	}
 
-	private void addForces(int currentPlayer) {
+	private void reverse(int[] arr) {
+		for(int i = 0; i < arr.length / 2; i++)
+		{
+		    int temp = arr[i];
+		    arr[i] = arr[arr.length - i - 1];
+		    arr[arr.length - i - 1] = temp;
+		}
+	}
+
+	/**
+	 * Adds Reinforcement to a Player a the Start of the Reinforcement Phase that he can use on his countries
+	 * Normal Reinforcements are calculated with ownedCountries/3 but minimum of 3
+	 * Additional Reinforcements may come from owning an entire continent
+	 */
+	private void addForces() {
 		this.forcesAdded = true;
 		map.getPlayer(currentPlayer).addReinforcement(map.getOwnedCountriesForPlayer(currentPlayer) > 11 ? map.getOwnedCountriesForPlayer(currentPlayer)/3 : 3);
 
-		//map.getOwnedCountriesForPlayer(currentPlayer) > 11 ? map.getOwnedCountriesForPlayer(currentPlayer)/3 : 3
-		
+	
 		for(Continent x : map.getContinents())
 		{
 			if(x.isOwned(map.getPlayer(currentPlayer), map.getCountries()))
@@ -212,13 +120,15 @@ public class GameController {
 		
 	}
 
-	public Player getTurnPlayer(){
-		return map.getPlayer(currentPlayer);
-	}
 	
-	/* Ends the turn and resets state and chooses next player
-	 * Players that conquered a country in their turn will also get a random Card
-	 * 
+	
+	/**
+	 * Ends the Turn and chooses the next Player
+	 * Changes the currentPlayer to the next Player
+	 * Depending on the state a Reset is called or not (Not in StartingPhase to prevent going into not wanted states)
+	 * In Normal Game State this method assigns Cards to the player, if he conquered a Country in their turn
+	 * Checks for Win Condition
+	 * Does nothing when in REINFORCEMENT_PHASE because you should not be able to end your turn 
 	 */
 	public void endTurn()
 	{
@@ -265,26 +175,33 @@ public class GameController {
 		view.resetUI();
 	}
 
-	public int[] rollDice(int diceCount)
+	/**
+	 * rolls diceCount dice and returns the result in an Array
+	 * @param diceCount amount of dice to be rolled
+	 * @return Array of size diceCount with results of the dicerolls (1-6) saved  
+	 */
+	private int[] rollDice(int diceCount)
 	{
 		int[] dices = new int[diceCount];
 		for(int i = 0; i < dices.length; i++)
 		{
-			dices[i] = (int) (Math.random() * 6);
+			dices[i] = (int) (Math.random() * 6) + 1;
 		}
 		return dices;	
 	}
 
-	public int getState() {
-		return state;
-	}
-
+	/**
+	 * Used in the starting Phase and Reinforcement phase of Risk to place troops on a country 
+	 * Automatically ends the turn for a Player if the game is in the starting phase to make an alternated placing of units possible
+	 * Called from Gameplaystate whenever a unit is placed
+	 * @param ownerEntity Country in which the Troop is placed
+	 */
 	public void setReinforceCountry(Country ownerEntity) {
-		if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == 3){
+		if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == STARTING_PHASE){
 			ownerEntity.addTroops(1);
 			map.getPlayer(currentPlayer).substractReinforcement(1);
 			this.endTurn();
-		}else if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == 0)
+		}else if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == REINFORCEMENT_PHASE)
 		{
 			ownerEntity.addTroops(1);
 			map.getPlayer(currentPlayer).substractReinforcement(1);
@@ -293,12 +210,84 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * Called in the Attackphase whenever the rolldice Button is pressed
+	 * Calculates the Attack on a Country and changes troops accordingly
+	 * Passes the results to the View to display them
+	 * If a Country is conquered with this troopMovements are requested (if the country has more than 2 units left, if this is the case 1 unit is moved automatically)
+	 * @param diceCount amount of dice that the attacker wants to use (between 1 and 3)
+	 * @param countries attacking(index 0)  and defending country(index 1) in an attack 
+	 */
+	public void rollDiceEvent(int diceCount, Country[] countries) {
+		
+		if(this.state != ATTACKING_PHASE)
+			return;
+		if(diceCount > countries[0].getTroops()-1)
+		{
+			//TODO: Show Error!
+			System.out.println("Zu wenig Truppen um mit so vielen Würfeln anzugreifen");
+			return;
+		}
+		this.countries = countries;
+		attackDices = this.rollDice(diceCount);
+		defenseDices = this.rollDice(countries[1].getTroops() > 1 ? 2 : 1);
+		countryConquered = this.attack();
+		
+		System.out.println("ROLL THE DICE");
+		System.out.println(diceToString());
+	
+		view.showDiceResult(attackDices, defenseDices);
+		if(countryConquered)
+		{
+			if(countries[0].getTroops() == 2)
+				troopsMovedEvent(1);
+			else
+				view.requestTroopMovement(diceCount, this.countries[0].getTroops()-1);
+		}
+	}
+	
+	private String diceToString() {
+		String s = "AttackDices: ";
+		for(int i : attackDices)
+		{
+			s = s + i + "|";
+		}
+		s = s + "\n" + "DefenseDice: ";
+		for(int i : defenseDices)
+			s = s + i + "|";
+		return s;
+	}
+
+	/**
+	 * Called in the Attackphase after a Country got conquered and Troops are moved into the conquered Country
+	 * Assumes that rollDiceEvent was called before, so that the most recent Countrys that were in an attack are saved
+	 * Moves the troops from Countries[0] to countries[1]
+	 * @param amount of troops moved from Countries[0] to Countries[1] that got declared in rollDiceEvent
+	 */
+	public void troopsMovedEvent(int amount )
+	{	
+		if(this.state != ATTACKING_PHASE)
+			return;
+		int troopsMoved = view.getTroopMovement();
+		countries[1].moveTroops(troopsMoved);
+		countries[0].addTroops(troopsMoved);
+	}
+	
 	public int getCurrentPlayerIndex() {
 		return currentPlayer;
 	}
-
-	public void rollDiceEvent(int diceCount, Country[] countries) {
-		// TODO ROLL THE DICE !!!!
-		System.out.println("ROLL THE DICE");
+	
+	public Player getTurnPlayer(){
+		return map.getPlayer(currentPlayer);
 	}
+	
+	public int getState() {
+		return state;
+	}
+	
+	public GameMap getMap(){
+		return map;
+	}
+	
+
 }

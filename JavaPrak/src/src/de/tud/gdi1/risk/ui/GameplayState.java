@@ -281,6 +281,11 @@ public class GameplayState extends BasicGameState {
 		// TODO GameController
 		gameController.rollDiceEvent(userInterface.getDiceCount(), userInterface.getSelectedCountries());
 	}
+
+	public void showDiceResult(int[] attackDices, int[] defenseDices) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 
