@@ -79,6 +79,20 @@ public class GameMap {
 		Country d = (Country) countryFactory.createEntity();
 		C.addCountry(3);
 		countries.add(d);
+		ArrayList<Country> neighbors = new ArrayList<Country>();
+		neighbors.add(b);
+		neighbors.add(c);
+		neighbors.add(d);
+		a.setNeighbors(neighbors);
+		neighbors.add(a);
+		neighbors.remove(b);
+		b.setNeighbors(neighbors);
+		neighbors.remove(c);
+		neighbors.add(b);
+		c.setNeighbors(neighbors);
+		neighbors.remove(d);
+		neighbors.add(c);
+		d.setNeighbors(neighbors);
 
 		continents.add(A);
 		continents.add(B);

@@ -232,6 +232,7 @@ public class GameController {
 		if(diceCount > countries[0].getTroops()-1)
 		{
 			//TODO: Show Error!
+			
 			System.out.println("Zu wenig Truppen um mit so vielen Würfeln anzugreifen");
 			return;
 		}
@@ -325,7 +326,10 @@ public class GameController {
 	
 	public void printError(int errorCode)
 	{
+		String s = "";
+		switch(errorCode){
 		
+		}
 	}
 
 }
