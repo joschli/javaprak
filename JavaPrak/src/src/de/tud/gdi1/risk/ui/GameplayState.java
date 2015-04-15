@@ -131,7 +131,7 @@ public class GameplayState extends BasicGameState {
     	// Hintergrund laden
     	Entity background = new Entity("background");	// Entitaet fuer Hintergrund
     	background.setPosition(new Vector2f(400,300));	// Startposition des Hintergrunds
-    	background.addComponent(new ImageRenderComponent(new Image("assets/background.jpg"))); // Bildkomponente
+    	background.addComponent(new ImageRenderComponent(new Image("assets/Blank Risk.PNG"))); // Bildkomponente
     	    	
     	// Hintergrund-Entitaet an StateBasedEntityManager uebergeben
     	entityManager.addEntity(stateID, background);
@@ -169,8 +169,9 @@ public class GameplayState extends BasicGameState {
     	gameController.update();
     	userInterface.update(container, game, delta);
     	
-    	if(gameController.getState() == 4)
+    	/*if(gameController.getState() == 4)
     		new ChangeStateInitAction(Launch.GAMEPLAY_STATE).update(container, game, delta, null);
+		*/
 	}
     
     public void updateUserInterface() {
@@ -253,9 +254,11 @@ public class GameplayState extends BasicGameState {
 			g.fillRect(c.getPosition().x-c.getSize().x/2, c.getPosition().y-c.getSize().y/2, c.getSize().x, c.getSize().y);
 			
 			g.setColor(c.getOwner().getColor());
-			g.fillRect(c.getPosition().x-16, c.getPosition().y-16, 32, 32);
+			g.fillOval(c.getPosition().x-12, c.getPosition().y-12, 24, 24);
+			//g.fillRect(c.getPosition().x-16, c.getPosition().y-16, 32, 32);
 			g.setColor(Color.black);
-			g.drawRect(c.getPosition().x-16, c.getPosition().y-16, 32, 32);
+			g.drawOval(c.getPosition().x-12, c.getPosition().y-12, 24, 24);
+			//g.drawRect(c.getPosition().x-16, c.getPosition().y-16, 32, 32);
 			g.drawString(new Integer(c.getTroops()).toString(), c.getPosition().x-5, c.getPosition().y-8);
 		}
 		userInterface.render(container, game, g);

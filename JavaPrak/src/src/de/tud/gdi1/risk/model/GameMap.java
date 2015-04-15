@@ -22,10 +22,13 @@ import src.de.tud.gdi1.risk.model.entities.Country;
 
 public class GameMap {
 
+	private static final String MISSIONS_FILE = "missions.txt";
+	private static final int NR_OF_COUNTRIES_FOR_DEFEAT_MISSION = 24;
+	private static final int TESTVALUE = 60;
 	private ArrayList<Continent> continents;
 	private CountryFactory countryFactory;
 	private Player[] players;
-	private Mission[] missions;
+	private ArrayList<Mission> missions;
 	private ArrayList<Country> countries = new ArrayList<Country>();
 	private ArrayList<Card> cards = new ArrayList<Card>();
 
@@ -157,7 +160,7 @@ public class GameMap {
 			    b = Integer.parseInt(colorValues[1]);
 			    g = Integer.parseInt(colorValues[2]);
 			    bonusTroops = Integer.parseInt(entrys[2]);
-			    continents.add(new Continent(bonusTroops, new Color(r,g,b,175), name));
+			    continents.add(new Continent(bonusTroops, new Color(r,g,b,0), name));
 			}
 			
 			if(count == 3)
@@ -170,8 +173,8 @@ public class GameMap {
 			    name = entrys[0];
 			    neighborStrings.add(entrys[1]);
 			    String[] coordinates = entrys[3].split(",");
-			    position.x = Integer.parseInt(coordinates[0]);
-			    position.y = Integer.parseInt(coordinates[1]);
+			    position.x = Integer.parseInt(coordinates[0]) ;
+			    position.y = Integer.parseInt(coordinates[1]) + TESTVALUE;
 			    countryFactory.updateFactory(name, position);
 			    
 			    countries.add((Country) countryFactory.createEntity());
@@ -265,37 +268,66 @@ public class GameMap {
 	}
 
 	
-	private void initPossibleMissions()
+	private void initPossibleMissions() throws IOException
 	{
-		missions = new Mission[5];
+		missions = new ArrayList<Mission>();
 		//String missionText, Player player,
 		//ArrayList<Continent> continents, int countryCount
 
-		missions[0] = new Mission("Defeat Player 0", players[0],4);
-		missions[1] = new Mission("Defeat Player 1", players[1],4);
-		ArrayList<Continent> con = new ArrayList<Continent>();
-		con.add(continents.get(0));
-		con.add(continents.get(2));
-		missions[2] = new Mission("Conquer the following Continents: A,C", con);
-		con.clear();
-		con.add(continents.get(0));
-		con.add(continents.get(1));
-		missions[3] = new Mission("Conquer the following Continents: A,B", con);
-		missions[4] = new Mission("Conquer 4 Countries", 4);
-		/*
-		 * missions[5] = new Mission("Defeat Player 0", players[0], null, -1);
-		 * missions[6] = new Mission("Defeat Player 0", players[0], null, -1);
-		 * missions[7] = new Mission("Defeat Player 0", players[0], null, -1);
-		 * missions[8] = new Mission("Defeat Player 0", players[0], null, -1);
-		 * missions[9] = new Mission("Defeat Player 0", players[0], null, -1);
-		 */
-		boolean[] taken = new boolean[10];
+		for(int i = 0; i < players.length; i++)
+		{
+			missions.add( new Mission("Defeat " + players[i].getName() + "! If you are " +players[i].getName() + " conquer " 
+					+ NR_OF_COUNTRIES_FOR_DEFEAT_MISSION + " countries instead!", players[i], NR_OF_COUNTRIES_FOR_DEFEAT_MISSION));	
+		}
+		
+		Path f  = FileSystems.getDefault().getPath("src/assets", MISSIONS_FILE);
+
+		for (String line : Files.readAllLines(f)) {
+			if(line.startsWith("1"))
+			{
+				ArrayList<Continent> consToConquer = new ArrayList<Continent>();
+				String [] cons = line.split("-")[1].split(",");
+				consToConquer.add(this.getContinent(cons[0]));
+				consToConquer.add(this.getContinent(cons[1]));
+				missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + " and a third continent!", consToConquer, true));
+			}
+			
+			if(line.startsWith("2"))
+			{
+				ArrayList<Continent> consToConquer = new ArrayList<Continent>();
+				String [] cons = line.split("-")[1].split(",");
+				consToConquer.add(this.getContinent(cons[0]));
+				consToConquer.add(this.getContinent(cons[1]));
+				missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + "!", consToConquer));
+			}
+			
+			if(line.startsWith("3"))
+			{
+				int countryCount = Integer.parseInt(line.split("-")[1]);
+				missions.add(new Mission("Conquer " + countryCount + " Countries!", countryCount));
+			}
+			
+			if(line.startsWith("4"))
+			{
+				int countryCount = Integer.parseInt(line.split("-")[1].split("\\|")[0]);
+				int troopCount = Integer.parseInt(line.split("-")[1].split("\\|")[1]);
+				missions.add(new Mission("Conquer " + countryCount + " Countries and have " + troopCount+" troops in them", countryCount, troopCount));
+			}
+			
+		}
+		
+		for(Mission m : missions)
+		{
+			System.out.println(m.getMissionText());
+		}
+	
+		boolean[] taken = new boolean[missions.size()];
 		for (Player p : players) {
-			int random = (int) (Math.random() * missions.length);
+			int random = (int) (Math.random() * missions.size());
 			while (taken[random])
-				random = (int) (Math.random() * missions.length);
-			p.assignMission(missions[random]);
-			System.out.println(p.getName() + " -> " + missions[random].getMissionText());
+				random = (int) (Math.random() * missions.size());
+			p.assignMission(missions.get(random));
+			System.out.println(p.getName() + " -> " + missions.get(random).getMissionText());
 			taken[random] = true;
 		}
 
