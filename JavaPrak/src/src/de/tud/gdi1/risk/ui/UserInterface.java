@@ -32,8 +32,7 @@ public class UserInterface {
 	private UIButton turnButton, attackButton;
 	private UISelection selection_1;
 	private UISelection selection_2;
-	private UIWindow attackWindow;
-	private Entity firstCountrySelected = null;
+	private UIGroup attackWindow;
 	private GameMap map;
 	private int height, width;
 	private int currentPlayer, state;
@@ -43,12 +42,12 @@ public class UserInterface {
 		this.height = height;
 		this.width = width;
 		// Player Label
-		playerName = new UILabel("PlayerName", null, null, new Vector2f(50,50));
-		phaseName = new UILabel("PhaseName", null, Color.red, new Vector2f(150,50));
-		reinforcementCount = new UILabel("ReinforcementCount", null, null, new Vector2f(350, 50));
+		playerName = new UILabel("playerNameLabel", null, null, new Vector2f(50,50));
+		phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,50));
+		reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 50));
 		// End Turn Button
-		turnButton = new UIButton("TurnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		attackButton = new UIButton("AttackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		turnButton = new UIButton("turnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		attackButton = new UIButton("attackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
@@ -63,16 +62,22 @@ public class UserInterface {
 		//
 		attackButton.addComponent(attackEvent);
 		attackButton.setVisible(false);
-		selection_1 = new UISelection("Selection1");
-		selection_2 = new UISelection("Selection2");
+		selection_1 = new UISelection("selection1");
+		selection_2 = new UISelection("selection2");
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
 		// Window Overlay for ReinforcementState
-		attackWindow = new UIWindow("reinforcementWindow", new Vector2f(width-100, height-150), new Vector2f(200, 300));
-		attackWindow.addLabel("Description", "Attack Window", 50, 15, Color.red);
-		attackWindow.addCounter("Counter", 50, 50, 3, 1);
-		attackWindow.addButton("Dice", "Roll the dices", 114, 116, 128, 32, new Vector2f(10,10), Color.black, diceEvent);
-		attackWindow.addButton("Cancel", "Cancel", 114, 164, 128, 32, new Vector2f(10, 10), Color.black, cancelAttackEvent);
+		attackWindow = new UIGroup("attackGroup", new Vector2f(width-100, height-150), new Vector2f(200, 300));
+		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(50,15));
+		UICounter aw_counter = new UICounter("counter", new Vector2f(50,50), 3, 1);
+		UIButton aw_diceButton = new UIButton("diceButton", "Roll the dices", new Vector2f(114,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton aw_cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(114, 164), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		aw_diceButton.addComponent(diceEvent);
+		aw_cancelButton.addComponent(cancelAttackEvent);
+		attackWindow.addComponent(aw_cancelButton);
+		attackWindow.addComponent(aw_counter);
+		attackWindow.addComponent(aw_diceButton);
+		attackWindow.addComponent(aw_description);
 		
 		components.add(playerName);
 		components.add(phaseName);
@@ -95,8 +100,14 @@ public class UserInterface {
 		this.currentPlayer = currentPlayer;
 		this.state = state;
 		this.map = map;
-		playerName.setLabelName(map.getPlayer(currentPlayer).getName());
-		for(UIElement element : components)
+		ArrayList<UIElement> labels = this.getComponents("Label");
+		UILabel playerNameLabel = (UILabel) this.getComponent("playerNameLabel");
+		UILabel reinforcementCountLabel = (UILabel) this.getComponent("reinforcementCountLabel");
+		UIButton attackButton = (UIButton) this.getComponent("attackButton");
+		UILabel phaseNameLabel = (UILabel) this.getComponent("phaseNameLabel");
+		playerNameLabel.setLabelName(map.getPlayer(currentPlayer).getName());
+		
+		for(UIElement element : labels)
 			if(element instanceof UILabel)
 			{
 				UILabel label = (UILabel) element;
@@ -107,26 +118,26 @@ public class UserInterface {
 		{
 		case 0:
 			labelName = "REINFORCEMENT";
-			this.reinforcementCount.setVisible(true);
-			this.reinforcementCount.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
+			reinforcementCountLabel.setVisible(true);
+			reinforcementCountLabel.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
 			
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
-			if(!attackWindow.isVisible())
+			if(!this.isComponenetVisible("attackGroup"))
 				attackButton.setVisible(true);
-			this.reinforcementCount.setVisible(false);
+			reinforcementCountLabel.setVisible(false);
 			break;
 		case 2:
 			labelName = "FORTIFY";
 			break;
 		case 3:
 			labelName = "STARTINGPHASE";
-			this.reinforcementCount.setVisible(true);
-			this.reinforcementCount.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
+			reinforcementCountLabel.setVisible(true);
+			reinforcementCountLabel.setLabelName("Reinforcements: " + map.getPlayer(currentPlayer).getReinforcement());
 			break;
 		}
-		phaseName.setLabelName(labelName);
+		phaseNameLabel.setLabelName(labelName);
 		
 	}
 	
@@ -143,12 +154,12 @@ public class UserInterface {
 	
 	public void updateSelection(Country country)
 	{
-		
+		UISelection selection_1 = (UISelection) this.getComponent("selection1");
+		UISelection selection_2 = (UISelection) this.getComponent("selection2");
 		if(selection_1.hasEntitySelected() && selection_1.getSelectedEntity().getID() == country.getID())
 		{
 			selection_1.resetSelection();
 			selection_2.resetSelection();
-			firstCountrySelected = null;
 		}
 		else if(selection_2.hasEntitySelected() && selection_2.getSelectedEntity().getPosition().equals(country.getPosition()))
 			selection_2.resetSelection();
@@ -157,7 +168,6 @@ public class UserInterface {
 		}
 		else{
 			selection_1.selectEntity(country);
-			firstCountrySelected = country;
 		}
 		System.out.println("Selector1:" + selection_1.hasEntitySelected());
 		System.out.println("Selector2:" + selection_2.hasEntitySelected());
@@ -175,19 +185,26 @@ public class UserInterface {
 	
 	public Entity getFirstCountrySelected()
 	{
-		return firstCountrySelected;
+		UISelection selection_1 = (UISelection) this.getComponent("selection1");
+		return selection_1.getSelectedEntity();
 	}
 	
 	public Country[] getSelectedCountries()
 	{
+		UISelection selection_1 = (UISelection) this.getComponent("selection1");
+		UISelection selection_2 = (UISelection) this.getComponent("selection2");
 		Country[] c = {(Country) selection_1.getSelectedEntity(), (Country) selection_2.getSelectedEntity()};
 		return c;
 	}
 
 	public void showAttackWindow() {
+		UIGroup attackWindow = (UIGroup) this.getComponent("attackGroup");
+		UISelection selection_1 = (UISelection) this.getComponent("selection1");
+		ArrayList<UIElement> buttons = this.getComponents("Button");
 		attackWindow.setVisible(true);
 		attackWindow.setCounter((Country) selection_1.getSelectedEntity());
-		for(UIElement element : components)
+		
+		for(UIElement element : buttons)
 			if(element instanceof UIButton)
 			{
 				UIButton button = (UIButton) element;
@@ -196,7 +213,9 @@ public class UserInterface {
 	}
 	
 	public void hideAttackWindow(){
-		for(UIElement element : components)
+		ArrayList<UIElement> buttons = this.getComponents("Button");
+		UIGroup attackWindow = (UIGroup) this.getComponent("attackGroup");
+		for(UIElement element : buttons)
 			if(element instanceof UIButton)
 			{
 				UIButton button = (UIButton) element;
@@ -206,20 +225,79 @@ public class UserInterface {
 	}
 
 	public boolean getCountriesSelected() {
+		UISelection selection_1 = (UISelection) this.getComponent("selection1");
+		UISelection selection_2 = (UISelection) this.getComponent("selection2");
 		return selection_1.hasEntitySelected() && selection_2.hasEntitySelected();
 	}
 
 	public boolean isAttackWindowVisible() {
+		UIGroup attackWindow = (UIGroup) this.getComponent("attackGroup");
 		return this.attackWindow.isVisible();
 	}
 
 	public void reset() {
+		UISelection selection_1 = (UISelection) this.getComponent("selection1");
+		UISelection selection_2 = (UISelection) this.getComponent("selection2");
+		UIGroup attackWindow = (UIGroup) this.getComponent("attackGroup");
 		selection_1.resetSelection();
 		selection_2.resetSelection();
 		attackWindow.setVisible(false);
 	}
 
 	public int getDiceCount() {
+		UIGroup attackWindow = (UIGroup) this.getComponent("attackGroup");
 		return attackWindow.getCounter();
 	}
+	
+	public void addComponenet(UIElement element)
+	{
+		if(element != null)
+			this.components.add(element);
+	}
+	
+	public boolean isComponenetVisible(String entityID)
+	{
+		UIElement element = this.getComponent(entityID);
+		if(element != null)
+			return element.isVisible();
+		return false;
+	}
+	
+	public boolean setVisibility(String entityID)
+	{
+		UIElement element = this.getComponent(entityID);
+		if(element != null)
+			return element.isVisible();
+		return false;
+	}
+	
+	public UIElement getComponent(String entityID)
+	{
+		for(UIElement element : components)
+		{
+			if(element.getID() == entityID)
+			{
+				return element;
+			}
+		}
+		return null;
+	}
+	
+	public void addComponent(UIElement element)
+	{
+		if(element != null)
+			this.components.add(element);
+	}
+	
+	public ArrayList<UIElement> getComponents(String partEntityID)
+	{
+		ArrayList<UIElement> elements = new ArrayList<UIElement>();
+		for(UIElement element : components)
+		{
+			if(element.getID().contains(partEntityID))
+				elements.add(element);
+		}
+		return elements;
+	}
+	
 }

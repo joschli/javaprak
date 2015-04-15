@@ -14,11 +14,11 @@ import eea.engine.component.Component;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 
-public class UIWindow extends UIElement{
+public class UIGroup extends UIElement{
 	
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
 	private Vector2f relativePosition;
-	public UIWindow(String entityID, Vector2f position, Vector2f size) {
+	public UIGroup(String entityID, Vector2f position, Vector2f size) {
 		super(entityID);
 		this.setPosition(position);
 		this.setSize(size);
@@ -36,24 +36,6 @@ public class UIWindow extends UIElement{
 				element.render(container, game, g);
 			}
 		}
-	}
-	
-	public void addLabel(String name, String content, float x, float y, Color color){
-		UILabel label = new UILabel(name, content, color, new Vector2f(this.relativePosition.x + x,this.relativePosition.y + y));
-		components.add(label);
-	}
-	
-	public void addButton(String name, String content, float x, float y, float width, float height, Vector2f padding, Color color, Component event)
-	{
-		UIButton button = new UIButton(name, content, new Vector2f(this.relativePosition.x + x,this.relativePosition.y + y), new Vector2f(width,height), padding, color.gray, color);
-		button.addComponent(event);
-		components.add(button);
-	}
-	
-	public void addCounter(String name, float x, float y, int maxCount, int minCount)
-	{
-		UICounter counter = new UICounter(name, new Vector2f(this.relativePosition.x+x, this.relativePosition.y+y), maxCount, minCount);
-		components.add(counter);
 	}
 	
 	public void setUIButtonName(String ID, String content)
@@ -107,6 +89,39 @@ public class UIWindow extends UIElement{
 			}
 		}
 		return 0;
+	}
+	
+	public UIElement getComponent(String entityID)
+	{
+		for(UIElement element : components)
+		{
+			if(element.getID() == entityID)
+			{
+				return element;
+			}
+		}
+		return null;
+	}
+	
+	
+	public void addComponent(UIElement element)
+	{
+		if(element != null){
+			element.setPosition(new Vector2f(this.relativePosition.x + element.getPosition().x, this.relativePosition.y + element.getPosition().y));
+			this.components.add(element);
+		}
+	}
+	
+	public void setPosition(Vector2f position)
+	{
+		super.setPosition(position);
+		this.relativePosition = new Vector2f(this.getPosition().x-this.getSize().x/2, this.getPosition().y - this.getSize().y/2);
+	}
+	
+	public void setSize(Vector2f size)
+	{
+		super.setSize(size);
+		this.relativePosition = new Vector2f(this.getPosition().x-this.getSize().x/2, this.getPosition().y - this.getSize().y/2);
 	}
 	
 }

@@ -7,7 +7,6 @@ import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import src.de.tud.gdi1.risk.ui.GameplayState;
 
-
 public class GameController {
 	
 	private GameMap map;
