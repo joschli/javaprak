@@ -14,7 +14,7 @@ public class GameController {
 	private int currentPlayer;
 	private GameplayState view;
 	private Options options;
-	private Country[] countries;	
+	private ErrorPrinter printer;
 	
 	private static final int REINFORCEMENT_PHASE = 0;
 	private static final int ATTACKING_PHASE = 1;
@@ -24,6 +24,7 @@ public class GameController {
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
+	private Country[] countries;	
 	
 	public GameController(GameplayState view){
 		this.view = view;
@@ -34,6 +35,7 @@ public class GameController {
 		this.currentPlayer = 0;
 		this.state = 3;
 		map = new GameMap(players);
+		this.printer = new ErrorPrinter();
 	}
 	
 	public void init()
@@ -215,25 +217,28 @@ public class GameController {
 		
 		if(this.state != ATTACKING_PHASE)
 		{
-			System.out.println("Fehler: Würfel werden nicht in der Attack_Phase geworfen");
+			printer.printError(printer.PHASEERROR);
 			return;
 		}
 			
 		if(countries[0].getOwner() == countries[1].getOwner())
 		{
-			System.out.println("Fehler: Eigene Länder können nicht angegriffen werden");
+			printer.printError(printer.OWNERATTACKERROR);
 			return;
 		}
 		if(!countries[0].isNeighbor(countries[1]))
 		{
-			System.out.println("Fehler: Nicht benachbarte Länder können nicht angegriffen werden");
+			printer.printError(printer.NOTNEIGHBORERROR);
 			return;
 		}
 		if(diceCount > countries[0].getTroops()-1)
 		{
-			//TODO: Show Error!
-			
-			System.out.println("Zu wenig Truppen um mit so vielen Würfeln anzugreifen");
+			printer.printError(printer.NOTENOUGHTROOPSATTACKERROR);
+			return;
+		}
+		if(countries[1].getTroops() <= 0)
+		{
+			printer.printError(printer.NOTENOUGHTROOPSDEFENDERROR);
 			return;
 		}
 		this.countries = countries;
@@ -280,19 +285,19 @@ public class GameController {
 	{	
 		if(this.state != ATTACKING_PHASE && this.state != FORTIFYING_PHASE)
 		{
-			System.out.println("Fehler: Truppenbewegungen außerhalb der erlaubten Phasen");
+			printer.printError(printer.PHASEERROR);
 			return;
 		}
 			
 		if(countries[0].getOwner() != countries[1].getOwner())
 		{
-			System.out.println("Fehler: Truppenbewegungen nicht möglich, da die Besitzer der Länder unterschiedlich sind");
+			printer.printError(printer.OWNERMOVEERROR);
 			return;
 		}
 			
 		if(!countries[0].isNeighbor(countries[1]))
 		{
-			System.out.println("Fehler: Truppenbewegungen nicht möglich, da die Länder nicht benachbart sind");
+			printer.printError(printer.NOTNEIGHBORERROR);
 			return;
 		}
 			
@@ -303,7 +308,7 @@ public class GameController {
 		}
 		else
 		{
-			System.out.println("Fehler: Zu wenig Truppen zum Verschieben");
+			printer.printError(printer.NOTENOUGHTROOPSMOVEERROR);
 		}
 		
 	}
@@ -324,12 +329,6 @@ public class GameController {
 		return map;
 	}
 	
-	public void printError(int errorCode)
-	{
-		String s = "";
-		switch(errorCode){
-		
-		}
-	}
+
 
 }
