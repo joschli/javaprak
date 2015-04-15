@@ -13,15 +13,13 @@ public class Country extends Entity {
 	private String name;
 	private int troops;
 	private Player owner;
-	private int cardValue;
 	private Color color;
 	
 	//owner bei initialisierung wird als Spieler "neutral" mitgegeben?
-	public Country(String name, int cardValue){
+	public Country(String name){
 		super(name);
 		troops = 0;
 		this.name = name;
-		this.cardValue = cardValue;
 		owner = null;
 		this.color = null;
 	}
@@ -55,9 +53,6 @@ public class Country extends Entity {
 		return name;
 	}
 
-	public int getCardValue() {
-		return cardValue;
-	}
 
 	public void addForce(int reinforcement) {
 		troops += reinforcement;

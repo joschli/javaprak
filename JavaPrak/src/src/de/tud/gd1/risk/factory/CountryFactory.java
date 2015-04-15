@@ -28,21 +28,21 @@ public class CountryFactory implements IEntityFactory {
 	private Country country;
 	private int cardValue;
 	
-	public CountryFactory(String name, int cardValue, Vector2f position)
+	public CountryFactory(String name, Vector2f position)
 	{
 		this.name = name;
 		this.position = position;
-		this.cardValue = cardValue;
+		
 	}
 	
 	@Override
 	public Entity createEntity()
 	{
 		float scale = 0.312f;
-		country = new Country(name, cardValue);
+		country = new Country(name);
 		country.setPosition(position);
 		
-		country.setSize(new Vector2f(100,100));
+		country.setSize(new Vector2f(50,50));
 		country.setScale(scale);
 		//country.addComponent(new ImageRenderComponent(new Image("assets/country.jpg")));
 		ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
@@ -51,10 +51,9 @@ public class CountryFactory implements IEntityFactory {
 		return country;
 	}
 	
-	public void updateFactory(String name, int cardValue, Vector2f position)
+	public void updateFactory(String name, Vector2f position)
 	{
 		this.name = name;
-		this.cardValue = cardValue;
 		//this.action = action;
 		this.position = position;
 	}

@@ -1,5 +1,7 @@
 package src.de.tud.gdi1.risk.controller;
+import java.io.IOException;
 import java.util.Arrays;
+
 import src.de.tud.gdi1.risk.model.Continent;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Options;
@@ -26,7 +28,7 @@ public class GameController {
 	private int[] attackDices, defenseDices;
 	private Country[] countries;	
 	
-	public GameController(GameplayState view){
+	public GameController(GameplayState view) throws IOException{
 		this.view = view;
 		options = Options.getInstance();
 		Player[] players = new Player[options.getPlayerCount()];

@@ -11,9 +11,11 @@ public class Continent {
 	private ArrayList<Integer> countries = new ArrayList<Integer>();
 	private int bonusTroops;
 	private Color color;
-	public Continent(int bonusTroops, Color color){
+	private String name;
+	public Continent(int bonusTroops, Color color, String name){
 		this.bonusTroops = bonusTroops;
 		this.color = color;
+		this.name = name;
 	}
 	
 	public void addCountry(int index)
@@ -35,6 +37,10 @@ public class Continent {
 		return true;
 	}
 	
+	public String getName()
+	{
+		return name;
+	}
 	public int getBonusTroops()
 	{
 		return bonusTroops;

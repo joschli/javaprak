@@ -50,12 +50,12 @@ public class Launch extends StateBasedGame {
 		// (der zuerst hinzugefuegte State wird als erster State gestartet)
 		addState(new MainMenuState(MAINMENU_STATE));
         addState(new GameplayState(GAMEPLAY_STATE));
-        addState(new WinState(WIN_STATE));
+       // addState(new WinState(WIN_STATE));
         
         // Fuege dem StateBasedEntityManager die States hinzu
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
         StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
-        StateBasedEntityManager.getInstance().addState(WIN_STATE);
+        //StateBasedEntityManager.getInstance().addState(WIN_STATE);
 		
 	}
 }

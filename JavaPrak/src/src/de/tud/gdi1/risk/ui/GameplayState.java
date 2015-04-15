@@ -1,5 +1,6 @@
 package src.de.tud.gdi1.risk.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
@@ -141,7 +142,12 @@ public class GameplayState extends BasicGameState {
     	esc_pressed.addAction(new ChangeStateAction(Launch.MAINMENU_STATE));
     	esc_Listener.addComponent(esc_pressed);    	
     	entityManager.addEntity(stateID, esc_Listener);
-    	gameController = new GameController(this);
+    	try {
+			gameController = new GameController(this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	gameController.init();
     	/*
     	for(Entity e : gameController.getMap().getCountries())
