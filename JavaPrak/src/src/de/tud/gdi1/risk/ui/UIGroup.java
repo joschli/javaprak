@@ -29,7 +29,7 @@ public class UIGroup extends UIElement{
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.isVisible())
 		{
-			g.setColor(Color.black);
+			g.setColor(new Color(100, 100, 100, 100));
 			g.fillRect(relativePosition.x, relativePosition.y, this.getSize().x, this.getSize().y);
 			for(UIElement element : components)
 			{
