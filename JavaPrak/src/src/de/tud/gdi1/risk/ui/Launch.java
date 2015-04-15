@@ -17,6 +17,7 @@ public class Launch extends StateBasedGame {
 	// Jeder State wird durch einen Integer-Wert gekennzeichnet
     public static final int MAINMENU_STATE = 0;
     public static final int GAMEPLAY_STATE = 1;
+    public static final int WIN_STATE = 2;
     
     public Launch()
     {
@@ -49,10 +50,12 @@ public class Launch extends StateBasedGame {
 		// (der zuerst hinzugefuegte State wird als erster State gestartet)
 		addState(new MainMenuState(MAINMENU_STATE));
         addState(new GameplayState(GAMEPLAY_STATE));
+        addState(new WinState(WIN_STATE));
         
         // Fuege dem StateBasedEntityManager die States hinzu
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
         StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
+        StateBasedEntityManager.getInstance().addState(WIN_STATE);
 		
 	}
 }

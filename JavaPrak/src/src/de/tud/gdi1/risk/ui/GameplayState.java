@@ -18,10 +18,12 @@ import src.de.tud.gd1.risk.actions.DiceAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gd1.risk.actions.FortifyAction;
 import src.de.tud.gd1.risk.actions.NextPhaseAction;
+import src.de.tud.gd1.risk.actions.StartFortifyAction;
 import src.de.tud.gdi1.risk.controller.GameController;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -62,6 +64,7 @@ public class GameplayState extends BasicGameState {
 		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f(64, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f(192, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f(320, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify", new Vector2f(448, container.getHeight()-32), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
@@ -77,9 +80,11 @@ public class GameplayState extends BasicGameState {
 		ANDEvent nextPhaseEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		nextPhaseEvent.addAction(new NextPhaseAction());
 		phaseButton.addComponent(nextPhaseEvent);
+		ANDEvent startFortifyEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		startFortifyEvent.addAction(new StartFortifyAction());
+		fortifyButton.addComponent(startFortifyEvent);
 		//
 		attackButton.addComponent(attackEvent);
-		attackButton.setVisible(false);
 		UISelection selection_1 = new UISelection("selection1");
 		UISelection selection_2 = new UISelection("selection2");
 		selection_1.setVisible(true);
@@ -88,7 +93,7 @@ public class GameplayState extends BasicGameState {
 		UIGroup attackWindow = new UIGroup("attackGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(50,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(50,50), 3, 1);
-		UIButton aw_diceButton = new UIButton("diceButton", "Roll the dices", new Vector2f(114,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(114,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton aw_cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(114, 164), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		
 		aw_diceButton.addComponent(diceEvent);
@@ -114,6 +119,7 @@ public class GameplayState extends BasicGameState {
 		userInterface.addComponent(turnButton);
 		userInterface.addComponent(attackButton);
 		userInterface.addComponent(phaseButton);
+		userInterface.addComponent(fortifyButton);
 		userInterface.addComponent(selection_1);
 		userInterface.addComponent(selection_2);
 		userInterface.addComponent(attackWindow);
@@ -156,13 +162,17 @@ public class GameplayState extends BasicGameState {
     		c.update(container, game, delta);
     	gameController.update();
     	userInterface.update(container, game, delta);
+    	
+    	if(gameController.getState() == 4)
+    		new ChangeStateInitAction(Launch.GAMEPLAY_STATE).update(container, game, delta, null);
 	}
     
     public void updateUserInterface() {
+    	UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
+		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
 		ArrayList<UIElement> labels = userInterface.getComponents("Label");
 		UILabel playerNameLabel = (UILabel) userInterface.getComponent("playerNameLabel");
 		UILabel reinforcementCountLabel = (UILabel) userInterface.getComponent("reinforcementCountLabel");
-		UIButton attackButton = (UIButton) userInterface.getComponent("attackButton");
 		UILabel phaseNameLabel = (UILabel) userInterface.getComponent("phaseNameLabel");
 		playerNameLabel.setLabelName(gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getName());
 		
@@ -179,25 +189,45 @@ public class GameplayState extends BasicGameState {
 			labelName = "REINFORCEMENT";
 			reinforcementCountLabel.setVisible(true);
 			reinforcementCountLabel.setLabelName("Reinforcements: " + gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getReinforcement());
-			userInterface.setVisibility("nextPhaseButton", false);
+			userInterface.disableButton("nextPhaseButton");
+			userInterface.disableButton("attackButton");
+			userInterface.disableButton("fortifyButton");
+			userInterface.disableButton("turnButton");
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
-			if(!userInterface.isComponenetVisible("attackGroup") && !userInterface.isComponenetVisible("fortifyGroup"))
-				attackButton.setVisible(true);
+			if((!userInterface.isComponenetVisible("attackGroup") || !userInterface.isComponenetVisible("fortifyGroup")) && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
+				userInterface.enableButton("attackButton");
+				userInterface.enableButton("nextPhaseButton");
+				userInterface.disableButton("fortifyButton");
+				userInterface.enableButton("turnButton");
+			}
+			userInterface.disableButton("attackButton");
 			reinforcementCountLabel.setVisible(false);
-			userInterface.setVisibility("nextPhaseButton", true);
+			userInterface.disableButton("nextPhaseButton");
+			userInterface.disableButton("fortifyButton");
+			userInterface.disableButton("turnButton");
 			break;
 		case 2:
 			labelName = "FORTIFY";
+			userInterface.disableButton("nextPhaseButton");
+			userInterface.disableButton("attackButton");
+			if(!userInterface.isComponenetVisible("fortifyGroup") || (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
+				userInterface.enableButton("fortifyButton");
+				userInterface.enableButton("turnButton");
+			}else 
+				userInterface.disableButton("fortifyButton");
+			userInterface.disableButton("turnButton");
 			
-			userInterface.setVisibility("nextPhaseButton", false);
 			break;
 		case 3:
 			labelName = "STARTINGPHASE";
 			reinforcementCountLabel.setVisible(true);
 			reinforcementCountLabel.setLabelName("Reinforcements: " + gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getReinforcement());
-			userInterface.setVisibility("nextPhaseButton", false);
+			userInterface.disableButton("nextPhaseButton");
+			userInterface.disableButton("attackButton");
+			userInterface.disableButton("fortifyButton");
+			userInterface.disableButton("turnButton");
 			break;
 		}
 		phaseNameLabel.setLabelName(labelName);
@@ -266,7 +296,7 @@ public class GameplayState extends BasicGameState {
 		System.out.println("Country selected= " + ownerEntity.getName());
 		System.out.println("Owner: " + ownerEntity.getOwner().getName());
 		
-		if(ownerEntity != null && gameController.getState() == 1 && !this.isAttackWindowVisible()){
+		if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("attackGroup")){
 			if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID()) && ownerEntity.isOwner(gameController.getTurnPlayer()) && ownerEntity.getTroops() > 1)
 			{
 				this.updateSelection(ownerEntity);
@@ -285,6 +315,11 @@ public class GameplayState extends BasicGameState {
 		{
 			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
 				gameController.setReinforceCountry(ownerEntity);
+		}
+		else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("fortifyGroup"))
+		{
+			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
+				this.updateSelection(ownerEntity);
 		}
 		
 	}
@@ -342,12 +377,11 @@ public class GameplayState extends BasicGameState {
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
 		attackWindow.setVisible(true);
 		attackWindow.setCounter((Country) selection_1.getSelectedEntity());
-		
 		for(UIElement element : buttons)
 			if(element instanceof UIButton)
 			{
 				UIButton button = (UIButton) element;
-				button.setVisible(false);
+				button.disableButton();
 			}
 	}
 	
@@ -360,7 +394,7 @@ public class GameplayState extends BasicGameState {
 			if(element instanceof UIButton)
 			{
 				UIButton button = (UIButton) element;
-				button.setVisible(true);
+				button.enableButton();
 			}
 		attackWindow.setVisible(false);
 	}
@@ -382,7 +416,6 @@ public class GameplayState extends BasicGameState {
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("attackGroup");
 		selection_1.resetSelection();
 		selection_2.resetSelection();
-		userInterface.setVisibility("turnButton", true);
 		attackWindow.setVisible(false);
 	}
 
@@ -406,6 +439,12 @@ public class GameplayState extends BasicGameState {
 
 	public void gotoNextPhase() {
 		gameController.nextPhase();
+	}
+
+	public void startFortify() {
+		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
+		Country country = (Country) selection_1.getSelectedEntity();
+		this.requestTroopMovement(1, country.getTroops()-1);
 	}
 
 

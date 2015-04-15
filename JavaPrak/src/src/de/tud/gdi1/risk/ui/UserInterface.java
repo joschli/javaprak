@@ -101,4 +101,26 @@ public class UserInterface {
 		return elements;
 	}
 	
+	public boolean enableButton(String entityID)
+	{
+		UIElement element = this.getComponent(entityID);
+		if(element != null && element instanceof UIButton){
+			UIButton button = (UIButton) this.getComponent(entityID);
+			button.enableButton();
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean disableButton(String entityID){
+		UIElement element = this.getComponent(entityID);
+		if(element != null && element instanceof UIButton){
+			UIButton button = (UIButton) this.getComponent(entityID);
+			button.disableButton();
+			return true;
+		}
+		return false;
+		
+	}
+	
 }

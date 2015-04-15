@@ -38,6 +38,7 @@ public class UISelection extends UIElement {
 			g.setColor(Color.green);
 			g.setLineWidth(5);
 			g.drawRect(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
+			g.setLineWidth(1);
 		}
 	}
 

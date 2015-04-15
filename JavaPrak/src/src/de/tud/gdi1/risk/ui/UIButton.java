@@ -20,6 +20,7 @@ public class UIButton extends UIElement{
 	private Vector2f padding;
 	private UILabel label;
 	private Entity owner;
+	private boolean usable = true;
 	
 	public UIButton(String entityID, String buttonName, Vector2f position, Vector2f size, Vector2f padding, Color buttonColor, Color labelColor) {
 		super(entityID);
@@ -27,6 +28,7 @@ public class UIButton extends UIElement{
 		this.color = buttonColor;
 		this.setScale(0.312f);
 		this.padding = padding;
+		this.borderColor = Color.black;
 		/*
 		try {
 			this.renderComponent = new ImageRenderComponent(new Image("assets/entry.png"));
@@ -60,12 +62,17 @@ public class UIButton extends UIElement{
 				renderComponent.render(container, game, g);
 			else 
 			{
-				g.setColor(color);
+				if(usable){
+					g.setColor(color);
+				}
+				else{
+					g.setColor(new Color(100, 100, 100, 100));
+				}
 				g.fillRect(x, y, this.getSize().x, this.getSize().y);
-				g.setColor(borderColor);
-				g.drawRect(x, y, this.getSize().x, this.getSize().y);
 			}
-			label.render(container, game, g);
+				label.render(container, game, g);
+			g.setColor(borderColor);
+			g.drawRect(x, y, this.getSize().x, this.getSize().y);
 		}
 	}
 
@@ -110,5 +117,20 @@ public class UIButton extends UIElement{
 	{
 		if(color != null)
 			this.borderColor = color;
+	}
+	
+	public void disableButton()
+	{
+		this.usable = false;
+	}
+	
+	public void enableButton()
+	{
+		this.usable = true;
+	}
+	
+	public boolean getUsability()
+	{
+		return usable;
 	}
 }

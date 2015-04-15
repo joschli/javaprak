@@ -7,16 +7,15 @@ import src.de.tud.gdi1.risk.ui.GameplayState;
 import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
-import eea.engine.entity.Entity;
 
-public class AttackAction implements Action{
+public class StartFortifyAction implements Action{
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta,
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			System.out.println("ATTACK!");
+			System.out.println("Fortify");
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)
@@ -25,8 +24,9 @@ public class AttackAction implements Action{
 				usable = button.getUsability();
 			}
 			if(event.getOwnerEntity().isVisible() && usable){
-				state.AttackEvent();
+				state.startFortify();
 			}
 		}
 	}
+
 }
