@@ -59,9 +59,9 @@ public class GameplayState extends BasicGameState {
 		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,50));
 		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 50));
 		// Buttons
-		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f(200, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f(400, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f(600, 500), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f(64, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f(192, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f(320, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
@@ -190,6 +190,7 @@ public class GameplayState extends BasicGameState {
 			break;
 		case 2:
 			labelName = "FORTIFY";
+			
 			userInterface.setVisibility("nextPhaseButton", false);
 			break;
 		case 3:
@@ -404,7 +405,7 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void gotoNextPhase() {
-		
+		gameController.nextPhase();
 	}
 
 

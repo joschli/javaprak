@@ -15,7 +15,7 @@ import eea.engine.entity.Entity;
 
 public class UIButton extends UIElement{
 	
-	private Color color;
+	private Color color, borderColor;
 	private ImageRenderComponent renderComponent;
 	private Vector2f padding;
 	private UILabel label;
@@ -62,6 +62,8 @@ public class UIButton extends UIElement{
 			{
 				g.setColor(color);
 				g.fillRect(x, y, this.getSize().x, this.getSize().y);
+				g.setColor(borderColor);
+				g.drawRect(x, y, this.getSize().x, this.getSize().y);
 			}
 			label.render(container, game, g);
 		}
@@ -102,5 +104,11 @@ public class UIButton extends UIElement{
 	{
 		super.setSize(size);
 		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
+	}
+	
+	public void setBorderColor(Color color)
+	{
+		if(color != null)
+			this.borderColor = color;
 	}
 }
