@@ -258,7 +258,7 @@ public class GameController {
 			else
 			{
 				troopsMovedEvent(diceCount, countries);
-				view.requestTroopMovement(diceCount, this.countries[0].getTroops()-1);	
+				view.requestTroopMovement(1, this.countries[0].getTroops()-1);	
 			}
 		}
 	}

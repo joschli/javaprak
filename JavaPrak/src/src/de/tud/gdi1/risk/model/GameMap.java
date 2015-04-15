@@ -60,9 +60,9 @@ public class GameMap {
 	}
 
 	public void init() {
-		Continent A = new Continent(2, Color.cyan);
-		Continent B = new Continent(1, Color.magenta);
-		Continent C = new Continent(3, Color.yellow);
+		Continent A = new Continent(2, new Color(100,0,0,100));
+		Continent B = new Continent(1, new Color(0,100,0,100));
+		Continent C = new Continent(3, new Color(0,0,100,100));
 		countryFactory = new CountryFactory("a", 1, new Vector2f(200, 200));
 		Country a = (Country) countryFactory.createEntity();
 		A.addCountry(0);
