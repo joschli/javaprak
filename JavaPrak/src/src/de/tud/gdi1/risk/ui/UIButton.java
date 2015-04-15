@@ -23,7 +23,7 @@ public class UIButton extends UIElement{
 	
 	public UIButton(String entityID, String buttonName, Vector2f position, Vector2f size, Vector2f padding, Color buttonColor, Color labelColor) {
 		super(entityID);
-		this.setPosition(position);
+		
 		this.color = buttonColor;
 		this.setScale(0.312f);
 		this.padding = padding;
@@ -37,9 +37,11 @@ public class UIButton extends UIElement{
 		renderComponent.setOwnerEntity(this);
 		*/
 		//this.setSize(renderComponent.getSize());
-		this.setSize(size);
+		
 		label = new UILabel(entityID+"Label", buttonName, labelColor, new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
 		label.setVisible(true);
+		this.setPosition(position);
+		this.setSize(size);
 	}
 	
 	public void setRenderComponent(ImageRenderComponent renderComponent)
@@ -88,5 +90,17 @@ public class UIButton extends UIElement{
 	public Entity getOwner()
 	{
 		return this.owner;
+	}
+	
+	public void setPosition(Vector2f position)
+	{
+		super.setPosition(position);
+		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
+	}
+	
+	public void setSize(Vector2f size)
+	{
+		super.setSize(size);
+		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
 	}
 }
