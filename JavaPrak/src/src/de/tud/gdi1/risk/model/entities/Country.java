@@ -67,8 +67,11 @@ public class Country extends Entity {
 		return troops;
 	}
 
-	public void moveTroops(int force) {
+	public boolean moveTroops(int force) {
+		if(this.troops < force)
+			return false;
 		this.troops -= force;
+		return true;
 	}
 
 	public void addTroops(int force) {

@@ -60,9 +60,9 @@ public class GameMap {
 	}
 
 	public void init() {
-		Continent A = new Continent(2, Color.cyan);
-		Continent B = new Continent(1, Color.magenta);
-		Continent C = new Continent(3, Color.yellow);
+		Continent A = new Continent(2, new Color(100,0,0,100));
+		Continent B = new Continent(1, new Color(0,100,0,100));
+		Continent C = new Continent(3, new Color(0,0,100,100));
 		countryFactory = new CountryFactory("a", 1, new Vector2f(200, 200));
 		Country a = (Country) countryFactory.createEntity();
 		A.addCountry(0);
@@ -79,6 +79,26 @@ public class GameMap {
 		Country d = (Country) countryFactory.createEntity();
 		C.addCountry(3);
 		countries.add(d);
+		ArrayList<Country> neighbors = new ArrayList<Country>();
+		neighbors.add(b);
+		neighbors.add(c);
+		neighbors.add(d);
+		a.setNeighbors(neighbors);
+		ArrayList<Country> neighbors2 = new ArrayList<Country>();
+		neighbors2.add(a);
+		neighbors2.add(c);
+		neighbors2.add(d);
+		b.setNeighbors(neighbors2);
+		ArrayList<Country> neighbors3= new ArrayList<Country>();
+		neighbors3.add(a);
+		neighbors3.add(b);
+		neighbors3.add(d);
+		c.setNeighbors(neighbors3);
+		ArrayList<Country> neighbors4 = new ArrayList<Country>();
+		neighbors4.add(b);
+		neighbors4.add(c);
+		neighbors4.add(a);
+		d.setNeighbors(neighbors4);
 
 		continents.add(A);
 		continents.add(B);
@@ -169,8 +189,8 @@ public class GameMap {
 		//String missionText, Player player,
 		//ArrayList<Continent> continents, int countryCount
 
-		missions[0] = new Mission("Defeat Player 0", players[0]);
-		missions[1] = new Mission("Defeat Player 1", players[1]);
+		missions[0] = new Mission("Defeat Player 0", players[0],4);
+		missions[1] = new Mission("Defeat Player 1", players[1],4);
 		ArrayList<Continent> con = new ArrayList<Continent>();
 		con.add(continents.get(0));
 		con.add(continents.get(2));
@@ -193,6 +213,7 @@ public class GameMap {
 			while (taken[random])
 				random = (int) (Math.random() * missions.length);
 			p.assignMission(missions[random]);
+			System.out.println(p.getName() + " -> " + missions[random].getMissionText());
 			taken[random] = true;
 		}
 

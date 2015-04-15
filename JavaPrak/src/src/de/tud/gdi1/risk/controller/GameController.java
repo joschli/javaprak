@@ -7,7 +7,6 @@ import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import src.de.tud.gdi1.risk.ui.GameplayState;
 
-
 public class GameController {
 	
 	private GameMap map;
@@ -15,7 +14,7 @@ public class GameController {
 	private int currentPlayer;
 	private GameplayState view;
 	private Options options;
-	private Country[] countries;	
+	private ErrorPrinter printer;
 	
 	private static final int REINFORCEMENT_PHASE = 0;
 	private static final int ATTACKING_PHASE = 1;
@@ -25,6 +24,7 @@ public class GameController {
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
+	private Country[] countries;	
 	
 	public GameController(GameplayState view){
 		this.view = view;
@@ -35,11 +35,33 @@ public class GameController {
 		this.currentPlayer = 0;
 		this.state = 3;
 		map = new GameMap(players);
+		this.printer = new ErrorPrinter();
 	}
 	
 	public void init()
 	{
-		view.updateUserInterface(state, map, currentPlayer);		
+		view.updateUserInterface();		
+	}
+	
+	public void nextPhase()
+	{
+		switch(state)
+		{
+		case REINFORCEMENT_PHASE:
+			printer.printError(printer.PHASEERROR);
+			break;
+		case ATTACKING_PHASE:
+			state = 2;
+			break;
+		case FORTIFYING_PHASE:
+			printer.printError(printer.PHASEERROR);
+			break;
+		case STARTING_PHASE: 
+			printer.printError(printer.PHASEERROR);
+			break;
+		default:
+			break;
+		}
 	}
 
 
@@ -51,7 +73,7 @@ public class GameController {
 			if(!forcesAdded)
 				addForces();
 		}
-		view.updateUserInterface(state, map, currentPlayer);
+		view.updateUserInterface();
 	}
 	
 	
@@ -144,7 +166,7 @@ public class GameController {
 			if(map.getPlayer(currentPlayer).checkMissionForWin(map))
 			{
 				//TODO: WIN
-				
+				System.out.println("WIN");
 			}
 			
 			if(countryConquered) 
@@ -164,11 +186,9 @@ public class GameController {
 		state = 0;
 		forcesAdded = false;
 		countryConquered = false;
-		view.setReinforce(false);
 		attackDices = null;
 		defenseDices = null;
-		view.disableNextPhase();
-		view.resetUI();
+		view.reset();
 	}
 
 	/**
@@ -217,11 +237,29 @@ public class GameController {
 	public void rollDiceEvent(int diceCount, Country[] countries) {
 		
 		if(this.state != ATTACKING_PHASE)
+		{
+			printer.printError(printer.PHASEERROR);
 			return;
+		}
+			
+		if(countries[0].getOwner() == countries[1].getOwner())
+		{
+			printer.printError(printer.OWNERATTACKERROR);
+			return;
+		}
+		if(!countries[0].isNeighbor(countries[1]))
+		{
+			printer.printError(printer.NOTNEIGHBORERROR);
+			return;
+		}
 		if(diceCount > countries[0].getTroops()-1)
 		{
-			//TODO: Show Error!
-			System.out.println("Zu wenig Truppen um mit so vielen Würfeln anzugreifen");
+			printer.printError(printer.NOTENOUGHTROOPSATTACKERROR);
+			return;
+		}
+		if(countries[1].getTroops() <= 0)
+		{
+			printer.printError(printer.NOTENOUGHTROOPSDEFENDERROR);
 			return;
 		}
 		if(countries[1].getTroops() == 0)
@@ -241,10 +279,14 @@ public class GameController {
 		view.showDiceResult(attackDices, defenseDices);
 		if(countryConquered)
 		{
-			if(countries[0].getTroops() == 2)
-				troopsMovedEvent(1);
+			countries[1].setOwner(map.getPlayer(currentPlayer));
+			if(countries[0].getTroops() == diceCount+1)
+				troopsMovedEvent(diceCount, countries);
 			else
-				view.requestTroopMovement(diceCount, this.countries[0].getTroops()-1);
+			{
+				troopsMovedEvent(diceCount, countries);
+				view.requestTroopMovement(0, this.countries[0].getTroops()-1);	
+			}
 		}
 	}
 	
@@ -262,17 +304,40 @@ public class GameController {
 
 	/**
 	 * Called in the Attackphase after a Country got conquered and Troops are moved into the conquered Country
-	 * Assumes that rollDiceEvent was called before, so that the most recent Countrys that were in an attack are saved
+	 * Or in the Fortifying Phase when moving troops
 	 * Moves the troops from Countries[0] to countries[1]
 	 * @param amount of troops moved from Countries[0] to Countries[1] that got declared in rollDiceEvent
 	 */
-	public void troopsMovedEvent(int amount )
+	public void troopsMovedEvent(int amount, Country[] countries )
 	{	
-		if(this.state != ATTACKING_PHASE)
+		if(this.state != ATTACKING_PHASE && this.state != FORTIFYING_PHASE)
+		{
+			printer.printError(printer.PHASEERROR);
 			return;
-		int troopsMoved = view.getTroopMovement();
-		countries[1].moveTroops(troopsMoved);
-		countries[0].addTroops(troopsMoved);
+		}
+			
+		if(countries[0].getOwner() != countries[1].getOwner())
+		{
+			printer.printError(printer.OWNERMOVEERROR);
+			return;
+		}
+			
+		if(!countries[0].isNeighbor(countries[1]))
+		{
+			printer.printError(printer.NOTNEIGHBORERROR);
+			return;
+		}
+			
+		
+		if(countries[0].moveTroops(amount))
+		{
+			countries[1].addTroops(amount);
+		}
+		else
+		{
+			printer.printError(printer.NOTENOUGHTROOPSMOVEERROR);
+		}
+		
 	}
 	
 	public int getCurrentPlayerIndex() {
@@ -291,5 +356,6 @@ public class GameController {
 		return map;
 	}
 	
+
 
 }
