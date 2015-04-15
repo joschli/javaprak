@@ -144,7 +144,7 @@ public class GameController {
 			if(map.getPlayer(currentPlayer).checkMissionForWin(map))
 			{
 				//TODO: WIN
-				
+				System.out.println("WIN");
 			}
 			
 			if(countryConquered) 
@@ -235,10 +235,14 @@ public class GameController {
 		view.showDiceResult(attackDices, defenseDices);
 		if(countryConquered)
 		{
-			if(countries[0].getTroops() == 2)
-				troopsMovedEvent(1);
+			countries[1].setOwner(map.getPlayer(currentPlayer));
+			if(countries[0].getTroops() == diceCount+1)
+				troopsMovedEvent(diceCount, countries);
 			else
-				view.requestTroopMovement(diceCount, this.countries[0].getTroops()-1);
+			{
+				troopsMovedEvent(diceCount, countries);
+				view.requestTroopMovement(diceCount, this.countries[0].getTroops()-1);	
+			}
 		}
 	}
 	
@@ -260,13 +264,12 @@ public class GameController {
 	 * Moves the troops from Countries[0] to countries[1]
 	 * @param amount of troops moved from Countries[0] to Countries[1] that got declared in rollDiceEvent
 	 */
-	public void troopsMovedEvent(int amount )
+	public void troopsMovedEvent(int amount, Country[] countries )
 	{	
-		if(this.state != ATTACKING_PHASE)
+		if(this.state != ATTACKING_PHASE && this.state != FORTIFYING_PHASE)
 			return;
-		int troopsMoved = view.getTroopMovement();
-		countries[1].moveTroops(troopsMoved);
-		countries[0].addTroops(troopsMoved);
+		countries[0].moveTroops(amount);
+		countries[1].addTroops(amount);
 	}
 	
 	public int getCurrentPlayerIndex() {

@@ -169,8 +169,8 @@ public class GameMap {
 		//String missionText, Player player,
 		//ArrayList<Continent> continents, int countryCount
 
-		missions[0] = new Mission("Defeat Player 0", players[0]);
-		missions[1] = new Mission("Defeat Player 1", players[1]);
+		missions[0] = new Mission("Defeat Player 0", players[0],4);
+		missions[1] = new Mission("Defeat Player 1", players[1],4);
 		ArrayList<Continent> con = new ArrayList<Continent>();
 		con.add(continents.get(0));
 		con.add(continents.get(2));
@@ -193,6 +193,7 @@ public class GameMap {
 			while (taken[random])
 				random = (int) (Math.random() * missions.length);
 			p.assignMission(missions[random]);
+			System.out.println(p.getName() + " -> " + missions[random].getMissionText());
 			taken[random] = true;
 		}
 
