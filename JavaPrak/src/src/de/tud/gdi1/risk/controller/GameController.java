@@ -42,6 +42,27 @@ public class GameController {
 	{
 		view.updateUserInterface();		
 	}
+	
+	public void nextPhase()
+	{
+		switch(state)
+		{
+		case REINFORCEMENT_PHASE:
+			printer.printError(printer.PHASEERROR);
+			break;
+		case ATTACKING_PHASE:
+			state = 2;
+			break;
+		case FORTIFYING_PHASE:
+			printer.printError(printer.PHASEERROR);
+			break;
+		case STARTING_PHASE: 
+			printer.printError(printer.PHASEERROR);
+			break;
+		default:
+			break;
+		}
+	}
 
 
 	public void update(){
