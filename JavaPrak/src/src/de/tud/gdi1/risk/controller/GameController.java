@@ -38,7 +38,7 @@ public class GameController {
 	
 	public void init()
 	{
-		view.updateUserInterface(state, map, currentPlayer);		
+		view.updateUserInterface();		
 	}
 
 
@@ -50,7 +50,7 @@ public class GameController {
 			if(!forcesAdded)
 				addForces();
 		}
-		view.updateUserInterface(state, map, currentPlayer);
+		view.updateUserInterface();
 	}
 	
 	
@@ -165,7 +165,6 @@ public class GameController {
 		countryConquered = false;
 		attackDices = null;
 		defenseDices = null;
-		view.disableNextPhase();
 		view.reset();
 	}
 
