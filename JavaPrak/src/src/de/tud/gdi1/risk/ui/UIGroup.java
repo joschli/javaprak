@@ -33,7 +33,8 @@ public class UIGroup extends UIElement{
 			g.fillRect(relativePosition.x, relativePosition.y, this.getSize().x, this.getSize().y);
 			for(UIElement element : components)
 			{
-				element.render(container, game, g);
+				if(element.isVisible())
+					element.render(container, game, g);
 			}
 		}
 	}
@@ -122,6 +123,13 @@ public class UIGroup extends UIElement{
 	{
 		super.setSize(size);
 		this.relativePosition = new Vector2f(this.getPosition().x-this.getSize().x/2, this.getPosition().y - this.getSize().y/2);
+	}
+	
+	public void setVisible(boolean b)
+	{
+		super.setVisible(b);
+		for(UIElement element : components)
+			element.setVisible(b);
 	}
 	
 }

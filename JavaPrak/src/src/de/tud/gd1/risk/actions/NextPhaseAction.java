@@ -7,18 +7,18 @@ import src.de.tud.gdi1.risk.ui.GameplayState;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
-public class EndTurnAction implements Action{
+public class NextPhaseAction implements Action{
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta,
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
+			System.out.println("Next Phase");
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			if(event.getOwnerEntity().isVisible())
 			{
-				state.endTurnButtonPressed();
-				System.out.println("END TURN");
+				state.gotoNextPhase();
 			}
 		}
 	}
