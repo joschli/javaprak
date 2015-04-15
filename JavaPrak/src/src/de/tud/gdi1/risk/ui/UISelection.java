@@ -35,9 +35,10 @@ public class UISelection extends UIElement {
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.selectedEntity != null && this.isVisible())
 		{
-			g.setColor(Color.green);
-			g.setLineWidth(5);
-			g.drawRect(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
+			g.setColor(new Color(0,175,0,255));
+			g.setLineWidth(3);
+			g.drawOval(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
+			//g.drawRect(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
 			g.setLineWidth(1);
 		}
 	}

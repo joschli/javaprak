@@ -60,7 +60,8 @@ public class GameMap {
 
 	private void createReinforcements() {
 		for (Player p : players) {
-			p.addReinforcement((2 * getCountries().size()) / players.length);
+			p.addReinforcement(3);
+			//p.addReinforcement((2 * getCountries().size()) / players.length);
 
 		}
 	}
