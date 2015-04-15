@@ -58,9 +58,9 @@ public class GameplayState extends BasicGameState {
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
     	userInterface = new UserInterface();
     	// Player Label
-		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(50,50));
-		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,50));
-		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 50));
+		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(25,30));
+		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,30));
+		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 30));
 		// Buttons
 		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f(64, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f(192, container.getHeight()-32), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
