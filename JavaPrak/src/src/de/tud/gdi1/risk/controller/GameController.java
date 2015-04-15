@@ -163,11 +163,10 @@ public class GameController {
 		state = 0;
 		forcesAdded = false;
 		countryConquered = false;
-		view.setReinforce(false);
 		attackDices = null;
 		defenseDices = null;
 		view.disableNextPhase();
-		view.resetUI();
+		view.reset();
 	}
 
 	/**
@@ -216,7 +215,21 @@ public class GameController {
 	public void rollDiceEvent(int diceCount, Country[] countries) {
 		
 		if(this.state != ATTACKING_PHASE)
+		{
+			System.out.println("Fehler: Würfel werden nicht in der Attack_Phase geworfen");
 			return;
+		}
+			
+		if(countries[0].getOwner() == countries[1].getOwner())
+		{
+			System.out.println("Fehler: Eigene Länder können nicht angegriffen werden");
+			return;
+		}
+		if(!countries[0].isNeighbor(countries[1]))
+		{
+			System.out.println("Fehler: Nicht benachbarte Länder können nicht angegriffen werden");
+			return;
+		}
 		if(diceCount > countries[0].getTroops()-1)
 		{
 			//TODO: Show Error!
@@ -259,16 +272,40 @@ public class GameController {
 
 	/**
 	 * Called in the Attackphase after a Country got conquered and Troops are moved into the conquered Country
-	 * Assumes that rollDiceEvent was called before, so that the most recent Countrys that were in an attack are saved
+	 * Or in the Fortifying Phase when moving troops
 	 * Moves the troops from Countries[0] to countries[1]
 	 * @param amount of troops moved from Countries[0] to Countries[1] that got declared in rollDiceEvent
 	 */
 	public void troopsMovedEvent(int amount, Country[] countries )
 	{	
 		if(this.state != ATTACKING_PHASE && this.state != FORTIFYING_PHASE)
+		{
+			System.out.println("Fehler: Truppenbewegungen außerhalb der erlaubten Phasen");
 			return;
-		countries[0].moveTroops(amount);
-		countries[1].addTroops(amount);
+		}
+			
+		if(countries[0].getOwner() != countries[1].getOwner())
+		{
+			System.out.println("Fehler: Truppenbewegungen nicht möglich, da die Besitzer der Länder unterschiedlich sind");
+			return;
+		}
+			
+		if(!countries[0].isNeighbor(countries[1]))
+		{
+			System.out.println("Fehler: Truppenbewegungen nicht möglich, da die Länder nicht benachbart sind");
+			return;
+		}
+			
+		
+		if(countries[0].moveTroops(amount))
+		{
+			countries[1].addTroops(amount);
+		}
+		else
+		{
+			System.out.println("Fehler: Zu wenig Truppen zum Verschieben");
+		}
+		
 	}
 	
 	public int getCurrentPlayerIndex() {
@@ -287,5 +324,9 @@ public class GameController {
 		return map;
 	}
 	
+	public void printError(int errorCode)
+	{
+		
+	}
 
 }
