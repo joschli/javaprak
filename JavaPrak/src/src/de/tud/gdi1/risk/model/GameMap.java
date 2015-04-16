@@ -185,6 +185,31 @@ public class GameMap {
 			}
 			
 		}
+		
+		ArrayList<Country> neighbors;
+		for(int i = 0; i < neighborStrings.size(); i++)
+		{
+			neighbors = new ArrayList<Country>();
+			for(String country : neighborStrings.get(i).split(","))
+			{
+				neighbors.add(getCountry(country));
+			}
+			countries.get(i).setNeighbors(neighbors);
+			
+		}
+	}
+	
+	
+	public Country getCountry(String name)
+	{
+		for(Country c: countries)
+		{
+			if(c.getName().equals(name))
+			{
+				return c;
+			}
+		}
+		return null;
 	}
 	
 	public Continent getContinent(String name)

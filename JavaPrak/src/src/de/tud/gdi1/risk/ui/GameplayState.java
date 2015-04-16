@@ -91,7 +91,8 @@ public class GameplayState extends BasicGameState {
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
 		// Window Overlay for ATTACK_PHASE
-		UIGroup attackWindow = new UIGroup("attackGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
+		UIGroup attackWindow = new UIGroup("attackGroup", new Vector2f(60, container.getHeight()-150), new Vector2f(200, 300));
+		//UIGroup attackWindow = new UIGroup("attackGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(50,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(50,50), 3, 1);
 		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(114,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
@@ -203,17 +204,28 @@ public class GameplayState extends BasicGameState {
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
+			reinforcementCountLabel.setVisible(false);
 			if((!userInterface.isComponenetVisible("attackGroup") || !userInterface.isComponenetVisible("fortifyGroup")) && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
 				userInterface.enableButton("attackButton");
 				userInterface.enableButton("nextPhaseButton");
 				userInterface.disableButton("fortifyButton");
 				userInterface.enableButton("turnButton");
+				break;
 			}
+			if(userInterface.isComponenetVisible("attackGroup")  || userInterface.isComponenetVisible("fortifyGroup"))
+			{
+				userInterface.disableButton("attackButton");
+				userInterface.disableButton("fortifyButton");
+				userInterface.disableButton("turnButton");
+				userInterface.disableButton("nextPhaseButton");
+				break;
+			}
+			
 			userInterface.disableButton("attackButton");
-			reinforcementCountLabel.setVisible(false);
-			userInterface.disableButton("nextPhaseButton");
 			userInterface.disableButton("fortifyButton");
-			userInterface.disableButton("turnButton");
+			userInterface.enableButton("turnButton");
+			userInterface.enableButton("nextPhaseButton");
+			
 			break;
 		case 2:
 			labelName = "FORTIFY";
@@ -284,8 +296,10 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void AttackEvent() {
+	
 		if(getCountriesSelected())
 		{
+			System.out.println("Neighbor: " +this.getSelectedCountries()[0].isNeighbor(this.getSelectedCountries()[1]));
 			showAttackWindow();
 		}
 		
@@ -306,11 +320,15 @@ public class GameplayState extends BasicGameState {
 		System.out.println("Owner: " + ownerEntity.getOwner().getName());
 		
 		if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("attackGroup")){
-			if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID()) && ownerEntity.isOwner(gameController.getTurnPlayer()) && ownerEntity.getTroops() > 1)
+			if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID())
+				&& ownerEntity.isOwner(gameController.getTurnPlayer()) 
+				&& ownerEntity.getTroops() > 1)
 			{
 				this.updateSelection(ownerEntity);
 			}
-			else if(this.getFirstCountrySelected() != null && !ownerEntity.isOwner(gameController.getTurnPlayer()))
+			else if(this.getFirstCountrySelected() != null
+					&& !ownerEntity.isOwner(gameController.getTurnPlayer()) 
+					&& ownerEntity.isNeighbor((Country) this.getFirstCountrySelected()))
 			{
 				this.updateSelection(ownerEntity);
 			}
@@ -328,7 +346,10 @@ public class GameplayState extends BasicGameState {
 		else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("fortifyGroup"))
 		{
 			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
-				this.updateSelection(ownerEntity);
+				if(this.getFirstCountrySelected() != null && ownerEntity.isNeighbor((Country) this.getFirstCountrySelected()))
+					this.updateSelection(ownerEntity);
+				else if(this.getFirstCountrySelected() == null)
+					this.updateSelection(ownerEntity);
 		}
 		
 	}
@@ -349,8 +370,11 @@ public class GameplayState extends BasicGameState {
 	{
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
+		if(selection_1.hasEntitySelected())
+		System.out.println(selection_1.getSelectedEntity().getID() + " => " + country.getID());
 		if(selection_1.hasEntitySelected() && selection_1.getSelectedEntity().getID() == country.getID())
 		{
+			
 			selection_1.resetSelection();
 			selection_2.resetSelection();
 		}

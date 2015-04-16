@@ -283,8 +283,11 @@ public class GameController {
 		{
 			countries[1].setOwner(map.getPlayer(currentPlayer));
 			if(countries[0].getTroops() == diceCount+1)
+			{
 				troopsMovedEvent(diceCount, countries);
-			else
+				view.requestTroopMovement(0, 0);
+			}
+				else
 			{
 				troopsMovedEvent(diceCount, countries);
 				view.requestTroopMovement(0, this.countries[0].getTroops()-1);	
