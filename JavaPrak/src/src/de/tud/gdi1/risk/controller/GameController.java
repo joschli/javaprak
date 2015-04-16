@@ -32,6 +32,7 @@ public class GameController {
 	private Country[] countries;	
 	
 	public GameController(GameplayState view) throws IOException{
+		System.out.println("Gamecontroller Konstructor");
 		this.view = view;
 		options = Options.getInstance();
 		Player[] players = new Player[options.getPlayerCount()];
@@ -40,6 +41,7 @@ public class GameController {
 		this.currentPlayer = 0;
 		this.state = 3;
 		map = new GameMap(players);
+		
 		this.printer = new ErrorPrinter();
 	}
 	
@@ -172,8 +174,11 @@ public class GameController {
 		}
 		if(state != REINFORCEMENT_PHASE)
 		{
+			System.out.println(map.getPlayer(currentPlayer).getName());
+			System.out.println(map.getPlayer(currentPlayer).getMissionText());
 			if(map.getPlayer(currentPlayer).checkMissionForWin(map))
 			{
+				System.out.println("PLAYER WINS");
 				state = WIN_PHASE;
 				return;
 			}
@@ -198,6 +203,7 @@ public class GameController {
 	}
 	
 	private void reset() {
+		
 		state = 0;
 		forcesAdded = false;
 		countryConquered = false;

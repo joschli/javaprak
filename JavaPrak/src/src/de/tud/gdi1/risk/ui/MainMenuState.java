@@ -10,6 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import src.de.tud.gd1.risk.factory.ButtonFactory;
 import eea.engine.action.Action;
+import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
 import eea.engine.component.render.ImageRenderComponent;
@@ -53,7 +54,7 @@ public class MainMenuState extends BasicGameState {
     	// Action von New Game Button
     	entityManager.addEntity(stateID, background);
     	ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-    	Action new_Game_Action = new ChangeStateInitAction(Launch.GAMEPLAY_STATE);
+    	Action new_Game_Action = new ChangeStateAction(Launch.GAMEPLAY_STATE);
     	
     	// Action von Beenden Button
     	ANDEvent mainEvents_q = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
@@ -66,7 +67,6 @@ public class MainMenuState extends BasicGameState {
     	// Beenden Button
     	buttonFactory.updateFactory("Beenden", quit_Action, start_Position+distance);
     	entityManager.addEntity(this.stateID, buttonFactory.createEntity());
-    	
     }
 
     /**
@@ -87,7 +87,6 @@ public class MainMenuState extends BasicGameState {
 		entityManager.renderEntities(container, game, g);
 		
 		int counter = 0;
-		
 		g.drawString("Neues Spiel", 245, start_Position+counter*distance);
 		counter++;
 		g.drawString("Beenden", 245, start_Position+counter*distance);
