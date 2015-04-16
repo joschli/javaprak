@@ -231,12 +231,18 @@ public class GameplayState extends BasicGameState {
 			labelName = "FORTIFY";
 			userInterface.disableButton("nextPhaseButton");
 			userInterface.disableButton("attackButton");
-			if(!userInterface.isComponenetVisible("fortifyGroup") || (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
-				userInterface.enableButton("fortifyButton");
-				userInterface.enableButton("turnButton");
-			}else 
-				userInterface.disableButton("fortifyButton");
 			userInterface.disableButton("turnButton");
+			userInterface.disableButton("fortifyButton");
+			
+			if(!userInterface.isComponenetVisible("fortifyGroup") && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
+				userInterface.enableButton("fortifyButton");
+				userInterface.enableButton("turnButton");			
+			}else if (!userInterface.isComponenetVisible("fortifyGroup"))
+			{
+				userInterface.enableButton("turnButton");
+				userInterface.disableButton("fortifyButton");
+			}
+				
 			
 			break;
 		case 3:
@@ -346,7 +352,9 @@ public class GameplayState extends BasicGameState {
 		else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("fortifyGroup"))
 		{
 			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
-				if(this.getFirstCountrySelected() != null && ownerEntity.isNeighbor((Country) this.getFirstCountrySelected()))
+				if(this.getFirstCountrySelected() != null &&
+					(ownerEntity.isNeighbor((Country) this.getFirstCountrySelected())
+							|| ownerEntity.getID() == this.getFirstCountrySelected().getID() ))
 					this.updateSelection(ownerEntity);
 				else if(this.getFirstCountrySelected() == null)
 					this.updateSelection(ownerEntity);
@@ -370,8 +378,6 @@ public class GameplayState extends BasicGameState {
 	{
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
-		if(selection_1.hasEntitySelected())
-		System.out.println(selection_1.getSelectedEntity().getID() + " => " + country.getID());
 		if(selection_1.hasEntitySelected() && selection_1.getSelectedEntity().getID() == country.getID())
 		{
 			

@@ -13,7 +13,6 @@ public class SelectAction implements Action {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta,
 			Component event) {
-		System.out.println("SelectAction");
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
 			GameplayState state = ((GameplayState) sb.getCurrentState());
