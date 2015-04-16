@@ -21,7 +21,7 @@ Venezuela|Brazil,Peru,Central America|South America|173,290
 Brazil|Venezuela,Peru,Argentina,North Africa|South America|235,342
 Peru|Brazil,Argentina,Venezuela|South America|179,355
 Argentina|Brazil,Peru|South America|192,431
-North Africa|W. Europe,S. Europe,Egypt,East Africa,Congo|Africa|341,294
+North Africa|W. Europe,S. Europe,Egypt,East Africa,Congo,Brazil|Africa|341,294
 Congo|North Africa,East Africa,South Africa|Africa|401,364
 South Africa|Madagascar,East Africa,Congo|Africa|391,433
 Madagascar|South Africa,East Africa|Africa|457,427
