@@ -4,6 +4,8 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+
+import src.de.tud.gdi1.risk.model.Player;
 import eea.engine.entity.StateBasedEntityManager;
 
 /**
@@ -22,6 +24,7 @@ public class Launch extends StateBasedGame {
     public Launch()
     {
         super("Risk");
+
     }
  
     public static void main(String[] args) throws SlickException
@@ -39,23 +42,22 @@ public class Launch extends StateBasedGame {
         AppGameContainer app = new AppGameContainer(new Launch());
         // Lege die Einstellungen des Fensters fest und starte das Fenster
         // (nicht aber im Vollbildmodus)
-        app.setDisplayMode(800, 600, false);
+        app.setDisplayMode(1000, 600, false);
         app.start();
     }
 
 	@Override
 	public void initStatesList(GameContainer arg0) throws SlickException {
-		
 		// Fuege dem StateBasedGame die States hinzu 
 		// (der zuerst hinzugefuegte State wird als erster State gestartet)
 		addState(new MainMenuState(MAINMENU_STATE));
         addState(new GameplayState(GAMEPLAY_STATE));
-       // addState(new WinState(WIN_STATE));
+        addState(new WinState(WIN_STATE));
         
         // Fuege dem StateBasedEntityManager die States hinzu
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
         StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
-        //StateBasedEntityManager.getInstance().addState(WIN_STATE);
+        StateBasedEntityManager.getInstance().addState(WIN_STATE);
 		
 	}
 }

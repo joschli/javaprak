@@ -170,9 +170,9 @@ public class GameplayState extends BasicGameState {
     	gameController.update();
     	userInterface.update(container, game, delta);
     	
-    	/*if(gameController.getState() == 4)
-    		new ChangeStateInitAction(Launch.GAMEPLAY_STATE).update(container, game, delta, null);
-		*/
+    	if(gameController.getState() == 4)
+    		new ChangeStateAction(Launch.WIN_STATE).update(container, game, delta, null);
+		
 	}
     
     public void updateUserInterface() {

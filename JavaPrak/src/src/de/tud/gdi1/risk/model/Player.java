@@ -19,6 +19,7 @@ public class Player {
 	}
 	
 	public void assignMission(Mission mission){
+		System.out.println("assigning Mission: " + mission.getMissionText());
 		this.mission = mission;
 	}
 	

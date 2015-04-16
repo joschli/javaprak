@@ -179,7 +179,7 @@ public class GameMap {
 			    countryFactory.updateFactory(name, position);
 			    
 			    countries.add((Country) countryFactory.createEntity());
-			    System.out.println(name + " ");
+			   // System.out.println(name + " ");
 			    this.getContinent(entrys[2]).addCountry(countries.size()-1);
 			    
 			}
@@ -287,10 +287,10 @@ public class GameMap {
 			index++;
 		}
 
-		for (int i = 0; i < countries.size(); ++i) {
+	/*	for (int i = 0; i < countries.size(); ++i) {
 			System.out.println("Country: " + countries.get(i).getName()
 					+ " | Owner: " + countries.get(i).getOwner().getName());
-		}
+		}*/
 	}
 
 	
@@ -344,7 +344,7 @@ public class GameMap {
 		
 		for(Mission m : missions)
 		{
-			System.out.println(m.getMissionText());
+			//System.out.println(m.getMissionText());
 		}
 	
 		boolean[] taken = new boolean[missions.size()];
@@ -353,8 +353,13 @@ public class GameMap {
 			while (taken[random])
 				random = (int) (Math.random() * missions.size());
 			p.assignMission(missions.get(random));
-			System.out.println(p.getName() + " -> " + missions.get(random).getMissionText());
 			taken[random] = true;
+		}
+		
+		for (Player p : players) {
+			
+			System.out.println(p.getName() + " -> " + p.getMissionText());
+			
 		}
 
 	}
