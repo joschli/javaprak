@@ -11,6 +11,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
+import eea.engine.component.RenderComponent;
+import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 
@@ -18,6 +20,7 @@ public class UIGroup extends UIElement{
 	
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
 	private Vector2f relativePosition;
+	private ImageRenderComponent imageRenderComponent;
 	public UIGroup(String entityID, Vector2f position, Vector2f size) {
 		super(entityID);
 		this.setPosition(position);
@@ -29,8 +32,17 @@ public class UIGroup extends UIElement{
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.isVisible())
 		{
-			g.setColor(new Color(100, 100, 100, 100));
-			g.fillRect(relativePosition.x, relativePosition.y, this.getSize().x, this.getSize().y);
+			if(imageRenderComponent == null)
+			{
+				g.setColor(new Color(100, 100, 100, 100));
+				g.fillRect(relativePosition.x, relativePosition.y, this.getSize().x, this.getSize().y);
+			}
+			else
+			{
+				
+				this.imageRenderComponent.render(container, game, g);
+			}
+
 			for(UIElement element : components)
 			{
 				if(element.isVisible())
@@ -130,6 +142,12 @@ public class UIGroup extends UIElement{
 		super.setVisible(b);
 		for(UIElement element : components)
 			element.setVisible(b);
+	}
+	
+	public void setRenderComponent(ImageRenderComponent component)
+	{
+		this.imageRenderComponent = component;
+		this.imageRenderComponent.setOwnerEntity(this);
 	}
 	
 }
