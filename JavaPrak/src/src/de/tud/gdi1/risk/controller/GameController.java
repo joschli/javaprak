@@ -1,7 +1,9 @@
 package src.de.tud.gdi1.risk.controller;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Arrays;
 
+import src.de.tud.gdi1.risk.model.Card;
 import src.de.tud.gdi1.risk.model.Continent;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Options;
@@ -22,6 +24,7 @@ public class GameController {
 	private static final int ATTACKING_PHASE = 1;
 	private static final int FORTIFYING_PHASE = 2;
 	private static final int STARTING_PHASE = 3;
+	private static final int WIN_PHASE = 4;
 	
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
@@ -54,11 +57,15 @@ public class GameController {
 			break;
 		case ATTACKING_PHASE:
 			state = 2;
+			view.reset();
 			break;
 		case FORTIFYING_PHASE:
 			printer.printError(printer.PHASEERROR);
 			break;
 		case STARTING_PHASE: 
+			printer.printError(printer.PHASEERROR);
+			break;
+		case WIN_PHASE:
 			printer.printError(printer.PHASEERROR);
 			break;
 		default:
@@ -167,8 +174,8 @@ public class GameController {
 		{
 			if(map.getPlayer(currentPlayer).checkMissionForWin(map))
 			{
-				//TODO: WIN
-				System.out.println("WIN");
+				state = WIN_PHASE;
+				return;
 			}
 			
 			if(countryConquered) 
@@ -180,6 +187,12 @@ public class GameController {
 				currentPlayer = 0;
 			else
 				currentPlayer++;
+			
+			if(map.getOwnedCountriesForPlayer(currentPlayer) == 0)
+			{
+				reset();
+				endTurn();
+			}
 			reset();
 		}
 	}
@@ -340,6 +353,71 @@ public class GameController {
 			printer.printError(printer.NOTENOUGHTROOPSMOVEERROR);
 		}
 		
+	}
+	
+	public boolean tradeInCards(Card[] cards)
+	{
+		if(state != REINFORCEMENT_PHASE)
+		{
+			printer.printError(printer.PHASEERROR);
+			return false;
+		}
+		
+		ArrayList<Card> turnPlayerCards = map.getPlayer(currentPlayer).getCardList();
+		int reinforcements = 0;
+		int[] c = {0,0,0};
+		Country country = null;
+		
+		if(cards.length!= 3)
+		{
+			printer.printError(printer.CARDERROR);
+			return false;
+		}
+		
+		for(int i = 0; i < cards.length; i++)
+		{
+			
+			if(!turnPlayerCards.contains(cards[i]))
+			{
+				printer.printError(printer.OWNERCARDERROR);
+				return false;
+			}
+			c[i] = cards[i].getValue();
+			if(c[i] > 3 || c[i] < 0)
+			{
+				printer.printError(printer.CARDVALUEERROR);
+				return false;
+			}
+			if(cards[i].getCountry().isOwner(map.getPlayer(currentPlayer)) && country != null)
+			{
+				country = cards[i].getCountry();
+			}
+		}
+		
+		if(c[0] == c[1] || c[1] == c[2])
+		{
+			
+			if(c[0] == Card.ARTILLERY)
+				reinforcements = Card.ARTILLERYVALUE;
+			if(c[0] == Card.INFANTRY)
+				reinforcements = Card.INFANTRYVALUE;
+			if(c[0] == Card.CAVALRY)
+				reinforcements = Card.CAVALRYVALUE;
+		}
+		if(c[0] != c[1] && c[1] != c[2] && c[0] != c[2])
+			reinforcements = Card.MIXEDVALUE;
+			
+		if(reinforcements > 0)
+		{
+			map.getPlayer(currentPlayer).addReinforcement(reinforcements);
+			if(country != null)
+				country.addTroops(Card.COUNTRYVALUE);
+			map.getPlayer(currentPlayer).removeCards(cards);
+			map.addCardsBack(cards);
+			return true;	
+		}
+		
+		return false;
 	}
 	
 	public int getCurrentPlayerIndex() {

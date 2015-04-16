@@ -344,4 +344,11 @@ public class GameMap {
 		int random = (int) (Math.random() * cards.size());
 		return cards.remove(random);
 	}
+
+	public void addCardsBack(Card[] cardArray) {
+		for(Card c : cardArray)
+		{
+			cards.add(c);
+		}
+	}
 }
