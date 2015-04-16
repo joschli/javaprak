@@ -67,6 +67,11 @@ public class Player {
 	public int getReinforcement() {
 		return this.reinforcementUnits;
 	}
+
+	public void removeCards(Card[] cards) {
+		for(Card c: cards)
+			removeCard(c);
+	}
 	
 	
 }
