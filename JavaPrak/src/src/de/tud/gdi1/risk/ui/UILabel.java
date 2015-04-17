@@ -15,6 +15,8 @@ public class UILabel extends UIElement{
 	public Color color;
 	private String labelName;
 	private boolean setPosition = false;
+	private boolean lineBreak = false;
+	private int lineCount = 1;
 	
 	public UILabel(String entityID, String labelName, Color color, Vector2f position) {
 		super(entityID);
@@ -27,7 +29,7 @@ public class UILabel extends UIElement{
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.isVisible()){
 			String text = labelName;
-			if(this.getSize().x != 0 || this.getSize().y != 0)
+			if(this.getSize().x != 0 || this.getSize().y != 0 && !lineBreak)
 			{
 			
 				if(g.getFont().getWidth(labelName) > this.getSize().x)
@@ -80,21 +82,25 @@ public class UILabel extends UIElement{
 					for(String s : lines)
 						test += s + "\n";
 					//System.out.println(test);
+					this.labelName = test;
+					lineBreak = true;
+					lineCount = lines.size();
 					text = test;
 				}
 			}
-			else
+			if(!setPosition)
 			{
-				if(!setPosition)
+				float textWidth = g.getFont().getWidth(text);
+				float textHeight = g.getFont().getHeight(text);
+				if(text.contains("\n"))
 				{
-					float textWidth = g.getFont().getWidth(text);
-					float textHeight = g.getFont().getHeight(text);
-					this.setPosition(new Vector2f(this.getPosition().x-textWidth/2, this.getPosition().y-textHeight/2));
-					this.setPosition = true;
+					textWidth = g.getFont().getWidth(text.substring(0, text.indexOf("\n")));
 				}
+				this.setPosition(new Vector2f(this.getPosition().x-textWidth/2, this.getPosition().y-textHeight/2));
+				this.setPosition = true;
 			}
 			g.setColor(color);
-			g.drawString(text, this.getPosition().x, this.getPosition().y);
+			g.drawString(labelName, this.getPosition().x, this.getPosition().y);
 			
 		}
 	}
@@ -102,6 +108,7 @@ public class UILabel extends UIElement{
 	public void setLabelName(String labelName)
 	{
 		this.labelName = labelName;
+		this.lineBreak = false;
 	}
 	
 	public void setColor(Color color)

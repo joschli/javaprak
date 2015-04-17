@@ -298,7 +298,7 @@ public class GameController {
 		System.out.println("ROLL THE DICE");
 		System.out.println(diceToString());
 	
-		view.showDiceResult(attackDices, defenseDices);
+		view.showDiceResult(attackDices, defenseDices, countryConquered);
 		if(countryConquered)
 		{
 			countries[1].setOwner(map.getPlayer(currentPlayer));

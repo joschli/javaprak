@@ -47,6 +47,7 @@ public class Launch extends StateBasedGame {
         app.setDisplayMode(1000, 600, false);
         app.setShowFPS(false);
         app.setIcon("assets/icon.png");
+        app.setTargetFrameRate(200);
         app.start();
     }
 

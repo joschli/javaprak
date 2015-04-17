@@ -47,6 +47,7 @@ public class OptionState extends BasicGameState {
 		UILabel playerCountLabel = new UILabel("playerCountLabel", "Playercount: " , Color.red, new Vector2f(container.getWidth()/3, container.getHeight()/2-64));
 		UIButton startGameButton = new UIButton("startGameButton", "Start Game", new Vector2f(container.getWidth()/5, container.getHeight()/2-64), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton backButton = new UIButton("backButton", "Back", new Vector2f(container.getWidth()/5, container.getHeight()/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		
 		//Actions for Buttons
 		startGameButton.addComponent(startGameEvent);
 		backButton.addComponent(backEvent);
