@@ -25,7 +25,7 @@ public class CancelAttackAction implements Action{
 			}
 			if(event.getOwnerEntity().isVisible() && usable){
 				state.cancelAttack();
-				System.out.println("END TURN");
+				System.out.println("Cancel Attack");
 			}
 		}
 	}

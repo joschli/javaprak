@@ -352,6 +352,12 @@ public class GameController {
 			printer.printError(printer.NOTNEIGHBORERROR);
 			return;
 		}
+		
+		if(countries[0].getTroops()-amount <= 0)
+		{
+			printer.printError(printer.ZEROTROOPSLEFTERROR);
+			return;
+		}
 			
 		
 		if(countries[0].moveTroops(amount))

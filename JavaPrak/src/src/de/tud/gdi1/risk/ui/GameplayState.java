@@ -478,6 +478,7 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void showAttackWindow() {
+		System.out.println("HideAttackWindow");
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UIButton useButton = (UIButton) attackWindow.getComponent("diceButton");
 		UILabel label = (UILabel) attackWindow.getComponent("description");
@@ -511,10 +512,12 @@ public class GameplayState extends BasicGameState {
 	public void hideAttackWindow(){
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
+		System.out.println("HideAttackWindow");
 		for(UIElement element : buttons)
 			if(element instanceof UIButton)
 			{
 				UIButton button = (UIButton) element;
+				System.out.println(button.getID());
 				button.enableButton();
 			}
 		attackWindow.setComponentVisiblity("red1Button", false);
@@ -539,15 +542,17 @@ public class GameplayState extends BasicGameState {
 	public void reset() {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
-		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
+		//UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		selection_1.resetSelection();
 		selection_2.resetSelection();
-		attackWindow.setVisible(false);
+		hideAttackWindow();
+		//Nicht mehr nötig da in hide attack window eh drinnen? 
+		/*attackWindow.setVisible(false);
 		attackWindow.setComponentVisiblity("red1Button", false);
 		attackWindow.setComponentVisiblity("red2Button", false);
 		attackWindow.setComponentVisiblity("red3Button", false);
 		attackWindow.setComponentVisiblity("blue1Button", false);
-		attackWindow.setComponentVisiblity("blue2Button", false);
+		attackWindow.setComponentVisiblity("blue2Button", false);*/
 	}
 
 	public int getDiceCount() {

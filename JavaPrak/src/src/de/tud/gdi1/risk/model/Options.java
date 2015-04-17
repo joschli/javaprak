@@ -7,7 +7,7 @@ public class Options {
 
 	private static Options options = new Options();
 	private int playerCount;
-	private Color[] colors = {Color.red, Color.gray, Color.blue, Color.yellow};
+	private Color[] colors = {Color.red, Color.gray, new Color(0,100,0), Color.yellow};
 	private int minimalPlayerCount = 2;
 	private int maximalPlayerCount = colors.length;
 	private String winner = "";
