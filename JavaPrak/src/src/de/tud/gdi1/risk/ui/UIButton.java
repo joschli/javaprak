@@ -50,7 +50,8 @@ public class UIButton extends UIElement{
 	{
 		this.renderComponent = renderComponent;
 		renderComponent.setOwnerEntity(this);
-		this.setSize(renderComponent.getSize());
+		//if(this.getSize().x == 0 && this.getSize().y == 0)
+			this.setSize(renderComponent.getSize());
 	}
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {

@@ -140,14 +140,19 @@ public class UIGroup extends UIElement{
 	public void setVisible(boolean b)
 	{
 		super.setVisible(b);
-		for(UIElement element : components)
-			element.setVisible(b);
 	}
 	
 	public void setRenderComponent(ImageRenderComponent component)
 	{
 		this.imageRenderComponent = component;
 		this.imageRenderComponent.setOwnerEntity(this);
+	}
+	
+	public void setComponentVisiblity(String entityID, boolean b)
+	{
+		UIElement element = this.getComponent(entityID);
+		if(element != null)
+			element.setVisible(b);
 	}
 	
 }
