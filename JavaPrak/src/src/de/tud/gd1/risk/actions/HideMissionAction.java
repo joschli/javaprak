@@ -15,7 +15,7 @@ public class HideMissionAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			System.out.println("Show Mission");
+			
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)
@@ -23,7 +23,8 @@ public class HideMissionAction implements Action{
 				UIButton button = (UIButton) event.getOwnerEntity();
 				usable = button.getUsability();
 			}
-			if(event.getOwnerEntity().isVisible() && usable){
+			if(event.getOwnerEntity().isVisible() && usable && state.isMissionTextVisibible()){
+				System.out.println("Hide Mission");
 				state.hideMissionText();
 			}
 		}

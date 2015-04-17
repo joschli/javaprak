@@ -18,6 +18,7 @@ import src.de.tud.gd1.risk.actions.CancelAttackAction;
 import src.de.tud.gd1.risk.actions.DiceAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gd1.risk.actions.FortifyAction;
+import src.de.tud.gd1.risk.actions.HideMissionAction;
 import src.de.tud.gd1.risk.actions.NextPhaseAction;
 import src.de.tud.gd1.risk.actions.ShowMissionAction;
 import src.de.tud.gd1.risk.actions.StartFortifyAction;
@@ -65,11 +66,11 @@ public class GameplayState extends BasicGameState {
 		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,30));
 		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 30));
 		// Buttons
-		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f((int)1*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f((int)5*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f((int)2*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)3*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify", new Vector2f((int)4*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)5 *buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)4*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
@@ -97,9 +98,9 @@ public class GameplayState extends BasicGameState {
 		UISelection selection_2 = new UISelection("selection2");
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
-		// Window Overlay for ATTACK_PHASE
-		UIGroup attackWindow = new UIGroup("attackGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
-		//UIGroup attackWindow = new UIGroup("attackGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
+		// Window Overlay for ATTACK_PHASE & FORITFY_PHASE
+		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
+		//UIGroup attackWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(50,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(50,50), 3, 1);
 		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(114,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
@@ -107,24 +108,14 @@ public class GameplayState extends BasicGameState {
 		
 		aw_diceButton.addComponent(diceEvent);
 		aw_cancelButton.addComponent(cancelAttackEvent);
-		attackWindow.addComponent(aw_cancelButton);
-		attackWindow.addComponent(aw_counter);
-		attackWindow.addComponent(aw_diceButton);
-		attackWindow.addComponent(aw_description);
-		// Window Overlay for FORTIFY_PHASE
-		UIGroup fortifyWindow = new UIGroup("fortifyGroup", new Vector2f(container.getWidth()-100, container.getHeight()-450), new Vector2f(200, 300));
-		UILabel fw_description = new UILabel("description", "Foritfy Window", Color.red, new Vector2f(50, 15));
-		UICounter fw_counter = new UICounter("counter", new Vector2f(50,50), 3, 1);
-		UIButton fw_fortifyButton = new UIButton("fortifyButton", "Fortify", new Vector2f(114, 116), new Vector2f(128, 32), new Vector2f(10, 10), Color.gray, Color.black);
-		
-		fw_fortifyButton.addComponent(fortifyEvent);
-		fortifyWindow.addComponent(fw_fortifyButton);
-		fortifyWindow.addComponent(fw_description);
-		fortifyWindow.addComponent(fw_counter);
-		
+		commandWindow.addComponent(aw_cancelButton);
+		commandWindow.addComponent(aw_counter);
+		commandWindow.addComponent(aw_diceButton);
+		commandWindow.addComponent(aw_description);
 		// MISSION WINDOW
 		UIGroup missionWindow = new UIGroup("missionGroup", new Vector2f(container.getWidth() - 500, container.getWidth() - 750), new Vector2f(250, 250));
-		UILabel mw_mission = new UILabel("mission", "", Color.black, new Vector2f(32, 32));
+		UILabel mw_mission = new UILabel("mission", "", Color.black, new Vector2f(28, 32));
+		mw_mission.setSize(new Vector2f(200, 250));
 		missionWindow.addComponent(mw_mission);
 		missionWindow.setScale((float) 0.5);
 		missionWindow.setRenderComponent(new ImageRenderComponent(new Image("assets/missionBackground.jpg")));
@@ -138,11 +129,9 @@ public class GameplayState extends BasicGameState {
 		userInterface.addComponenet(showMissionButton);
 		userInterface.addComponent(selection_1);
 		userInterface.addComponent(selection_2);
-		userInterface.addComponent(attackWindow);
-		userInterface.addComponent(fortifyWindow);
+		userInterface.addComponent(commandWindow);
 		userInterface.addComponenet(missionWindow);
-		userInterface.setVisibility("attackGroup", false);
-		userInterface.setVisibility("fortifyGroup", false);
+		userInterface.setVisibility("commandGroup", false);
 		userInterface.setVisibility("missionGroup", false);
 		
     	// Hintergrund laden
@@ -228,14 +217,14 @@ public class GameplayState extends BasicGameState {
 		case 1:
 			labelName = "ATTACKPHASE";
 			reinforcementCountLabel.setVisible(false);
-			if((!userInterface.isComponenetVisible("attackGroup") || !userInterface.isComponenetVisible("fortifyGroup")) && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
+			if((!userInterface.isComponenetVisible("commandGroup")) && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
 				userInterface.enableButton("attackButton");
 				userInterface.enableButton("nextPhaseButton");
 				userInterface.disableButton("fortifyButton");
 				userInterface.enableButton("turnButton");
 				break;
 			}
-			if(userInterface.isComponenetVisible("attackGroup")  || userInterface.isComponenetVisible("fortifyGroup"))
+			if(userInterface.isComponenetVisible("commandGroup"))
 			{
 				userInterface.disableButton("attackButton");
 				userInterface.disableButton("fortifyButton");
@@ -257,10 +246,10 @@ public class GameplayState extends BasicGameState {
 			userInterface.disableButton("turnButton");
 			userInterface.disableButton("fortifyButton");
 			
-			if(!userInterface.isComponenetVisible("fortifyGroup") && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
+			if(!userInterface.isComponenetVisible("commandGroup") && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
 				userInterface.enableButton("fortifyButton");
 				userInterface.enableButton("turnButton");			
-			}else if (!userInterface.isComponenetVisible("fortifyGroup"))
+			}else if (!userInterface.isComponenetVisible("commandGroup"))
 			{
 				userInterface.enableButton("turnButton");
 				userInterface.disableButton("fortifyButton");
@@ -335,19 +324,25 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void requestTroopMovement(int minCount, int maxCount) {
-		UIGroup fortifyWindow = (UIGroup) userInterface.getComponent("fortifyGroup");
+		UIGroup fortifyWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UICounter counter = (UICounter) fortifyWindow.getComponent("counter");
+		UILabel label = (UILabel) fortifyWindow.getComponent("description");
+		label.setLabelName("Fortify");
 		counter.setMaxCount(maxCount);
 		counter.setMinCount(minCount);
-		userInterface.setVisibility("fortifyGroup", true);
-		userInterface.setVisibility("attackGroup", false);
+		UIButton useButton = (UIButton) fortifyWindow.getComponent("diceButton");
+		useButton.setLabelName("Fortify!");
+		ANDEvent event = (ANDEvent) useButton.getEvent("ANDEvent");
+		event.clearActions();
+		event.addAction(new FortifyAction());
+		userInterface.setVisibility("commandGroup", true);
 		
 	}
 
 	public void selectCountry(Country ownerEntity) {
 		System.out.println("Country selected= " + ownerEntity.getName());
 		System.out.println("Owner: " + ownerEntity.getOwner().getName());
-		if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("attackGroup")){
+		if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("commandGroup")){
 			if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID())
 				&& ownerEntity.isOwner(gameController.getTurnPlayer()) 
 				&& ownerEntity.getTroops() > 1)
@@ -371,7 +366,7 @@ public class GameplayState extends BasicGameState {
 			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
 				gameController.setReinforceCountry(ownerEntity);
 		}
-		else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("fortifyGroup"))
+		else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("commandGroup"))
 		{
 			if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
 				if(this.getFirstCountrySelected() != null &&
@@ -433,7 +428,14 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void showAttackWindow() {
-		UIGroup attackWindow = (UIGroup) userInterface.getComponent("attackGroup");
+		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
+		UIButton useButton = (UIButton) attackWindow.getComponent("diceButton");
+		UILabel label = (UILabel) attackWindow.getComponent("description");
+		label.setLabelName("Attack");
+		useButton.setLabelName("Attack!");
+		ANDEvent event = (ANDEvent) useButton.getEvent("ANDEvent");
+		event.clearActions();
+		event.addAction(new DiceAction());
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
 		attackWindow.setVisible(true);
@@ -450,7 +452,7 @@ public class GameplayState extends BasicGameState {
 	
 	public void hideAttackWindow(){
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
-		UIGroup attackWindow = (UIGroup) userInterface.getComponent("attackGroup");
+		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		for(UIElement element : buttons)
 			if(element instanceof UIButton)
 			{
@@ -467,21 +469,21 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public boolean isAttackWindowVisible() {
-		UIGroup attackWindow = (UIGroup) userInterface.getComponent("attackGroup");
+		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		return attackWindow.isVisible();
 	}
 
 	public void reset() {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
-		UIGroup attackWindow = (UIGroup) userInterface.getComponent("attackGroup");
+		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		selection_1.resetSelection();
 		selection_2.resetSelection();
 		attackWindow.setVisible(false);
 	}
 
 	public int getDiceCount() {
-		UIGroup attackWindow = (UIGroup) userInterface.getComponent("attackGroup");
+		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		return attackWindow.getCounter();
 	}
 
@@ -491,10 +493,10 @@ public class GameplayState extends BasicGameState {
 		Country[] countries = new Country[2];
 		countries[0] = (Country) selection_1.getSelectedEntity();
 		countries[1] = (Country) selection_2.getSelectedEntity();
-		UIGroup fortifyWindow = (UIGroup) userInterface.getComponent("fortifyGroup");
+		UIGroup fortifyWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UICounter counter = (UICounter) fortifyWindow.getComponent("counter");
 		gameController.troopsMovedEvent(counter.getCounter(), countries);
-		userInterface.setVisibility("fortifyGroup", false);
+		userInterface.setVisibility("commandGroup", false);
 		reset();
 	}
 
@@ -509,12 +511,26 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void showMissionText() {
-	// TODO SHOW MISSION TEXT
 		userInterface.setVisibility("missionGroup", true);
+		UIButton missionButton = (UIButton) userInterface.getComponent("showMissionButton");
+		missionButton.setLabelName("Hide Mission");
+		ANDEvent event = (ANDEvent) missionButton.getEvent("ANDEvent");
+		event.clearActions();
+		event.addAction(new HideMissionAction());
 	}
 
 	public void hideMissionText() {
 		userInterface.setVisibility("missionGroup", false);
+		UIButton missionButton = (UIButton) userInterface.getComponent("showMissionButton");
+		missionButton.setLabelName("Show Mission");
+		ANDEvent event = (ANDEvent) missionButton.getEvent("ANDEvent");
+		event.clearActions();
+		event.addAction(new ShowMissionAction());
+	}
+	
+	public boolean isMissionTextVisibible()
+	{
+		return userInterface.isComponenetVisible("missionGroup");
 	}
 
 
