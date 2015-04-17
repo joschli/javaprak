@@ -33,7 +33,7 @@ Iceland|Greenland,Scandinavia,Great Britain|Europe|337,114
 Scandinavia|Ukraine,N. Europe,Great Britain,Iceland|Europe|380,113
 Ukraine|Scandinavia,N. Europe,S. Europe,Middle East,Afghanistan,Ural|Europe|453,149
 N. Europe|Ukraine,Scandinavia,Great Britain,S. Europe,W. Europe|Europe|381,165
-S. Europe|N. Europe,W. Europe,Ukraine,Middle East,Egypt,North Africa|Europe|410,213
+S. Europe|N. Europe,W. Europe,Ukraine,Middle East,Egypt,North Africa|Europe|395,205
 Middle East|Afghanistan,India,East Africa,Ukraine,Egypt,S. Europe|Asia|463,262
 Afghanistan|Ukraine,Ural,China,India,Middle East|Asia|511,186
 India|Middle East,Afghanistan,China,Siam|Asia|547,281
