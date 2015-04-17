@@ -22,6 +22,7 @@ public class Launch extends StateBasedGame {
     public static final int WIN_STATE = 2;
     public static final int OPTIONS_STATE = 3;
     public static final int PAUSE_STATE = 4;
+    public static final int CARD_STATE = 5;
     
     public Launch()
     {
@@ -60,6 +61,7 @@ public class Launch extends StateBasedGame {
         addState(new WinState(WIN_STATE));
         addState(new OptionState(OPTIONS_STATE));
         addState(new PauseState(PAUSE_STATE));
+        addState(new CardState(CARD_STATE));
         
         // Fuege dem StateBasedEntityManager die States hinzu
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
@@ -67,6 +69,7 @@ public class Launch extends StateBasedGame {
         StateBasedEntityManager.getInstance().addState(WIN_STATE);
         StateBasedEntityManager.getInstance().addState(OPTIONS_STATE);
         StateBasedEntityManager.getInstance().addState(PAUSE_STATE);
+        StateBasedEntityManager.getInstance().addState(CARD_STATE);
 		
 	}
 }
