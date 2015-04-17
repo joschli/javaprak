@@ -20,6 +20,8 @@ public class Launch extends StateBasedGame {
     public static final int MAINMENU_STATE = 0;
     public static final int GAMEPLAY_STATE = 1;
     public static final int WIN_STATE = 2;
+    public static final int OPTIONS_STATE = 3;
+    public static final int PAUSE_STATE = 4;
     
     public Launch()
     {
@@ -43,6 +45,8 @@ public class Launch extends StateBasedGame {
         // Lege die Einstellungen des Fensters fest und starte das Fenster
         // (nicht aber im Vollbildmodus)
         app.setDisplayMode(1000, 600, false);
+        app.setShowFPS(false);
+        app.setIcon("assets/icon.png");
         app.start();
     }
 
@@ -53,11 +57,15 @@ public class Launch extends StateBasedGame {
 		addState(new MainMenuState(MAINMENU_STATE));
         addState(new GameplayState(GAMEPLAY_STATE));
         addState(new WinState(WIN_STATE));
+        addState(new OptionState(OPTIONS_STATE));
+        addState(new PauseState(PAUSE_STATE));
         
         // Fuege dem StateBasedEntityManager die States hinzu
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
         StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
         StateBasedEntityManager.getInstance().addState(WIN_STATE);
+        StateBasedEntityManager.getInstance().addState(OPTIONS_STATE);
+        StateBasedEntityManager.getInstance().addState(PAUSE_STATE);
 		
 	}
 }

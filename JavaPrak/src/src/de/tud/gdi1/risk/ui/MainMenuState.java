@@ -1,5 +1,6 @@
 package src.de.tud.gdi1.risk.ui;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -8,6 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import src.de.tud.gd1.risk.actions.ResumeAction;
 import src.de.tud.gd1.risk.factory.ButtonFactory;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
@@ -30,11 +32,9 @@ import eea.engine.event.basicevents.MouseEnteredEvent;
 public class MainMenuState extends BasicGameState {
 
 	private int stateID; 							// Identifier von diesem BasicGameState
-	private StateBasedEntityManager entityManager; 	// zugehoeriger entityManager
+	private StateBasedEntityManager entityManager;
+
 	
-	private final int distance = 100;
-    private final int start_Position = 150;
-    
     MainMenuState( int sid ) {
        stateID = sid;
        entityManager = StateBasedEntityManager.getInstance();
@@ -45,28 +45,27 @@ public class MainMenuState extends BasicGameState {
      */
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
-    	ButtonFactory buttonFactory;
-    	// Hintergrund laden
-    	Entity background = new Entity("menu");	// Entitaet fuer Hintergrund
-    	background.setPosition(new Vector2f(400,300));	// Startposition des Hintergrunds
-    	background.addComponent(new ImageRenderComponent(new Image("assets/background.jpg"))); // Bildkomponente
-   
     	// Action von New Game Button
-    	entityManager.addEntity(stateID, background);
     	ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-    	Action new_Game_Action = new ChangeStateAction(Launch.GAMEPLAY_STATE);
-    	
+    	Action new_Game_Action = new ChangeStateAction(Launch.OPTIONS_STATE);
+    	mainEvents.addAction(new_Game_Action);
     	// Action von Beenden Button
     	ANDEvent mainEvents_q = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	Action quit_Action = new QuitAction();
-    
-    	// Neues Spiel Button
-    	buttonFactory = new ButtonFactory("Neues Spiel", new_Game_Action, start_Position);
-    	entityManager.addEntity(this.stateID, buttonFactory.createEntity());
+    	mainEvents_q.addAction(quit_Action);
     	
-    	// Beenden Button
-    	buttonFactory.updateFactory("Beenden", quit_Action, start_Position+distance);
-    	entityManager.addEntity(this.stateID, buttonFactory.createEntity());
+    	ANDEvent resumeEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+    	resumeEvent.addAction(new ResumeAction());
+    	UIButton resumeButton = new UIButton("resumeButton", "Resume Game", new Vector2f(container.getWidth()/2, container.getHeight()/2-64), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+    	UIButton newGameButton = new UIButton("newGameButton", "New Game", new Vector2f(container.getWidth()/2, container.getHeight()/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+    	UIButton exitGameButton = new UIButton("exitGameButton", "Exit Game", new Vector2f(container.getWidth()/2, container.getHeight()/2+64), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+    	newGameButton.addComponent(mainEvents);
+    	exitGameButton.addComponent(mainEvents_q);
+    	resumeButton.addComponent(resumeEvent);
+    	entityManager.addEntity(this.stateID, newGameButton);
+    	entityManager.addEntity(this.stateID, exitGameButton);
+    	entityManager.addEntity(this.stateID, resumeButton);
+    	resumeButton.disableButton();
     }
 
     /**
@@ -84,18 +83,19 @@ public class MainMenuState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, 
 												Graphics g) throws SlickException {
+		g.setBackground(new Color(0,0,0));
+		g.clear();
 		entityManager.renderEntities(container, game, g);
-		
-		int counter = 0;
-		g.drawString("Neues Spiel", 245, start_Position+counter*distance);
-		counter++;
-		g.drawString("Beenden", 245, start_Position+counter*distance);
-		counter++;
 	}
 
 	@Override
 	public int getID() {
 		return stateID;
+	}
+
+	public void setGameStarted() {
+		UIButton button = (UIButton) entityManager.getEntity(this.stateID, "resumeButton");
+		button.enableButton();
 	}
 	
 }

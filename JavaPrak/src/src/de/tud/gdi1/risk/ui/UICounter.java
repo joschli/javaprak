@@ -21,12 +21,12 @@ public class UICounter extends UIElement {
 	public UICounter(String entityID, Vector2f position, int maxCount, int minCount) {
 		super(entityID);
 		
-		increaseButton = new UIButton("increaseButton"+entityID, "+", new Vector2f(this.getPosition().x+96, this.getPosition().y+16), new Vector2f(32,32), new Vector2f(12,8), Color.gray, Color.red);
-		decreaseButton = new UIButton("decreaseButton"+entityID, "-", new Vector2f(this.getPosition().x+16, this.getPosition().y+16), new Vector2f(32,32), new Vector2f(12,8), Color.gray, Color.red);
+		increaseButton = new UIButton("increaseButton"+entityID, "+", new Vector2f(this.getPosition().x+32, this.getPosition().y), new Vector2f(32,32), new Vector2f(12,8), Color.gray, Color.red);
+		decreaseButton = new UIButton("decreaseButton"+entityID, "-", new Vector2f(this.getPosition().x-32, this.getPosition().y), new Vector2f(32,32), new Vector2f(12,8), Color.gray, Color.red);
 		this.maxCount = maxCount;
 		this.minCount = minCount;
 		this.currentCount = minCount;
-		count = new UILabel("count"+entityID, new Integer(minCount).toString(), Color.red, new Vector2f(this.getPosition().x+52, this.getPosition().y+8));
+		count = new UILabel("count"+entityID, new Integer(minCount).toString(), Color.red, new Vector2f(this.getPosition().x, this.getPosition().y));
 		ANDEvent event2 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		ANDEvent event = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		event.addAction(new IncreaseAction());
@@ -43,6 +43,7 @@ public class UICounter extends UIElement {
 		if(this.isVisible()){
 			increaseButton.render(container,game,g);
 			decreaseButton.render(container,game,g);
+			this.setLabelPosition(g);
 			count.render(container, game, g);
 		}
 	}
@@ -94,8 +95,31 @@ public class UICounter extends UIElement {
 	public void setPosition(Vector2f position)
 	{
 		super.setPosition(position);
-		increaseButton.setPosition(new Vector2f(position.x+96, position.y+16));
-		decreaseButton.setPosition(new Vector2f(position.x+16, position.y+16));
-		count.setPosition(new Vector2f(position.x+52, position.y+8));
+		increaseButton.setPosition(new Vector2f(position.x+32, position.y));
+		decreaseButton.setPosition(new Vector2f(position.x-32, position.y));
+		count.setPosition(new Vector2f(position.x, position.y));
+	}
+	
+	private void setLabelPosition(Graphics g) {
+		String text = count.getContent();
+		float textWidth = g.getFont().getWidth(text);
+		float textHeight = g.getFont().getHeight(text);
+		float boxHeight = this.getSize().y;
+		float boxWidth = this.getSize().x;
+		float widthPadding = boxWidth - textWidth;
+		float heightPadding = boxHeight - textHeight;
+		if(widthPadding < 0)
+		{
+			this.setSize(new Vector2f(textWidth+10, this.getSize().y));
+			this.count.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+5, this.count.getPosition().y));
+		}
+		else
+			this.count.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+widthPadding/2, (this.count.getPosition().y)));
+		if(heightPadding < 0){
+			this.setSize(new Vector2f(this.getSize().x, textHeight+5));
+			this.count.setPosition(new Vector2f(this.count.getPosition().x, this.getPosition().y - this.getSize().y/2 + 2.5f));
+		}
+		else
+			this.count.setPosition(new Vector2f(this.count.getPosition().x, this.getPosition().y - this.getSize().y/2 + heightPadding/2));
 	}
 }

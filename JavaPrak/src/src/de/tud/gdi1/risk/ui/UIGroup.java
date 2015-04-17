@@ -50,30 +50,7 @@ public class UIGroup extends UIElement{
 			}
 		}
 	}
-	
-	public void setUIButtonName(String ID, String content)
-	{
-		for(UIElement uiElement : components)
-		{
-			if(uiElement instanceof UIButton && uiElement.getID() == ID)
-			{
-				UIButton updateButton = (UIButton) uiElement;
-				updateButton.setLabelName(content);
-			}
-		}
-	}
-	
-	public void setUILabelName(String ID, String content)
-	{
-		for(UIElement uiElement : components)
-		{
-			if(uiElement instanceof UILabel && uiElement.getID() == ID)
-			{
-				UILabel updateLabel = (UILabel) uiElement;
-				updateLabel.setLabelName(content);
-			}
-		}
-	}
+
 	
 	public void update(GameContainer container, StateBasedGame game, int delta)
 	{
@@ -81,29 +58,6 @@ public class UIGroup extends UIElement{
 			uiElement.update(container, game, delta);
 	}
 
-	public void setCounter(Country country) {
-		for(UIElement uiElement : components)
-		{
-			if(uiElement instanceof UICounter)
-			{
-				UICounter counter = (UICounter) uiElement;
-				counter.setMaxCount(country.getTroops()-1 >= 3? 3 : country.getTroops());
-			}
-		}
-	}
-
-	public int getCounter() {
-		for(UIElement uiElement : components)
-		{
-			if(uiElement instanceof UICounter)
-			{
-				UICounter counter = (UICounter) uiElement;
-				return counter.getCounter();
-			}
-		}
-		return 0;
-	}
-	
 	public UIElement getComponent(String entityID)
 	{
 		for(UIElement element : components)

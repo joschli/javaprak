@@ -180,6 +180,7 @@ public class GameController {
 			{
 				System.out.println("PLAYER WINS");
 				state = WIN_PHASE;
+				options.setWinner(map.getPlayer(currentPlayer).getName());
 				return;
 			}
 			

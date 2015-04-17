@@ -14,6 +14,7 @@ public class UILabel extends UIElement{
 
 	public Color color;
 	private String labelName;
+	private boolean setPosition = false;
 	
 	public UILabel(String entityID, String labelName, Color color, Vector2f position) {
 		super(entityID);
@@ -82,6 +83,16 @@ public class UILabel extends UIElement{
 					text = test;
 				}
 			}
+			else
+			{
+				if(!setPosition)
+				{
+					float textWidth = g.getFont().getWidth(text);
+					float textHeight = g.getFont().getHeight(text);
+					this.setPosition(new Vector2f(this.getPosition().x-textWidth/2, this.getPosition().y-textHeight/2));
+					this.setPosition = true;
+				}
+			}
 			g.setColor(color);
 			g.drawString(text, this.getPosition().x, this.getPosition().y);
 			
@@ -96,6 +107,10 @@ public class UILabel extends UIElement{
 	public void setColor(Color color)
 	{
 		this.color = color;
+	}
+
+	public String getContent() {
+		return labelName;
 	}
 
 }

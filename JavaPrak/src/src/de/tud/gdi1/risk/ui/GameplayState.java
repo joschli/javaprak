@@ -23,10 +23,8 @@ import src.de.tud.gd1.risk.actions.NextPhaseAction;
 import src.de.tud.gd1.risk.actions.ShowMissionAction;
 import src.de.tud.gd1.risk.actions.StartFortifyAction;
 import src.de.tud.gdi1.risk.controller.GameController;
-import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.basicactions.ChangeStateAction;
-import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -42,8 +40,6 @@ public class GameplayState extends BasicGameState {
 	private StateBasedEntityManager entityManager;
 	private GameController gameController;// zugehoeriger entityManager
 	private UserInterface userInterface;
-	private Country selectedCountry_1, selectedCountry_2;
-	private boolean reinforce = false;
 	private boolean attackButtonPressed = false;
 	private ArrayList<Country> countries;
 	private ArrayList<ImageRenderComponent[]> blueDiceImages = new ArrayList<ImageRenderComponent[]>();
@@ -71,7 +67,7 @@ public class GameplayState extends BasicGameState {
     		blueDiceImages.add(b);
     	}
     	// Player Label
-		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(25,30));
+		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(40,30));
 		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,30));
 		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 30));
 		// Buttons
@@ -110,10 +106,10 @@ public class GameplayState extends BasicGameState {
 		// Window Overlay for ATTACK_PHASE & FORITFY_PHASE
 		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-300), new Vector2f(200, 600));
 		//UIGroup attackWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
-		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(50,15));
-		UICounter aw_counter = new UICounter("counter", new Vector2f(50,50), 3, 1);
-		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(114,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton aw_cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(114, 164), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(commandWindow.getSize().x/2,15));
+		UICounter aw_counter = new UICounter("counter", new Vector2f(commandWindow.getSize().x/2, 50), 3, 1);
+		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(commandWindow.getSize().x/2,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton aw_cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(commandWindow.getSize().x/2, 164), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton redButton1 = new UIButton("red1Button", "", new Vector2f(48, 228), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
 		UIButton redButton2 = new UIButton("red2Button", "", new Vector2f(48, 308), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
 		UIButton redButton3 = new UIButton("red3Button", "", new Vector2f(48, 388), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
@@ -137,7 +133,7 @@ public class GameplayState extends BasicGameState {
 		commandWindow.addComponent(blueButton2);
 		// MISSION WINDOW
 		UIGroup missionWindow = new UIGroup("missionGroup", new Vector2f(container.getWidth() - 500, container.getWidth() - 750), new Vector2f(250, 250));
-		UILabel mw_mission = new UILabel("mission", "", Color.black, new Vector2f(28, 32));
+		UILabel mw_mission = new UILabel("mission", "", Color.white, new Vector2f(28, 32));
 		mw_mission.setSize(new Vector2f(200, 250));
 		missionWindow.addComponent(mw_mission);
 		missionWindow.setScale((float) 0.5);
@@ -208,8 +204,9 @@ public class GameplayState extends BasicGameState {
     	gameController.update();
     	userInterface.update(container, game, delta);
     	
-    	if(gameController.getState() == 4)
-    		new ChangeStateAction(Launch.WIN_STATE).update(container, game, delta, null);
+    	if(gameController.getState() == 4){
+    		game.enterState(Launch.WIN_STATE);
+    	}
 		
 	}
     
@@ -492,7 +489,10 @@ public class GameplayState extends BasicGameState {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
 		attackWindow.setVisible(true);
-		attackWindow.setCounter((Country) selection_1.getSelectedEntity());
+		UICounter counter = (UICounter) attackWindow.getComponent("counter");
+		Country country = (Country) selection_1.getSelectedEntity();
+		counter.setMaxCount(country.getTroops()-1 > 3 ? 3 : country.getTroops()-1);
+		counter.setMinCount(1);
 		attackWindow.setComponentVisiblity("red1Button", false);
 		attackWindow.setComponentVisiblity("red2Button", false);
 		attackWindow.setComponentVisiblity("red3Button", false);
@@ -552,7 +552,8 @@ public class GameplayState extends BasicGameState {
 
 	public int getDiceCount() {
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
-		return attackWindow.getCounter();
+		UICounter counter = (UICounter) attackWindow.getComponent("counter");
+		return counter.getCounter();
 	}
 
 	public void fortifyCountry() {

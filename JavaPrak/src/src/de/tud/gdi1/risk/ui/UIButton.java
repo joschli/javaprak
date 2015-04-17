@@ -50,9 +50,9 @@ public class UIButton extends UIElement{
 	{
 		this.renderComponent = renderComponent;
 		renderComponent.setOwnerEntity(this);
-		//if(this.getSize().x == 0 && this.getSize().y == 0)
-			this.setSize(renderComponent.getSize());
+		this.setSize(renderComponent.getSize());
 	}
+	
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.isVisible()){
@@ -71,13 +71,37 @@ public class UIButton extends UIElement{
 				}
 				g.fillRect(x, y, this.getSize().x, this.getSize().y);
 			}
-				label.render(container, game, g);
+			this.setLabelPosition(g);
+			label.render(container, game, g);
 			g.setColor(borderColor);
 			g.drawRect(x, y, this.getSize().x, this.getSize().y);
 		}
 	}
 
 	
+	private void setLabelPosition(Graphics g) {
+		String text = label.getContent();
+		float textWidth = g.getFont().getWidth(text);
+		float textHeight = g.getFont().getHeight(text);
+		float boxHeight = this.getSize().y;
+		float boxWidth = this.getSize().x;
+		float widthPadding = boxWidth - textWidth;
+		float heightPadding = boxHeight - textHeight;
+		if(widthPadding < 0)
+		{
+			this.setSize(new Vector2f(textWidth+10, this.getSize().y));
+			this.label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+5, this.label.getPosition().y));
+		}
+		else
+			this.label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+widthPadding/2, (this.label.getPosition().y)));
+		if(heightPadding < 0){
+			this.setSize(new Vector2f(this.getSize().x, textHeight+5));
+			this.label.setPosition(new Vector2f(this.label.getPosition().x, this.getPosition().y - this.getSize().y/2 + 2.5f));
+		}
+		else
+			this.label.setPosition(new Vector2f(this.label.getPosition().x, this.getPosition().y - this.getSize().y/2 + heightPadding/2));
+	}
+
 	public void setButtonColor(Color color)
 	{
 		this.color = color;
@@ -133,5 +157,9 @@ public class UIButton extends UIElement{
 	public boolean getUsability()
 	{
 		return usable;
+	}
+
+	public UILabel getLabel() {
+		return label;
 	}
 }

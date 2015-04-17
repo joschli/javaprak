@@ -8,7 +8,9 @@ public class Options {
 	private static Options options = new Options();
 	private int playerCount;
 	private Color[] colors = {Color.red, Color.gray, Color.blue, Color.yellow};
-	
+	private int minimalPlayerCount = 2;
+	private int maximalPlayerCount = colors.length;
+	private String winner = "";
 	private Options()
 	{
 		this.playerCount = 2;
@@ -25,6 +27,27 @@ public class Options {
 
 	public Color getColor(int i) {
 		return colors[i];
+	}
+
+	public int getMinPlayerCount() {
+		return this.minimalPlayerCount;
+	}
+	
+	public int getMaxPlayerCount()
+	{
+		return this.maximalPlayerCount;
+	}
+
+	public void setPlayerCount(int counter) {
+		this.playerCount = counter;
+	}
+
+	public void setWinner(String name) {
+		this.winner = name;
+	}
+
+	public String getWinner() {
+		return winner;
 	}
 	
 }
