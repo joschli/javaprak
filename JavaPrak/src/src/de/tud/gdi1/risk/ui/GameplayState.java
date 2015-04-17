@@ -22,6 +22,7 @@ import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gd1.risk.actions.FortifyAction;
 import src.de.tud.gd1.risk.actions.HideMissionAction;
 import src.de.tud.gd1.risk.actions.NextPhaseAction;
+import src.de.tud.gd1.risk.actions.ShowCardAction;
 import src.de.tud.gd1.risk.actions.ShowMissionAction;
 import src.de.tud.gd1.risk.actions.StartFortifyAction;
 import src.de.tud.gdi1.risk.controller.GameController;
@@ -78,6 +79,7 @@ public class GameplayState extends BasicGameState {
 		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)4*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton showCardButton = new UIButton("showCardButton", "Show Cards", new Vector2f((int)6* buttonWidth, container.getHeight() - buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
@@ -99,6 +101,9 @@ public class GameplayState extends BasicGameState {
 		ANDEvent showMissionEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		showMissionEvent.addAction(new ShowMissionAction());
 		showMissionButton.addComponent(showMissionEvent);
+		ANDEvent showCardEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		showCardEvent.addAction(new ShowCardAction());
+		showCardButton.addComponent(showCardEvent);
 		//
 		attackButton.addComponent(attackEvent);
 		UISelection selection_1 = new UISelection("selection1");
@@ -106,7 +111,7 @@ public class GameplayState extends BasicGameState {
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
 		// Window Overlay for ATTACK_PHASE & FORITFY_PHASE
-		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-64, container.getHeight()-300), new Vector2f(145, 600));
+		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-64, 300), new Vector2f(145, 500));
 		//UIGroup attackWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(commandWindow.getSize().x/2,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(commandWindow.getSize().x/2, 50), 3, 1);
@@ -155,6 +160,7 @@ public class GameplayState extends BasicGameState {
 		userInterface.addComponent(phaseButton);
 		userInterface.addComponent(fortifyButton);
 		userInterface.addComponenet(showMissionButton);
+		userInterface.addComponent(showCardButton);
 		userInterface.addComponent(selection_1);
 		userInterface.addComponent(selection_2);
 		userInterface.addComponent(commandWindow);
@@ -251,6 +257,7 @@ public class GameplayState extends BasicGameState {
 			userInterface.disableButton("attackButton");
 			userInterface.disableButton("fortifyButton");
 			userInterface.disableButton("turnButton");
+			userInterface.enableButton("showCardButton");
 			break;
 		case 1:
 			labelName = "ATTACKPHASE";
@@ -270,7 +277,7 @@ public class GameplayState extends BasicGameState {
 				userInterface.disableButton("nextPhaseButton");
 				break;
 			}
-			
+			userInterface.disableButton("showCardButton");
 			userInterface.disableButton("attackButton");
 			userInterface.disableButton("fortifyButton");
 			userInterface.enableButton("turnButton");
@@ -283,7 +290,7 @@ public class GameplayState extends BasicGameState {
 			userInterface.disableButton("attackButton");
 			userInterface.disableButton("turnButton");
 			userInterface.disableButton("fortifyButton");
-			
+			userInterface.disableButton("showCardButton");
 			if(!userInterface.isComponenetVisible("commandGroup") && (selection_1.hasEntitySelected() && selection_2.hasEntitySelected())){
 				userInterface.enableButton("fortifyButton");
 				userInterface.enableButton("turnButton");			
@@ -303,6 +310,7 @@ public class GameplayState extends BasicGameState {
 			userInterface.disableButton("attackButton");
 			userInterface.disableButton("fortifyButton");
 			userInterface.disableButton("turnButton");
+			userInterface.disableButton("showCardButton");
 			break;
 		}
 		phaseNameLabel.setLabelName(labelName);
@@ -356,6 +364,7 @@ public class GameplayState extends BasicGameState {
 			g.rotate(c1x, c1y, -ang);
 			g.drawLine(c1x, c1y, c1x-delta.x*arrowLength, c1y-delta.y*arrowLength);
 			
+
 		}
 	}
 
