@@ -299,13 +299,15 @@ public class GameController {
 		System.out.println(diceToString());
 	
 		view.showDiceResult(attackDices, defenseDices, countryConquered);
+		view.adjustCounter();
+		
 		if(countryConquered)
 		{
 			countries[1].setOwner(map.getPlayer(currentPlayer));
 			if(countries[0].getTroops() == diceCount+1)
 			{
 				troopsMovedEvent(diceCount, countries);
-				view.requestTroopMovement(0, 0);
+				view.requestTroopMovement(0,0);
 			}
 				else
 			{
@@ -313,6 +315,7 @@ public class GameController {
 				view.requestTroopMovement(0, this.countries[0].getTroops()-1);	
 			}
 		}
+		
 	}
 	
 	private String diceToString() {

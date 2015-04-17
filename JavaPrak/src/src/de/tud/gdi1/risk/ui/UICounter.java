@@ -75,7 +75,8 @@ public class UICounter extends UIElement {
 	public void setMinCount(int minCount)
 	{
 		this.minCount = minCount;
-		currentCount = minCount;
+		if(currentCount < minCount)
+			currentCount = minCount;
 		count.setLabelName(new Integer(currentCount).toString());
 	}
 	
@@ -83,8 +84,7 @@ public class UICounter extends UIElement {
 	{
 		this.maxCount = maxCount;
 		if(currentCount > maxCount)
-			currentCount = minCount;
-		currentCount = minCount;
+			currentCount = maxCount;
 		count.setLabelName(new Integer(currentCount).toString());
 	}
 

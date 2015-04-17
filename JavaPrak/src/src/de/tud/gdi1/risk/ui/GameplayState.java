@@ -333,19 +333,28 @@ public class GameplayState extends BasicGameState {
 		if(this.getCountriesSelected())
 		{
 			Country[] countries = this.getSelectedCountries();
-			float deltaX = Math.abs(countries[1].getPosition().x - countries[0].getPosition().x);
-			float deltaY = Math.abs(countries[0].getPosition().y - countries[1].getPosition().y);
+			float deltaX = (countries[1].getPosition().x - countries[0].getPosition().x);
+			float deltaY = (countries[1].getPosition().y - countries[0].getPosition().y);
 			Vector2f delta = new Vector2f(deltaX, deltaY);
 			delta.normalise();
-			delta.x *= 10;
-			delta.y *=10;
-			g.setColor(Color.green);
-			g.drawLine(countries[0].getPosition().x, countries[0].getPosition().y, countries[1].getPosition().x, countries[1].getPosition().y);
+
+			g.setColor(new Color(255,0,0));
+			g.setLineWidth(3);
+			float size = 12;
+			float c1x = countries[1].getPosition().x - delta.x * size;
+			float c1y = countries[1].getPosition().y - delta.y * size;
+			float c0x = countries[0].getPosition().x + delta.x * size;
+			float c0y = countries[0].getPosition().y + delta.y * size;
+			float arrowLength = 10;
+			
+			g.drawLine(c0x, c0y, c1x, c1y);
 			//g.draw(shape);
-			g.rotate(countries[1].getPosition().x, countries[1].getPosition().y, 45);
-			g.drawLine(countries[1].getPosition().x, countries[1].getPosition().y, countries[1].getPosition().x-delta.x, countries[1].getPosition().y-delta.y);
-			g.rotate(countries[1].getPosition().x, countries[1].getPosition().y, -90);
-			g.drawLine(countries[1].getPosition().x, countries[1].getPosition().y, countries[1].getPosition().x-delta.x, countries[1].getPosition().y-delta.y);
+			float ang = 30;
+			g.rotate(c1x, c1y, ang);
+			g.drawLine(c1x, c1y, c1x-delta.x*arrowLength, c1y-delta.y*arrowLength);
+			g.resetTransform();
+			g.rotate(c1x, c1y, -ang);
+			g.drawLine(c1x, c1y, c1x-delta.x*arrowLength, c1y-delta.y*arrowLength);
 			
 		}
 	}
@@ -496,12 +505,29 @@ public class GameplayState extends BasicGameState {
 			countryConqueredLabel.setVisible(true);
 		}else
 			countryConqueredLabel.setVisible(false);
-		
-		
-		
-		
 	}
 	
+	
+	public void adjustCounter()
+	{
+		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
+		//Set Counter to right value
+		UIButton useButton = (UIButton) attackWindow.getComponent("diceButton");
+		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
+		UICounter counter = (UICounter) attackWindow.getComponent("counter");
+		Country country = (Country) selection_1.getSelectedEntity();
+		if(country.getTroops() <= 1)
+		{
+			counter.setMaxCount(0);
+			counter.setMinCount(0);
+			useButton.disableButton();
+		}
+		else
+		{
+			counter.setMaxCount(country.getTroops()-1 > 3 ? 3 : country.getTroops()-1);
+			counter.setMinCount(1);
+		}
+	}
 	public void updateSelection(Country country)
 	{
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
@@ -539,11 +565,11 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void showAttackWindow() {
-		System.out.println("HideAttackWindow");
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UIButton useButton = (UIButton) attackWindow.getComponent("diceButton");
 		UILabel label = (UILabel) attackWindow.getComponent("description");
 		label.setLabelName("Attack");
+		useButton.enableButton();
 		useButton.setLabelName("Attack!");
 		ANDEvent event = (ANDEvent) useButton.getEvent("ANDEvent");
 		event.clearActions();
@@ -577,7 +603,6 @@ public class GameplayState extends BasicGameState {
 	public void hideAttackWindow(){
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
-		System.out.println("HideAttackWindow");
 		for(UIElement element : buttons)
 			if(element instanceof UIButton)
 			{
