@@ -62,10 +62,10 @@ public class GameplayState extends BasicGameState {
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
     	userInterface = new UserInterface();
-		background = new Entity("background");
-		background.setPosition(new Vector2f(0,0));
-		background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
-		background.setScale(2);
+		this.background = new Entity("background");
+		this.background.setPosition(new Vector2f(0,0));
+		this.background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
+		this.background.setScale(2.1f);
     	int buttonWidth = 128;
     	int buttonHeight = 32;
     	// Load Dice Images
@@ -76,16 +76,22 @@ public class GameplayState extends BasicGameState {
     		blueDiceImages.add(b);
     	}
     	// Player Label
-		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(40,30));
-		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(150,30));
-		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(350, 30));
+		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(container.getWidth()/5,30));
+		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(container.getWidth()/5+150,30));
+		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(container.getWidth()/5+350, 30));
 		// Buttons
-		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f((int)5*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f((int)2*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)4*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton showCardButton = new UIButton("showCardButton", "Show Cards", new Vector2f((int)6* buttonWidth, container.getHeight() - buttonHeight/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f((int)5*buttonWidth+20, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f((int)2*buttonWidth+5, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)4*buttonWidth+15, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth+10, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton showCardButton = new UIButton("showCardButton", "Show Cards", new Vector2f((int)6* buttonWidth+25, container.getHeight() - buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		turnButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
+		attackButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
+		phaseButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
+		fortifyButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
+		showMissionButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
+		showCardButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
@@ -117,7 +123,8 @@ public class GameplayState extends BasicGameState {
 		selection_1.setVisible(true);
 		selection_2.setVisible(true);
 		// Window Overlay for ATTACK_PHASE & FORITFY_PHASE
-		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-64, 300), new Vector2f(145, 500));
+		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-80, 300), new Vector2f(145, 500));
+		commandWindow.setRenderComponent(new ImageRenderComponent(new Image("assets/test_command.jpg")));
 		//UIGroup attackWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(commandWindow.getSize().x/2,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(commandWindow.getSize().x/2, 50), 3, 1);
@@ -131,7 +138,13 @@ public class GameplayState extends BasicGameState {
 		UILabel firstAttack = new UILabel("firstAttackLabel", ">", Color.red, new Vector2f(commandWindow.getSize().x/2, 228));
 		UILabel secondAttack = new UILabel("secondAttackLabel", ">", Color.red, new Vector2f(commandWindow.getSize().x/2, 308));
 		UILabel countryConquered = new UILabel("countryConqueredLabel", "Player 0 conquered Country 0", Color.red, new Vector2f(commandWindow.getSize().x/2, 450));
+		redButton2.setScale(0.312f);
+		redButton3.setScale(0.312f);
+		blueButton1.setScale(0.312f);
+		blueButton2.setScale(0.312f);
+		redButton1.setScale(0.312f);
 		countryConquered.setSize(new Vector2f(110,1000));
+		commandWindow.setBorder(true, 3, Color.black);
 		redButton1.setVisible(false);
 		redButton2.setVisible(false);
 		redButton3.setVisible(false);
@@ -158,6 +171,7 @@ public class GameplayState extends BasicGameState {
 		missionWindow.addComponent(mw_mission);
 		missionWindow.setScale((float) 0.5);
 		missionWindow.setRenderComponent(new ImageRenderComponent(new Image("assets/missionBackground.jpg")));
+		missionWindow.setBorder(true, 3, Color.black);
 		userInterface.addComponenet(playerName);
 		userInterface.addComponent(phaseName);
 		userInterface.addComponent(reinforcementCount);
@@ -184,7 +198,7 @@ public class GameplayState extends BasicGameState {
 		userInterface.setVisibility("missionGroup", false);
 		
     	// Hintergrund laden
-    	Entity background = new Entity("background");	// Entitaet fuer Hintergrund
+    	Entity background = new Entity("map");	// Entitaet fuer Hintergrund
     	background.setPosition(new Vector2f(400+buttonWidth/2,300));	// Startposition des Hintergrunds
     	background.addComponent(new ImageRenderComponent(new Image("assets/Blank Risk.PNG"))); // Bildkomponente
     	    	
@@ -238,7 +252,6 @@ public class GameplayState extends BasicGameState {
     		showCards = false;
     		game.enterState(Launch.CARD_STATE);
     	}
-		
 	}
     
     public void updateUserInterface() {
@@ -335,9 +348,14 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities rendern
-		background.render(container, game, g);
+		Entity e = entityManager.getEntity(this.stateID, "map");
+		this.background.render(container, game, g);
 		g.setLineWidth(1);
 		entityManager.renderEntities(container, game, g);
+		g.setColor(Color.black);
+		g.setLineWidth(3);
+		g.drawRect(e.getPosition().x -e.getSize().x/2, e.getPosition().y-e.getSize().y/2, e.getSize().x, e.getSize().y);
+		g.setLineWidth(1);
 		for(Country c: countries)
 		{
 			g.setColor(c.getColor());

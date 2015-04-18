@@ -26,7 +26,7 @@ public class UIButton extends UIElement{
 		super(entityID);
 		
 		this.color = buttonColor;
-		this.setScale(0.312f);
+		this.setScale(1);
 		this.padding = padding;
 		this.borderColor = Color.black;
 		/*

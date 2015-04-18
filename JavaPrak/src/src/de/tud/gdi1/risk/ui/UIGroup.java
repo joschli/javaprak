@@ -21,6 +21,9 @@ public class UIGroup extends UIElement{
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
 	private Vector2f relativePosition;
 	private ImageRenderComponent imageRenderComponent;
+	private boolean border;
+	private int borderWidth;
+	private Color borderColor;
 	public UIGroup(String entityID, Vector2f position, Vector2f size) {
 		super(entityID);
 		this.setPosition(position);
@@ -42,7 +45,13 @@ public class UIGroup extends UIElement{
 				
 				this.imageRenderComponent.render(container, game, g);
 			}
-
+			if(border)
+			{
+				g.setColor(this.borderColor);
+				g.setLineWidth(borderWidth);
+				g.drawRect(relativePosition.x, relativePosition.y, this.getSize().x, this.getSize().y);
+				g.setLineWidth(1);
+			}
 			for(UIElement element : components)
 			{
 				if(element.isVisible())
@@ -116,6 +125,12 @@ public class UIGroup extends UIElement{
 		UIElement element = this.getComponent(entityID);
 		if(element != null)
 			element.setVisible(b);
+	}
+
+	public void setBorder(boolean b, int i, Color color) {
+		this.border = b;
+		this.borderWidth = i;
+		this.borderColor = color;
 	}
 	
 }
