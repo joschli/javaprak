@@ -83,6 +83,8 @@ public class GameController {
 		case REINFORCEMENT_PHASE:
 			if(!forcesAdded)
 				addForces();
+			if(map.getPlayer(currentPlayer).getCardList().size() >= 5)
+				view.showCards();
 		}
 		view.updateUserInterface();
 	}
@@ -433,6 +435,8 @@ public class GameController {
 				country.addTroops(Card.COUNTRYVALUE);
 			map.getPlayer(currentPlayer).removeCards(cards);
 			map.addCardsBack(cards);
+			if(map.getPlayer(currentPlayer).getCardList().size() >= 5)
+				view.showCards();
 			return true;	
 		}
 		

@@ -11,6 +11,8 @@ public class Options {
 	private int minimalPlayerCount = 2;
 	private int maximalPlayerCount = colors.length;
 	private String winner = "";
+	private boolean missions = false;
+	
 	private Options()
 	{
 		this.playerCount = 2;
@@ -48,6 +50,16 @@ public class Options {
 
 	public String getWinner() {
 		return winner;
+	}
+	
+	public void setMissions(boolean b)
+	{
+		this.missions = b;
+	}
+	
+	public boolean getMissions(boolean b)
+	{
+		return missions;
 	}
 	
 }
