@@ -57,6 +57,7 @@ public class CardState extends BasicGameState {
 		UIButton cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(container.getWidth()/5, container.getHeight()/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton tradeButton = new UIButton("tradeButton", "Trade In", new Vector2f(container.getWidth()/5, container.getHeight()/2-48), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
 		cancelButton.addComponent(cancelEvent);
+		tradeButton.addComponent(tradeEvent);
 		tradeButton.disableButton();
 		
 		//Selections
