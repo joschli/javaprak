@@ -49,7 +49,7 @@ public class GameplayState extends BasicGameState {
 	private ArrayList<ImageRenderComponent[]> blueDiceImages = new ArrayList<ImageRenderComponent[]>();
 	private ArrayList<ImageRenderComponent[]> redDiceImages = new ArrayList<ImageRenderComponent[]>();
 	private boolean showCards = false;
-
+	private Entity background;
     public GameplayState( int sid) {
        stateID = sid;
        entityManager = StateBasedEntityManager.getInstance();
@@ -62,6 +62,10 @@ public class GameplayState extends BasicGameState {
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
     	userInterface = new UserInterface();
+		background = new Entity("background");
+		background.setPosition(new Vector2f(0,0));
+		background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
+		background.setScale(2);
     	int buttonWidth = 128;
     	int buttonHeight = 32;
     	// Load Dice Images
@@ -331,6 +335,7 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities rendern
+		background.render(container, game, g);
 		g.setLineWidth(1);
 		entityManager.renderEntities(container, game, g);
 		for(Country c: countries)

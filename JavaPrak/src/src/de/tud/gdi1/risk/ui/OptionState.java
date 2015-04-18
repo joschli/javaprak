@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
@@ -14,6 +15,8 @@ import src.de.tud.gd1.risk.actions.StartGameAction;
 import src.de.tud.gdi1.risk.model.Options;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.component.render.ImageRenderComponent;
+import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
@@ -26,6 +29,7 @@ public class OptionState extends BasicGameState {
 	private Options options;
 	private boolean startGame = false;
 	private ArrayList<UIElement> components = new ArrayList<UIElement>();
+	private Entity background;
 
 	public OptionState(int optionsState) {
 		this.stateID = optionsState;
@@ -36,6 +40,10 @@ public class OptionState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		background = new Entity("background");
+		background.setPosition(new Vector2f(0,0));
+		background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
+		background.setScale(2);
 		// Events
 		ANDEvent startGameEvent = new ANDEvent(new MouseClickedEvent(), new MouseEnteredEvent());
 		startGameEvent.addAction(new StartGameAction());
@@ -66,6 +74,7 @@ public class OptionState extends BasicGameState {
 			throws SlickException {
 		g.setBackground(new Color(0,0,0));
 		g.clear();
+		background.render(container, game, g);
 		entityManager.renderEntities(container, game, g);
 	}
 

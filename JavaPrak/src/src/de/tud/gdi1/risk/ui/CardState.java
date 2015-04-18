@@ -33,6 +33,7 @@ public class CardState extends BasicGameState {
 	private float width = 0;
 	private ArrayList<UISelection> selections = new ArrayList<UISelection>();
 	private Card[] result;
+	private Entity background;
 	public CardState(int stateID)
 	{
 		this.stateID = stateID;
@@ -47,6 +48,10 @@ public class CardState extends BasicGameState {
 		this.height = container.getHeight();
 		this.width = container.getWidth();
 		this.result = new Card[3];
+		background = new Entity("background");
+		background.setPosition(new Vector2f(0,0));
+		background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
+		background.setScale(2);
 		//Events
 		ANDEvent cancelEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		cancelEvent.addAction(new CancelTradeInAction());
@@ -69,7 +74,6 @@ public class CardState extends BasicGameState {
 		selections.add(selection1);
 		selections.add(selection2);
 		selections.add(selection3);
-		
 		entityManager.addEntity(this.stateID, cancelButton);
 		entityManager.addEntity(this.stateID, tradeButton);
 		entityManager.addEntity(this.stateID, selection1);
@@ -80,6 +84,7 @@ public class CardState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
+		background.render(container, game, g);
 		for(Card c : cards){
 			c.render(container, game, g);
 		}

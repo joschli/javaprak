@@ -33,6 +33,7 @@ public class MainMenuState extends BasicGameState {
 
 	private int stateID; 							// Identifier von diesem BasicGameState
 	private StateBasedEntityManager entityManager;
+	private Entity background;
 
 	
     MainMenuState( int sid ) {
@@ -45,6 +46,10 @@ public class MainMenuState extends BasicGameState {
      */
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
+		background = new Entity("background");
+		background.setPosition(new Vector2f(0,0));
+		background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
+		background.setScale(2);
     	// Action von New Game Button
     	ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	Action new_Game_Action = new ChangeStateAction(Launch.OPTIONS_STATE);
@@ -85,6 +90,7 @@ public class MainMenuState extends BasicGameState {
 												Graphics g) throws SlickException {
 		g.setBackground(new Color(0,0,0));
 		g.clear();
+		background.render(container, game, g);
 		entityManager.renderEntities(container, game, g);
 	}
 
