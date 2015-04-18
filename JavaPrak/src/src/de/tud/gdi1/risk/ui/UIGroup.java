@@ -94,6 +94,15 @@ public class UIGroup extends UIElement{
 	public void setVisible(boolean b)
 	{
 		super.setVisible(b);
+		for(UIElement element : this.components)
+			if(element instanceof UIButton)
+			{
+				UIButton button = (UIButton) element;
+				if(!b)
+					button.disableButton();
+				else 
+					button.enableButton();
+			}
 	}
 	
 	public void setRenderComponent(ImageRenderComponent component)
