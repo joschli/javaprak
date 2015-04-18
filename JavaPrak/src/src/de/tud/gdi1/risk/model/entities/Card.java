@@ -1,7 +1,6 @@
-package src.de.tud.gdi1.risk.model;
+package src.de.tud.gdi1.risk.model.entities;
 
 import eea.engine.entity.Entity;
-import src.de.tud.gdi1.risk.model.entities.Country;
 
 public class Card extends Entity{
 

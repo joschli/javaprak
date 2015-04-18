@@ -4,7 +4,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-import src.de.tud.gdi1.risk.model.Card;
+import src.de.tud.gdi1.risk.model.entities.Card;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.Action;
 import eea.engine.component.render.ImageRenderComponent;

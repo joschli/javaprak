@@ -59,8 +59,9 @@ public class UIButton extends UIElement{
 			float x,y;
 			x = this.getPosition().x-this.getSize().x/2;
 			y = this.getPosition().y-this.getSize().y/2;
-			if(renderComponent != null)
+			if(renderComponent != null){
 				renderComponent.render(container, game, g);
+			}
 			else 
 			{
 				if(usable){

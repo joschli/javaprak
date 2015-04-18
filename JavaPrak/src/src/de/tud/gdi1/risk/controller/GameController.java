@@ -3,11 +3,11 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Arrays;
 
-import src.de.tud.gdi1.risk.model.Card;
 import src.de.tud.gdi1.risk.model.Continent;
 import src.de.tud.gdi1.risk.model.GameMap;
 import src.de.tud.gdi1.risk.model.Options;
 import src.de.tud.gdi1.risk.model.Player;
+import src.de.tud.gdi1.risk.model.entities.Card;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import src.de.tud.gdi1.risk.ui.GameplayState;
 

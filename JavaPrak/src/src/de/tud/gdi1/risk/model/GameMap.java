@@ -18,6 +18,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
 
 import src.de.tud.gd1.risk.factory.CountryFactory;
+import src.de.tud.gdi1.risk.model.entities.Card;
 import src.de.tud.gdi1.risk.model.entities.Country;
 
 public class GameMap {
@@ -48,6 +49,15 @@ public class GameMap {
 		createCards();
 		createReinforcements();
 		colorizeCountries();
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
 	}
 
 	private void colorizeCountries() {

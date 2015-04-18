@@ -11,6 +11,7 @@ import eea.engine.entity.Entity;
 public class UISelection extends UIElement {
 
 	private Entity selectedEntity = null;
+	private boolean oval = true;
 	
 	public UISelection(String entityID) {
 		super(entityID);
@@ -37,13 +38,20 @@ public class UISelection extends UIElement {
 		{
 			g.setColor(new Color(0,175,0,255));
 			g.setLineWidth(3);
-			g.drawOval(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
-			//g.drawRect(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
+			if(oval)
+				g.drawOval(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().x / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
+			else
+				g.drawRect(selectedEntity.getPosition().x-(selectedEntity.getSize().x/2), selectedEntity.getPosition().y-(selectedEntity.getSize().y / 2), selectedEntity.getSize().x, selectedEntity.getSize().y);
 			g.setLineWidth(1);
 		}
 	}
 
 	public Entity getSelectedEntity() {
 		return this.selectedEntity;
+	}
+	
+	public void setOval(boolean b)
+	{
+		this.oval = b;
 	}
 }

@@ -1,42 +1,225 @@
 package src.de.tud.gdi1.risk.ui;
 
+import java.util.ArrayList;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.component.render.ImageRenderComponent;
+import eea.engine.entity.Entity;
+import eea.engine.entity.StateBasedEntityManager;
+import eea.engine.event.ANDEvent;
+import eea.engine.event.basicevents.MouseClickedEvent;
+import eea.engine.event.basicevents.MouseEnteredEvent;
+import src.de.tud.gd1.risk.actions.SelectAction;
+import src.de.tud.gd1.risk.actions.TradeInCardsAction;
+import src.de.tud.gdi1.risk.controller.GameController;
+import src.de.tud.gdi1.risk.model.entities.Card;
 
 public class CardState extends BasicGameState {
 
 	private int stateID;
-	
+	private ArrayList<Card> cards = new ArrayList<Card>();
+	private StateBasedEntityManager entityManager;
+	private ArrayList<UIButton> cardButtons = new ArrayList<UIButton>();
+	private float height = 0;
+	private float width = 0;
+	private ArrayList<UISelection> selections = new ArrayList<UISelection>();
+	private ArrayList<String> icons = new ArrayList<String>();
+	private Card[] result;
 	public CardState(int stateID)
 	{
 		this.stateID = stateID;
+		this.entityManager = StateBasedEntityManager.getInstance();
 	}
+	
 	
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		this.height = container.getHeight();
+		this.width = container.getWidth();
+		this.result = new Card[3];
+		//Events
+		ANDEvent cancelEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		cancelEvent.addAction(new ChangeStateAction(Launch.GAMEPLAY_STATE));
+		ANDEvent tradeEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		tradeEvent.addAction(new TradeInCardsAction());
+		//Buttons
+		UIButton cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(container.getWidth()/5, container.getHeight()/2), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton tradeButton = new UIButton("tradeButton", "Trade In", new Vector2f(container.getWidth()/5, container.getHeight()/2-48), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		cancelButton.addComponent(cancelEvent);
+		tradeButton.disableButton();
 		
+		//Selections
+		UISelection selection1 = new UISelection("selection1");
+		UISelection selection2 = new UISelection("selection2");
+		UISelection selection3 = new UISelection("selection3");
+		selection1.setOval(false);
+		selection2.setOval(false);
+		selection3.setOval(false);
+		selections.add(selection1);
+		selections.add(selection2);
+		selections.add(selection3);
+		
+		icons.add("assets/artillery.png");
+		icons.add("assets/cavalry.png");
+		icons.add("assets/infantry.png");
+		
+		entityManager.addEntity(this.stateID, cancelButton);
+		entityManager.addEntity(this.stateID, tradeButton);
+		entityManager.addEntity(this.stateID, selection1);
+		entityManager.addEntity(this.stateID, selection2);
+		entityManager.addEntity(this.stateID, selection3);
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		g.drawString("Hallo", 100, 100);
+		for(Card c : cards){
+			c.render(container, game, g);
+		}
+		entityManager.renderEntities(container, game, g);
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-
+		entityManager.updateEntities(container, game, delta);
+		for(Card c : cards)
+			c.update(container, game, delta);
 	}
 
 	@Override
 	public int getID() {
 		return stateID;
+	}
+	
+	public void setCards(ArrayList<Card> cards) throws SlickException
+	{
+		int index = 0;
+		int line = 0;
+		for(int i = 0; i < cards.size(); ++i)
+		{
+			if(i == 5){
+				index -= 5;
+				line++;
+				System.out.println(line);
+			}
+			float cardWidth = width/3+(i+index)*112;
+			float cardHeight = height/5+line*161;
+			System.out.println(cardHeight);
+			System.out.println(cardWidth);
+			this.setUpCard(cards.get(i), cardWidth, cardHeight);
+		}
+	}
+	
+	private void setUpCard(Card c, float cardWidth, float cardHeight) throws SlickException
+	{
+		ANDEvent event = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		event.addAction(new SelectAction());
+		c.setPosition(new Vector2f(cardWidth, cardHeight));
+		ImageRenderComponent image = null;
+		if(c.getValue() == Card.ARTILLERY)
+			image = new ImageRenderComponent(new Image("assets/card_canon.png"));
+		else if(c.getValue() == Card.INFANTRY)
+			image = new ImageRenderComponent(new Image("assets/card_infantry.png"));
+		else
+			image = new ImageRenderComponent(new Image("assets/card_cavalry.png"));
+		c.setScale(1);
+		c.setSize(new Vector2f(95, 145));
+		c.addComponent(image);
+		c.addComponent(event);
+		UILabel label = new UILabel("cardLabel", c.getCountry().getName(), Color.red, new Vector2f(c.getPosition().x, c.getPosition().y-30));
+		label.setSize(new Vector2f(95, 70));
+		entityManager.addEntity(this.stateID, label);
+		this.cards.add(c);
+	}
+
+
+	public Card[] getTradeIn() {
+		return result;
+	}
+
+
+	public void selectCard(Card ownerEntity) {
+		int infantryCount = 0;
+		int cavlaryCount = 0;
+		int artilleryCount = 0;
+		for(int i = 0; i < selections.size(); ++i)
+		{
+			if(selections.get(i).hasEntitySelected() && selections.get(i).getSelectedEntity().getID() == ownerEntity.getID())
+			{
+				selections.get(i).resetSelection();
+				checkForTradeIn();
+				return;
+			}
+		}
+		for(int i = 0; i < selections.size(); ++i)
+		{
+			if(selections.get(i).hasEntitySelected())
+			{
+				Card c = (Card) selections.get(i).getSelectedEntity();
+				if(c.getValue() == Card.ARTILLERY)
+					artilleryCount++;
+				else if(c.getValue() == Card.CAVALRY)
+					cavlaryCount++;
+				else
+					infantryCount++;
+			}
+		}
+		if(
+				(infantryCount == 2 && ownerEntity.getValue() != Card.INFANTRY)
+				||
+				(cavlaryCount == 2 && ownerEntity.getValue() != Card.CAVALRY)
+				||
+				(artilleryCount == 2 && ownerEntity.getValue() != Card.ARTILLERY)
+				||
+				(infantryCount == 1 && cavlaryCount == 1 && ownerEntity.getValue() != Card.ARTILLERY)
+				|| 
+				(cavlaryCount == 1 && artilleryCount == 1 && ownerEntity.getValue() != Card.INFANTRY)
+				|| 
+				(artilleryCount == 1 && infantryCount == 1 && ownerEntity.getValue() != Card.CAVALRY))
+			return;
+		
+		
+		
+		
+		for(int i = 0; i < selections.size(); ++i){
+			if(!selections.get(i).hasEntitySelected())
+			{
+				selections.get(i).selectEntity(ownerEntity);
+				checkForTradeIn();
+				return;
+			}
+		}
+	}
+
+
+	private void checkForTradeIn() {
+		int count = 0;
+		for(int i = 0; i < selections.size(); ++i)
+		{
+			if(selections.get(i).hasEntitySelected())
+				count++;
+		}
+		System.out.println(count);
+		UIButton button = (UIButton) entityManager.getEntity(this.stateID, "tradeButton");
+		if(count == selections.size()){
+			result[0] = (Card) selections.get(0).getSelectedEntity();
+			result[1] = (Card) selections.get(1).getSelectedEntity();
+			result[2] = (Card) selections.get(2).getSelectedEntity();
+			button.enableButton();
+		}else
+			button.disableButton();
 	}
 
 }

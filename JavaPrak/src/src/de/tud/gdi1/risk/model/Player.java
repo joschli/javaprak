@@ -1,5 +1,8 @@
 package src.de.tud.gdi1.risk.model;
 import org.newdawn.slick.Color;
+
+import src.de.tud.gdi1.risk.model.entities.Card;
+
 import java.util.ArrayList;
 
 

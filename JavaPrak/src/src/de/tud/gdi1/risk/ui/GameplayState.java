@@ -26,6 +26,7 @@ import src.de.tud.gd1.risk.actions.ShowCardAction;
 import src.de.tud.gd1.risk.actions.ShowMissionAction;
 import src.de.tud.gd1.risk.actions.StartFortifyAction;
 import src.de.tud.gdi1.risk.controller.GameController;
+import src.de.tud.gdi1.risk.model.entities.Card;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.component.render.ImageRenderComponent;
@@ -47,6 +48,7 @@ public class GameplayState extends BasicGameState {
 	private ArrayList<Country> countries;
 	private ArrayList<ImageRenderComponent[]> blueDiceImages = new ArrayList<ImageRenderComponent[]>();
 	private ArrayList<ImageRenderComponent[]> redDiceImages = new ArrayList<ImageRenderComponent[]>();
+	private boolean showCards = false;
 
     public GameplayState( int sid) {
        stateID = sid;
@@ -124,7 +126,7 @@ public class GameplayState extends BasicGameState {
 		UIButton blueButton2 = new UIButton("blue2Button", "", new Vector2f(commandWindow.getSize().x/2+32, 308), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
 		UILabel firstAttack = new UILabel("firstAttackLabel", ">", Color.red, new Vector2f(commandWindow.getSize().x/2, 228));
 		UILabel secondAttack = new UILabel("secondAttackLabel", ">", Color.red, new Vector2f(commandWindow.getSize().x/2, 308));
-		UILabel countryConquered = new UILabel("countryConqueredLabel", "Player 0 conquered Country 0", Color.red, new Vector2f(commandWindow.getSize().x/2, 500));
+		UILabel countryConquered = new UILabel("countryConqueredLabel", "Player 0 conquered Country 0", Color.red, new Vector2f(commandWindow.getSize().x/2, 450));
 		countryConquered.setSize(new Vector2f(110,1000));
 		redButton1.setVisible(false);
 		redButton2.setVisible(false);
@@ -224,6 +226,13 @@ public class GameplayState extends BasicGameState {
     	
     	if(gameController.getState() == 4){
     		game.enterState(Launch.WIN_STATE);
+    	}
+    	else if(showCards)
+    	{
+    		CardState state = (CardState) game.getState(Launch.CARD_STATE);
+    		state.setCards(gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getCardList());
+    		showCards = false;
+    		game.enterState(Launch.CARD_STATE);
     	}
 		
 	}
@@ -722,6 +731,14 @@ public class GameplayState extends BasicGameState {
 	public boolean isMissionTextVisibible()
 	{
 		return userInterface.isComponenetVisible("missionGroup");
+	}
+
+	public void showCards() {
+		this.showCards = true;
+	}
+
+	public void setTradeIn(Card[] tradeIn) {
+		gameController.tradeInCards(tradeIn);
 	}
 
 
