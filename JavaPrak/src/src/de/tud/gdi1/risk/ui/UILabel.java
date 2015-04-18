@@ -41,7 +41,7 @@ public class UILabel extends UIElement{
 	
 	private void checkName(Graphics g) {
 		String text = labelName;
-		if(this.getSize().x != 0 || this.getSize().y != 0 && !lineBreak)
+		if(text.contains(" ") && (this.getSize().x != 0 || this.getSize().y != 0 && !lineBreak))
 		{
 		
 			if(g.getFont().getWidth(labelName) > this.getSize().x)

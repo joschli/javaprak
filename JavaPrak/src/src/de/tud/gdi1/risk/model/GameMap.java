@@ -58,6 +58,10 @@ public class GameMap {
 		this.players[0].addCard(this.getRandomCard());
 		this.players[0].addCard(this.getRandomCard());
 		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
+		this.players[0].addCard(this.getRandomCard());
 	}
 
 	private void colorizeCountries() {

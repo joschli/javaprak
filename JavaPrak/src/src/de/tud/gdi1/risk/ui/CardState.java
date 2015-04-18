@@ -1,6 +1,7 @@
 package src.de.tud.gdi1.risk.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -18,9 +19,9 @@ import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
+import src.de.tud.gd1.risk.actions.CancelTradeInAction;
 import src.de.tud.gd1.risk.actions.SelectAction;
 import src.de.tud.gd1.risk.actions.TradeInCardsAction;
-import src.de.tud.gdi1.risk.controller.GameController;
 import src.de.tud.gdi1.risk.model.entities.Card;
 
 public class CardState extends BasicGameState {
@@ -28,11 +29,9 @@ public class CardState extends BasicGameState {
 	private int stateID;
 	private ArrayList<Card> cards = new ArrayList<Card>();
 	private StateBasedEntityManager entityManager;
-	private ArrayList<UIButton> cardButtons = new ArrayList<UIButton>();
 	private float height = 0;
 	private float width = 0;
 	private ArrayList<UISelection> selections = new ArrayList<UISelection>();
-	private ArrayList<String> icons = new ArrayList<String>();
 	private Card[] result;
 	public CardState(int stateID)
 	{
@@ -50,7 +49,7 @@ public class CardState extends BasicGameState {
 		this.result = new Card[3];
 		//Events
 		ANDEvent cancelEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-		cancelEvent.addAction(new ChangeStateAction(Launch.GAMEPLAY_STATE));
+		cancelEvent.addAction(new CancelTradeInAction());
 		ANDEvent tradeEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		tradeEvent.addAction(new TradeInCardsAction());
 		//Buttons
@@ -70,10 +69,6 @@ public class CardState extends BasicGameState {
 		selections.add(selection1);
 		selections.add(selection2);
 		selections.add(selection3);
-		
-		icons.add("assets/artillery.png");
-		icons.add("assets/cavalry.png");
-		icons.add("assets/infantry.png");
 		
 		entityManager.addEntity(this.stateID, cancelButton);
 		entityManager.addEntity(this.stateID, tradeButton);
@@ -106,11 +101,13 @@ public class CardState extends BasicGameState {
 	
 	public void setCards(ArrayList<Card> cards) throws SlickException
 	{
+		
+		reset();
 		int index = 0;
 		int line = 0;
 		for(int i = 0; i < cards.size(); ++i)
 		{
-			if(i == 5){
+			if(i == 5 || i == 10){
 				index -= 5;
 				line++;
 				System.out.println(line);
@@ -121,8 +118,30 @@ public class CardState extends BasicGameState {
 			System.out.println(cardWidth);
 			this.setUpCard(cards.get(i), cardWidth, cardHeight);
 		}
+		UIButton button = (UIButton) entityManager.getEntity(this.stateID, "cancelButton");
+		if(this.cards.size() > 5)
+			button.disableButton();
+		else
+			button.enableButton();
 	}
 	
+	private void reset() {
+		this.cards.clear();
+		List<Entity> entities = entityManager.getEntitiesByState(this.stateID);
+		for(Entity e : entities)
+			if(e.getID() == "cardLabel")
+				entityManager.removeEntity(this.stateID, e);
+			else if(e.getID() == "tradeButton"){
+				UIButton button = (UIButton) e;
+				button.disableButton();
+			}
+		for(UISelection s : selections)
+			s.resetSelection();
+		this.result = new Card[3];
+	}
+
+
+
 	private void setUpCard(Card c, float cardWidth, float cardHeight) throws SlickException
 	{
 		ANDEvent event = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
