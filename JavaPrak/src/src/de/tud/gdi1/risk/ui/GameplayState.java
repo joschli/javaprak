@@ -26,6 +26,7 @@ import src.de.tud.gd1.risk.actions.ShowCardAction;
 import src.de.tud.gd1.risk.actions.ShowMissionAction;
 import src.de.tud.gd1.risk.actions.StartFortifyAction;
 import src.de.tud.gdi1.risk.controller.GameController;
+import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Card;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.basicactions.ChangeStateAction;
@@ -765,6 +766,11 @@ public class GameplayState extends BasicGameState {
 
 	public void setTradeIn(Card[] tradeIn) {
 		gameController.tradeInCards(tradeIn);
+	}
+
+	public void playerDefeated(Player defendingPlayer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

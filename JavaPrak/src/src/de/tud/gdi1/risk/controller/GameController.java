@@ -305,7 +305,10 @@ public class GameController {
 		
 		if(countryConquered)
 		{
+			Player defendingPlayer = countries[1].getOwner();
+				
 			countries[1].setOwner(map.getPlayer(currentPlayer));
+			
 			if(countries[0].getTroops() == diceCount+1)
 			{
 				troopsMovedEvent(diceCount, countries);
@@ -316,6 +319,17 @@ public class GameController {
 				troopsMovedEvent(diceCount, countries);
 				view.requestTroopMovement(0, this.countries[0].getTroops()-1);	
 			}
+			
+			if(map.getOwnedCountriesForPlayer(defendingPlayer) == 0)
+			{
+				System.out.println(defendingPlayer.getName() + " defeated!");
+				view.playerDefeated(defendingPlayer);
+				for(Card c : defendingPlayer.getCardList())
+				{
+					map.getPlayer(currentPlayer).addCard(c);
+				}
+			}
+			
 		}
 		
 	}
