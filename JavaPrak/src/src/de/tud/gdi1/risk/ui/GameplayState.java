@@ -76,6 +76,8 @@ public class GameplayState extends BasicGameState {
     		blueDiceImages.add(b);
     	}
     	// Player Label
+    	UIGroup headerGroup = new UIGroup("Header", new Vector2f(container.getWidth()/5+200, 30), new Vector2f(500, 32));
+    	headerGroup.setRenderComponent(new ImageRenderComponent(new Image("assets/header.jpg")));
 		UILabel playerName = new UILabel("playerNameLabel", null, null, new Vector2f(container.getWidth()/5,30));
 		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(container.getWidth()/5+150,30));
 		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(container.getWidth()/5+350, 30));
@@ -86,12 +88,12 @@ public class GameplayState extends BasicGameState {
 		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth+10, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
 		UIButton showCardButton = new UIButton("showCardButton", "Show Cards", new Vector2f((int)6* buttonWidth+25, container.getHeight() - buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		turnButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
-		attackButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
-		phaseButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
-		fortifyButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
-		showMissionButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
-		showCardButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture.jpg")));
+		turnButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		attackButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		phaseButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		fortifyButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		showMissionButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		showCardButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
 		// Events
 		ANDEvent turnEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		turnEvent.addAction(new EndTurnAction());
@@ -172,6 +174,7 @@ public class GameplayState extends BasicGameState {
 		missionWindow.setScale((float) 0.5);
 		missionWindow.setRenderComponent(new ImageRenderComponent(new Image("assets/missionBackground.jpg")));
 		missionWindow.setBorder(true, 3, Color.black);
+		userInterface.addComponent(headerGroup);
 		userInterface.addComponenet(playerName);
 		userInterface.addComponent(phaseName);
 		userInterface.addComponent(reinforcementCount);
