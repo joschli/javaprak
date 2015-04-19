@@ -529,7 +529,8 @@ public class GameplayState extends SuperBasicGameState {
 			else
 				secondAttackLabel.setLabelName("<");
 			secondAttackLabel.setVisible(true);
-		}
+		}else
+			secondAttackLabel.setVisible(false);
 		
 		if(countryConquered)
 		{
