@@ -8,6 +8,10 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * Action for entering a new phase
+ * It only works if the button is enabled.
+ */
 public class NextPhaseAction implements Action{
 
 	@Override
@@ -15,7 +19,6 @@ public class NextPhaseAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			System.out.println("Next Phase");
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)

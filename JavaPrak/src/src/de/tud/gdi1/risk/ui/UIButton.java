@@ -25,17 +25,7 @@ public class UIButton extends UIElement{
 		this.color = buttonColor;
 		this.setScale(1);
 		this.borderColor = Color.black;
-		/*
-		try {
-			this.renderComponent = new ImageRenderComponent(new Image("assets/entry.png"));
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		renderComponent.setOwnerEntity(this);
-		*/
-		//this.setSize(renderComponent.getSize());
-		
+		// Label on the Button
 		label = new UILabel(entityID+"Label", buttonName, labelColor, new Vector2f((this.getPosition().x-this.getSize().x/2), (this.getPosition().y-this.getSize().y/2) ));
 		label.setVisible(true);
 		this.labelColor = labelColor;
@@ -43,6 +33,10 @@ public class UIButton extends UIElement{
 		this.setSize(size);
 	}
 	
+	/**
+	 * sets a ImageRenderComponent that should be drawn as the button Background
+	 * @param renderComponent
+	 */
 	public void setRenderComponent(ImageRenderComponent renderComponent)
 	{
 		this.renderComponent = renderComponent;
@@ -50,6 +44,9 @@ public class UIButton extends UIElement{
 		this.setSize(renderComponent.getSize());
 	}
 	
+	/**
+	 * Draws a rect in the buttonColor if no renderComponent is assigned
+	 */
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.isVisible()){
@@ -80,7 +77,10 @@ public class UIButton extends UIElement{
 		}
 	}
 
-	
+	/**
+	 * autoposition of the label on the button, influenced by the labellength
+	 * @param g
+	 */
 	private void setLabelPosition(Graphics g) {
 		String text = label.getContent();
 		float textWidth = g.getFont().getWidth(text);

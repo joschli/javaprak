@@ -2,12 +2,16 @@ package src.de.tud.gd1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
-
 import src.de.tud.gdi1.risk.ui.OptionState;
 import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This action starts a new game when the newGameButton is pressed.
+ * It only works if the button is enabled.
+ *
+ */
 public class StartGameAction implements Action{
 
 	@Override

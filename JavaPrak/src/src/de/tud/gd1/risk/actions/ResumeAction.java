@@ -10,6 +10,10 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This action gets called when the resumeButton is pressed for entering the GamePlayState.
+ * It only works if the button is enabled.
+ */
 public class ResumeAction implements Action{
 
 	@Override
@@ -17,7 +21,6 @@ public class ResumeAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof MainMenuState)
 		{
-			System.out.println("Resume Game");
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)
 			{

@@ -17,20 +17,35 @@ public class UISelection extends UIElement {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Selects the given Entity
+	 * @param entity to be selected
+	 */
 	public void selectEntity(Entity entity)
 	{
 		this.selectedEntity = entity;
 	}
 
+	/**
+	 * resets the current selection
+	 */
 	public void resetSelection()
 	{
 		this.selectedEntity = null;
 	}
 	
+	/**
+	 * returns if something is selected
+	 * @return true if something is selected, else false
+	 */
 	public boolean hasEntitySelected()
 	{
 		return this.selectedEntity != null;
 	}
+
+	/**
+	 * Draws a rectangle or oval around the selected entity if one is selected
+	 */
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.selectedEntity != null && this.isVisible())
@@ -45,10 +60,18 @@ public class UISelection extends UIElement {
 		}
 	}
 
+	/**
+	 * returns the selected Entity
+	 * @return the selected Entity
+	 */
 	public Entity getSelectedEntity() {
 		return this.selectedEntity;
 	}
 	
+	/**
+	 * sets if the selection should be a oval or a rectangle
+	 * @param b if true the selection is oval, else a rectangle
+	 */
 	public void setOval(boolean b)
 	{
 		this.oval = b;

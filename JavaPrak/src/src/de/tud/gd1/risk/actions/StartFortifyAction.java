@@ -2,11 +2,17 @@ package src.de.tud.gd1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
-
 import src.de.tud.gdi1.risk.ui.GameplayState;
 import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
+
+/**
+ * When the fortfyButton is pressed, this action show the fortifyWindow by
+ * calling the GameplayState.startFortify() method.
+ * It only works if the button is enabled.
+ *
+ */
 
 public class StartFortifyAction implements Action{
 
@@ -15,7 +21,6 @@ public class StartFortifyAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			System.out.println("Fortify");
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)

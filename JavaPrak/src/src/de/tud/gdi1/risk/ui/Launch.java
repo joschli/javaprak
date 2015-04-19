@@ -14,7 +14,7 @@ import eea.engine.entity.StateBasedEntityManager;
  */
 public class Launch extends StateBasedGame {
 	
-	// Jeder State wird durch einen Integer-Wert gekennzeichnet
+	// States
     public static final int MAINMENU_STATE = 0;
     public static final int GAMEPLAY_STATE = 1;
     public static final int OPTIONS_STATE = 2;
@@ -28,7 +28,6 @@ public class Launch extends StateBasedGame {
  
     public static void main(String[] args) throws SlickException
     {
-    	// Setze den library Pfad abhaengig vom Betriebssystem
     	if (System.getProperty("os.name").toLowerCase().contains("windows")) {
     		System.setProperty("org.lwjgl.librarypath",System.getProperty("user.dir") + "/native/windows");
 	} else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
@@ -37,10 +36,7 @@ public class Launch extends StateBasedGame {
     		System.setProperty("org.lwjgl.librarypath",System.getProperty("user.dir") + "/native/" +System.getProperty("os.name").toLowerCase());
     	}
     	
-    	// Setze dieses StateBasedGame in einen App Container (oder Fenster)
         AppGameContainer app = new AppGameContainer(new Launch());
-        // Lege die Einstellungen des Fensters fest und starte das Fenster
-        // (nicht aber im Vollbildmodus)
         app.setDisplayMode(1028, 600, false);
         app.setShowFPS(false);
         app.setIcon("assets/icon.png");
@@ -50,14 +46,13 @@ public class Launch extends StateBasedGame {
 
 	@Override
 	public void initStatesList(GameContainer arg0) throws SlickException {
-		// Fuege dem StateBasedGame die States hinzu 
-		// (der zuerst hinzugefuegte State wird als erster State gestartet)
+		// Adding states
 		addState(new MainMenuState(MAINMENU_STATE));
         addState(new GameplayState(GAMEPLAY_STATE));
         addState(new OptionState(OPTIONS_STATE));
         addState(new CardState(CARD_STATE));
         
-        // Fuege dem StateBasedEntityManager die States hinzu
+        // adding states to the entityManager
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
         StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
         StateBasedEntityManager.getInstance().addState(OPTIONS_STATE);

@@ -124,12 +124,18 @@ public class OptionState extends SuperBasicGameState {
 
 	}
 
+	/**
+	 * starts a new game with the playerCount from the counter
+	 */
 	public void startNewGame() {
 		UICounter counter = (UICounter) entityManager.getEntity(this.getID(), "playerCounter");
 		this.options.setPlayerCount(counter.getCounter());
 		this.startGame = true;
 	}
 
+	/**
+	 * Selects a optionButton
+	 */
 	@Override
 	public void selectAction(Entity entity) {
 		UIButton button = (UIButton) entity;
@@ -140,6 +146,9 @@ public class OptionState extends SuperBasicGameState {
 			selection1.selectEntity(button);
 	}
 
+	/**
+	 * Cancels the game creation and goes back to the main menu
+	 */
 	@Override
 	public void cancelAction(StateBasedGame game) {
 		game.enterState(Launch.MAINMENU_STATE);

@@ -2,6 +2,10 @@ package src.de.tud.gdi1.risk.model;
 
 import org.newdawn.slick.Color;
 
+/**
+ * Options for the game
+ * This class saves all the information need to setup a game.
+ */
 
 public class Options {
 

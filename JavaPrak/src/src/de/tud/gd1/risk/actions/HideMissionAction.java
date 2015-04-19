@@ -8,6 +8,11 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This action is called when the HideMissionButton is pressed, and hides the Mission Window.
+ * It only works if the button is enabled.
+ */
+
 public class HideMissionAction implements Action{
 
 	@Override
@@ -24,7 +29,6 @@ public class HideMissionAction implements Action{
 				usable = button.getUsability();
 			}
 			if(event.getOwnerEntity().isVisible() && usable && state.isMissionTextVisibible()){
-				System.out.println("Hide Mission");
 				state.hideMissionText();
 			}
 		}

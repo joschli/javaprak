@@ -39,26 +39,25 @@ public class MainMenuState extends BasicGameState {
        entityManager = StateBasedEntityManager.getInstance();
     }
     
-    /**
-     * Wird vor dem (erstmaligen) Starten dieses State's ausgefuehrt
-     */
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		background = new Entity("background");
 		background.setPosition(new Vector2f(0,0));
 		background.addComponent(new ImageRenderComponent(new Image("assets/card_background.jpg")));
 		background.setScale(2);
-    	// Action von New Game Button
+    	// NewGameAction
     	ANDEvent mainEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	Action new_Game_Action = new ChangeStateAction(Launch.OPTIONS_STATE);
     	mainEvents.addAction(new_Game_Action);
-    	// Action von Beenden Button
+    	// QuitAction
     	ANDEvent mainEvents_q = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	Action quit_Action = new QuitAction();
     	mainEvents_q.addAction(quit_Action);
-    	
+    	// Resume Action
     	ANDEvent resumeEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	resumeEvent.addAction(new ResumeAction());
+    	
+    	//Buttons
     	UIButton resumeButton = new UIButton("resumeButton", "Resume Game", new Vector2f(container.getWidth()/2, container.getHeight()/2-64), new Vector2f(128,32), Color.gray, Color.black);
     	UIButton newGameButton = new UIButton("newGameButton", "New Game", new Vector2f(container.getWidth()/2, container.getHeight()/2), new Vector2f(128, 32), Color.gray, Color.black);
     	UIButton exitGameButton = new UIButton("exitGameButton", "Exit Game", new Vector2f(container.getWidth()/2, container.getHeight()/2+64), new Vector2f(128, 32), Color.gray, Color.black);
@@ -68,24 +67,21 @@ public class MainMenuState extends BasicGameState {
     	newGameButton.addComponent(mainEvents);
     	exitGameButton.addComponent(mainEvents_q);
     	resumeButton.addComponent(resumeEvent);
+    	//adding the buttons to the entityManager
     	entityManager.addEntity(this.stateID, newGameButton);
     	entityManager.addEntity(this.stateID, exitGameButton);
     	entityManager.addEntity(this.stateID, resumeButton);
+    	// Disabling resume
     	resumeButton.disableButton();
     }
 
-    /**
-     * Wird vor dem Frame ausgefuehrt
-     */
+ 
     @Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		entityManager.updateEntities(container, game, delta);
 	}
-    
-    /**
-     * Wird mit dem Frame ausgefuehrt
-     */
+
 	@Override
 	public void render(GameContainer container, StateBasedGame game, 
 												Graphics g) throws SlickException {
@@ -100,6 +96,11 @@ public class MainMenuState extends BasicGameState {
 		return stateID;
 	}
 
+	/**
+	 * enables or disables the resume button
+	 * @param b determines if the button should be enabled because there is a started game if b = true or if 
+	 * the button should be disabled because no game is running (b = false)
+	 */
 	public void setGameStarted(boolean b) {
 		UIButton button = (UIButton) entityManager.getEntity(this.stateID, "resumeButton");
 		if(b)

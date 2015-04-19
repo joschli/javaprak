@@ -12,8 +12,8 @@ public class UILabel extends UIElement{
 
 	public Color color;
 	private String labelName;
-	private boolean setPosition = false;
-	private boolean lineBreak = false;
+	private boolean setPosition = false; // if the label was autopositioned
+	private boolean lineBreak = false; // if the content got linebreaked
 	
 	public UILabel(String entityID, String labelName, Color color, Vector2f position) {
 		super(entityID);
@@ -35,6 +35,10 @@ public class UILabel extends UIElement{
 		}
 	}
 	
+	/**
+	 * rearranges the labelcontent to fit into the given size and position
+	 * @param g the GraphicsContext
+	 */
 	private void checkName(Graphics g) {
 		String text = labelName;
 		if(text.contains(" ") && (this.getSize().x != 0 || this.getSize().y != 0 && !lineBreak))
@@ -43,21 +47,6 @@ public class UILabel extends UIElement{
 			if(g.getFont().getWidth(labelName) > this.getSize().x)
 			{
 				ArrayList<String> words = new ArrayList<String>();
-				/*
-				float letterWidth = g.getFont().getWidth("a");
-				int letterPerLine = (int) ((int) this.getSize().x / letterWidth);
-				int lineSegments = labelName.length()/letterPerLine;
-				for(int i = 0; i < lineSegments; i++)
-				{
-					text += labelName.substring(i*letterPerLine, i*letterPerLine+letterPerLine);
-					text += "\n";
-					
-				}
-				if(letterPerLine*lineSegments+letterPerLine < labelName.length()){
-					text += "\n";
-					text += labelName.substring(letterPerLine*lineSegments+letterPerLine, labelName.length());
-				}
-				*/
 				int index = -1;
 				while(text.indexOf(" ", index+1) != -1)
 				{
@@ -69,7 +58,6 @@ public class UILabel extends UIElement{
 				String test = "";
 				for(String s : words)
 					test += s;
-				//System.out.println(test);
 				ArrayList<String> lines = new ArrayList<String>();
 				int wordIndex = 0;
 				String line = "";
@@ -89,7 +77,6 @@ public class UILabel extends UIElement{
 				test = "";
 				for(String s : lines)
 					test += s + "\n";
-				//System.out.println(test);
 				this.labelName = test;
 				lineBreak = true;
 				text = test;

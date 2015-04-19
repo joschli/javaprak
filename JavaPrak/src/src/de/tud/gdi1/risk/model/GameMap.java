@@ -47,6 +47,9 @@ public class GameMap {
 		colorizeCountries();
 	}
 
+	/**
+	 * This method sets the Color of every Country on the Color of the continent it belongs to
+	 */
 	private void colorizeCountries() {
 		for (Continent conti : continents) {
 			for (int index : conti.getCountries()) {
@@ -54,7 +57,10 @@ public class GameMap {
 			}
 		}
 	}
-
+	
+	/**
+	 * This gives all Players new Reinforcements
+	*/
 	private void createReinforcements() {
 		for (Player p : players) {
 			p.addReinforcement(3);
@@ -62,7 +68,8 @@ public class GameMap {
 
 		}
 	}
-
+	
+	
 	// loads a Map txt-file and creates the continents and countries for it
 	private static void loadMap(String path) {
 
@@ -176,7 +183,6 @@ public class GameMap {
 			    countryFactory.updateFactory(name, position);
 			    
 			    countries.add((Country) countryFactory.createEntity());
-			   // System.out.println(name + " ");
 			    this.getContinent(entrys[2]).addCountry(countries.size()-1);
 			    
 			}

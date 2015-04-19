@@ -14,7 +14,10 @@ import src.de.tud.gd1.risk.actions.SelectAction;
 
 import src.de.tud.gdi1.risk.model.entities.Country;
 
-
+/**
+ * Factory for creating Country Objects
+ *
+ */
 public class CountryFactory implements IEntityFactory {
 
 	private String name;
@@ -28,6 +31,10 @@ public class CountryFactory implements IEntityFactory {
 		
 	}
 	
+	/**
+	 * creates a new Country with the given name and position
+	 * @return the created country
+	 */
 	@Override
 	public Entity createEntity()
 	{
@@ -44,6 +51,11 @@ public class CountryFactory implements IEntityFactory {
 		return country;
 	}
 	
+	/**
+	 * used to update the Factory for creating a country with a new name and position.
+	 * @param name of the country
+	 * @param position of the country
+	 */
 	public void updateFactory(String name, Vector2f position)
 	{
 		this.name = name;

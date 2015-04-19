@@ -38,26 +38,26 @@ import eea.engine.event.basicevents.MouseEnteredEvent;
 
 public class GameplayState extends SuperBasicGameState {
 
-	private GameController gameController;// zugehoeriger entityManager
+	private GameController gameController; // state machine
 	private UserInterface userInterface;
-	private boolean attackButtonPressed = false;
-	private ArrayList<Country> countries;
+	private ArrayList<Country> countries; // list of all countries to draw them
+	// ImageRenderComponents for the Dice
 	private ArrayList<ImageRenderComponent[]> blueDiceImages = new ArrayList<ImageRenderComponent[]>();
 	private ArrayList<ImageRenderComponent[]> redDiceImages = new ArrayList<ImageRenderComponent[]>();
 	private boolean showCards = false;
-	private Entity background;
+	// Fields for showing a timed message on the screen
 	private boolean showMessage = false;
 	private int timer = 0;
 	private int timerDelay = 2000;
 	private boolean playerWon = false;
+	//Background
+	private Entity background;
     public GameplayState( int sid) {
        super(sid);
        
     }
     
-    /**
-     * Wird vor dem (erstmaligen) Starten dieses States ausgefuehrt
-     */
+  
     @Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
     	userInterface = new UserInterface();
@@ -126,7 +126,6 @@ public class GameplayState extends SuperBasicGameState {
 		// Window Overlay for ATTACK_PHASE & FORITFY_PHASE
 		UIGroup commandWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-80, 300), new Vector2f(145, 500));
 		commandWindow.setRenderComponent(new ImageRenderComponent(new Image("assets/test_command.jpg")));
-		//UIGroup attackWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(commandWindow.getSize().x/2,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(commandWindow.getSize().x/2, 50), 3, 1);
 		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(commandWindow.getSize().x/2,116), new Vector2f(128,32), Color.gray, Color.black);
@@ -176,6 +175,7 @@ public class GameplayState extends SuperBasicGameState {
 		missionWindow.setScale((float) 0.5);
 		missionWindow.setRenderComponent(new ImageRenderComponent(new Image("assets/missionBackground.jpg")));
 		missionWindow.setBorder(true, 3, Color.black);
+		// Adding all Components to the userInterface
 		userInterface.addComponent(headerGroup);
 		userInterface.addComponenet(playerName);
 		userInterface.addComponent(phaseName);
@@ -190,6 +190,7 @@ public class GameplayState extends SuperBasicGameState {
 		userInterface.addComponent(selection_2);
 		userInterface.addComponent(commandWindow);
 		userInterface.addComponenet(missionWindow);
+		//Setting the Visibility of some UIElements
 		userInterface.setVisibility("commandGroup", false);
 		UIGroup group = (UIGroup) userInterface.getComponent("commandGroup");
 		group.setComponentVisiblity("red1Button", false);
@@ -202,31 +203,28 @@ public class GameplayState extends SuperBasicGameState {
 		group.setComponentVisiblity("countryConqueredLabel", false);
 		userInterface.setVisibility("missionGroup", false);
 		
-    	// Hintergrund laden
-    	Entity background = new Entity("map");	// Entitaet fuer Hintergrund
-    	background.setPosition(new Vector2f(400+buttonWidth/2,300));	// Startposition des Hintergrunds
-    	background.addComponent(new ImageRenderComponent(new Image("assets/Blank Risk.PNG"))); // Bildkomponente
-    	    	
-    	// Hintergrund-Entitaet an StateBasedEntityManager uebergeben
+    	// Map Background
+    	Entity background = new Entity("map");	
+    	background.setPosition(new Vector2f(400+buttonWidth/2,300));	
+    	background.addComponent(new ImageRenderComponent(new Image("assets/Blank Risk.PNG")));
     	entityManager.addEntity(this.getID(), background);
     	
-    	// Bei DrÃ¼cken der ESC-Taste zurueck ins Hauptmenue wechseln
+    	// Pressing ESC for the MAINMENU
     	Entity esc_Listener = new Entity("ESC_Listener");
     	KeyPressedEvent esc_pressed = new KeyPressedEvent(Input.KEY_ESCAPE);
     	esc_pressed.addAction(new ChangeStateAction(Launch.MAINMENU_STATE));
     	esc_Listener.addComponent(esc_pressed);    	
     	entityManager.addEntity(this.getID(), esc_Listener);
+    	
+    	// Creating the state machine && initializing it
     	try {
 			gameController = new GameController(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
     	gameController.init();
-    	/*
-    	for(Entity e : gameController.getMap().getCountries())
-    		entityManager.addEntity(stateID, e);
-    	*/
     	countries = gameController.getMap().getCountries();
+    	//rearanging all countries
     	for(Country country : countries)
     	{
     		country.setPosition(new Vector2f(country.getPosition().x + buttonWidth/2, country.getPosition().y));
@@ -234,9 +232,7 @@ public class GameplayState extends SuperBasicGameState {
     	updateUserInterface();
     }
 
-    /**
-     * Wird vor dem Frame ausgefuehrt
-     */
+ 
     @Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities aktualisieren
@@ -274,6 +270,10 @@ public class GameplayState extends SuperBasicGameState {
     	}
 	}
     
+    /**
+     * If this method is called a timed message for the winning player is shown
+     * @param player who won
+     */
     private void playerWon(Player player) {
     	this.showMessage = true;
     	this.timerDelay = 5000;
@@ -283,6 +283,10 @@ public class GameplayState extends SuperBasicGameState {
 		userInterface.setVisibility("missionGroup", true);
 	}
 
+    /**
+     * updates the information on the UserInterface 
+     * and it enables/disables buttons as needed for the states.
+     */
 	public void updateUserInterface() {
     	UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
@@ -371,12 +375,9 @@ public class GameplayState extends SuperBasicGameState {
 		phaseNameLabel.setLabelName(labelName);
 	}
 
-	/**
-     * Wird mit dem Frame ausgefuehrt
-     */
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		// StatedBasedEntityManager soll alle Entities rendern
+		// Rendering the map and the background
 		Entity e = entityManager.getEntity(this.getID(), "map");
 		this.background.render(container, game, g);
 		g.setLineWidth(1);
@@ -385,6 +386,7 @@ public class GameplayState extends SuperBasicGameState {
 		g.setLineWidth(3);
 		g.drawRect(e.getPosition().x -e.getSize().x/2, e.getPosition().y-e.getSize().y/2, e.getSize().x, e.getSize().y);
 		g.setLineWidth(1);
+		// Rendering all countries
 		for(Country c: countries)
 		{
 			g.setColor(c.getColor());
@@ -399,6 +401,8 @@ public class GameplayState extends SuperBasicGameState {
 			g.drawString(new Integer(c.getTroops()).toString(), c.getPosition().x-5, c.getPosition().y-8);
 		}
 		userInterface.render(container, game, g);
+		
+		// Rendering that nice arrows
 		if(this.getCountriesSelected())
 		{
 			Country[] countries = this.getSelectedCountries();
@@ -429,30 +433,31 @@ public class GameplayState extends SuperBasicGameState {
 		}
 	}
 
-	public boolean attackButtonPressed() {
-		if(attackButtonPressed)
-		{
-			attackButtonPressed = false;
-			return true;
-		}
-		return false;
-	}
-
+	/**
+	 * ends the current turn and resets the UI for the new player
+	 */
 	public void endTurnButtonPressed() {
 		gameController.endTurn();
 		this.reset();
 	}
 
+	/**
+	 * shows the window for making an attack, but only if two valid countries are selected.
+	 */
 	public void AttackEvent() {
 	
 		if(getCountriesSelected())
 		{
-			System.out.println("Neighbor: " +this.getSelectedCountries()[0].isNeighbor(this.getSelectedCountries()[1]));
 			showAttackWindow();
 		}
 		
 	}
 
+	/**
+	 * shows the window for fortifying a country.
+	 * @param minCount the minimal Amount of Troops the player can fortify
+	 * @param maxCount the maximal Amount of Troops the player can fortify
+	 */
 	public void requestTroopMovement(int minCount, int maxCount) {
 		UIGroup fortifyWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UICounter counter = (UICounter) fortifyWindow.getComponent("counter");
@@ -468,10 +473,21 @@ public class GameplayState extends SuperBasicGameState {
 		userInterface.setVisibility("commandGroup", true);
 	}
 	
+	/**
+	 * tells the state machine how many dices the attacker wants to use and
+	 * on which countries
+	 */
 	public void rollDices() {
 		gameController.rollDiceEvent(this.getDiceCount(), this.getSelectedCountries());
 	}
 
+	/**
+	 * gets the rolled dices and shows them on the attackWindow.
+	 * if the attacking Player conquered a country a timed message is shown.
+	 * @param attackDices - rolled attack dices
+	 * @param defenseDices - rolled defense dices
+	 * @param countryConquered - true if the current player conquered the attacked country
+	 */
 	public void showDiceResult(int[] attackDices, int[] defenseDices, boolean countryConquered) {
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UIButton redButton1 = (UIButton) attackWindow.getComponent("red1Button");
@@ -523,7 +539,10 @@ public class GameplayState extends SuperBasicGameState {
 		}
 	}
 	
-	
+	/**
+	 * Shows a timed message for the player when he conquered a country
+	 * @param country that was conquered
+	 */
 	private void countryConquered(Country country) {
 		this.showMessage = true;
 		this.timerDelay = 2000;
@@ -533,6 +552,9 @@ public class GameplayState extends SuperBasicGameState {
 		userInterface.setVisibility("missionGroup", true);
 	}
 
+	/**
+	 * updates the Counter in the attackWindow
+	 */
 	public void adjustCounter()
 	{
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
@@ -553,6 +575,12 @@ public class GameplayState extends SuperBasicGameState {
 			counter.setMinCount(1);
 		}
 	}
+	
+	/**
+	 * Updates the selected countries. If the give country is already selected the selection is removed and if it was the 
+	 * first country selected all selections are removed. if it wasnt selected before it gets selected.
+	 * @param country that should be selected
+	 */
 	public void updateSelection(Country country)
 	{
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
@@ -575,12 +603,20 @@ public class GameplayState extends SuperBasicGameState {
 		System.out.println("Selector2:" + selection_2.hasEntitySelected());
 	}
 	
+	/**
+	 * Returns the first selected country
+	 * @return country that got selected first
+	 */
 	public Entity getFirstCountrySelected()
 	{
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		return selection_1.getSelectedEntity();
 	}
 	
+	/**
+	 * Returns all countries that got selected
+	 * @return c - all countries that got selected
+	 */
 	public Country[] getSelectedCountries()
 	{
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
@@ -589,6 +625,10 @@ public class GameplayState extends SuperBasicGameState {
 		return c;
 	}
 
+	/**
+	 * Shows the attackWindow when called, sets the current minimal and maximal dice count for 
+	 * the counter in the window and disables all buttons in the UI that are not on the window.
+	 */
 	public void showAttackWindow() {
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UIButton useButton = (UIButton) attackWindow.getComponent("diceButton");
@@ -624,7 +664,9 @@ public class GameplayState extends SuperBasicGameState {
 	}
 	
 
-	
+	/**
+	 * Hides the attackWindow when called and enables all Buttons of the userInterface.
+	 */
 	public void hideAttackWindow(){
 		ArrayList<UIElement> buttons = userInterface.getComponents("Button");
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
@@ -645,39 +687,50 @@ public class GameplayState extends SuperBasicGameState {
 		attackWindow.setVisible(false);
 	}
 
+	/**
+	 * Returns if two countries are selected.
+	 * @return true if two countries are selected, else false
+	 */
 	public boolean getCountriesSelected() {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
 		return selection_1.hasEntitySelected() && selection_2.hasEntitySelected();
 	}
 
+	/**
+	 * Returns if the attackWindow is visible.
+	 * @return true if the window is visible, else false
+	 */
 	public boolean isAttackWindowVisible() {
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		return attackWindow.isVisible();
 	}
 
+	/**
+	 * Resets the selections and hides the attackWindow.
+	 */
 	public void reset() {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
-		//UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		selection_1.resetSelection();
 		selection_2.resetSelection();
 		hideAttackWindow();
-		//Nicht mehr nötig da in hide attack window eh drinnen? 
-		/*attackWindow.setVisible(false);
-		attackWindow.setComponentVisiblity("red1Button", false);
-		attackWindow.setComponentVisiblity("red2Button", false);
-		attackWindow.setComponentVisiblity("red3Button", false);
-		attackWindow.setComponentVisiblity("blue1Button", false);
-		attackWindow.setComponentVisiblity("blue2Button", false);*/
 	}
 
+	/**
+	 * Returns the choosen attackdice count.
+	 * @return the amount of dices the current player wants to attack with
+	 */
 	public int getDiceCount() {
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
 		UICounter counter = (UICounter) attackWindow.getComponent("counter");
 		return counter.getCounter();
 	}
-
+	
+	/**
+	 * Tells the state machine what countries the current player wants to fortify and how many troops 
+	 * should be moved, it also hides the window and resets the UI.
+	 */
 	public void fortifyCountry() {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
@@ -691,16 +744,25 @@ public class GameplayState extends SuperBasicGameState {
 		reset();
 	}
 
+	/**
+	 * Tells the state machine that the current player wants to change the phase
+	 */
 	public void gotoNextPhase() {
 		gameController.nextPhase();
 	}
 
+	/**
+	 * Starts the fortifying process
+	 */
 	public void startFortify() {
 		UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		Country country = (Country) selection_1.getSelectedEntity();
 		this.requestTroopMovement(1, country.getTroops()-1);
 	}
 
+	/**
+	 * Shows the missionWindow with the mission of the current player and disables all other buttons on UI.
+	 */
 	public void showMissionText() {
 		userInterface.setVisibility("missionGroup", true);
 		UIButton missionButton = (UIButton) userInterface.getComponent("showMissionButton");
@@ -718,6 +780,9 @@ public class GameplayState extends SuperBasicGameState {
 			}
 	}
 
+	/**
+	 * Hides the missionWindow and enables all other buttons on the UI
+	 */
 	public void hideMissionText() {
 		userInterface.setVisibility("missionGroup", false);
 		UIButton missionButton = (UIButton) userInterface.getComponent("showMissionButton");
@@ -735,19 +800,34 @@ public class GameplayState extends SuperBasicGameState {
 			}
 	}
 	
+	/**
+	 * Returns if the missionWindow is visible
+	 * @return true if the missionWindow is visible, else false
+	 */
 	public boolean isMissionTextVisibible()
 	{
 		return userInterface.isComponenetVisible("missionGroup");
 	}
 
+	/**
+	 * Activates the CardState
+	 */
 	public void showCards() {
 		this.showCards = true;
 	}
 
+	/**
+	 * Tells the state machine what cards the current player wants to trade
+	 * @param tradeIn
+	 */
 	public void setTradeIn(Card[] tradeIn) {
 		gameController.tradeInCards(tradeIn);
 	}
 
+	/**
+	 * Shows a timed message if a player was defeated
+	 * @param defendingPlayer
+	 */
 	public void playerDefeated(Player defendingPlayer) {
 		this.showMessage = true;
 		this.timerDelay = 2000;
@@ -757,6 +837,9 @@ public class GameplayState extends SuperBasicGameState {
 		userInterface.setVisibility("missionGroup", true);
 	}
 
+	/**
+	 * Selects a country if i can be selected in the current state
+	 */
 	@Override
 	public void selectAction(Entity entity) {
 		Country ownerEntity = (Country) entity;
@@ -801,6 +884,9 @@ public class GameplayState extends SuperBasicGameState {
 		
 	}
 
+	/** 
+	 * Cancels the attack/foritfyWindow
+	 */
 	@Override
 	public void cancelAction(StateBasedGame game) {
 		this.reset();

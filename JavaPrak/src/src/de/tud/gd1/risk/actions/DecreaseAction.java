@@ -9,6 +9,11 @@ import src.de.tud.gdi1.risk.ui.UICounter;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * Action called by the decreaseButton of a UICounter to decrease the Counters value.
+ * @see UICounter.decreaseCount()
+ *
+ */
 
 public class DecreaseAction implements Action{
 
