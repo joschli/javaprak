@@ -26,6 +26,7 @@ public class GameController {
 	private static final int STARTING_PHASE = 3;
 	private static final int WIN_PHASE = 4;
 	
+	
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
@@ -238,6 +239,11 @@ public class GameController {
 	 * @param ownerEntity Country in which the Troop is placed
 	 */
 	public void setReinforceCountry(Country ownerEntity) {
+		if((ownerEntity.getOwner() != this.getTurnPlayer()))
+		{
+			printer.printError(printer.CANTREINFORCEENEMYCOUNTRIESERROR);
+			return;
+		}
 		if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == STARTING_PHASE){
 			ownerEntity.addTroops(1);
 			map.getPlayer(currentPlayer).substractReinforcement(1);
@@ -287,12 +293,7 @@ public class GameController {
 			printer.printError(printer.NOTENOUGHTROOPSDEFENDERROR);
 			return;
 		}
-		if(countries[1].getTroops() == 0)
-		{
-			//TODO: Show Error!
-			System.out.println("Länder ohne Truppen können nicht angegriffen werden");
-			return;
-		}
+
 		this.countries = countries;
 		attackDices = this.rollDice(diceCount);
 		defenseDices = this.rollDice(countries[1].getTroops() > 1 ? 2 : 1);
