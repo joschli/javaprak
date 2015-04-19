@@ -64,6 +64,8 @@ public class OptionState extends SuperBasicGameState {
 		option1Button.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
 		option2Button.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
 		testButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		playerCounter.setDecreaseImageRendererComponent(new ImageRenderComponent(new Image("assets/counter_button.jpg")));
+		playerCounter.setIncreaseImageRendererComponent(new ImageRenderComponent(new Image("assets/counter_button.jpg")));
 		//Actions for Buttons
 		startGameButton.addComponent(startGameEvent);
 		option1Button.addComponent(selectEvent);
