@@ -8,7 +8,7 @@ import src.de.tud.gdi1.risk.model.Options;
 public class RiskTestAdapterExtended1 extends RiskTestAdapterMinimal {
 
 	
-	public static final int STARTING_PHASE = 3;
+	public final int STARTING_PHASE = 3;
 	
 	@Override
 	public void initializeGame() throws IOException {

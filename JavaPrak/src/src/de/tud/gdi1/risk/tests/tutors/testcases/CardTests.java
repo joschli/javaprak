@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended1;
 import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended2;
 
 public class CardTests {

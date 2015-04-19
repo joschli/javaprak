@@ -1,7 +1,6 @@
 package src.de.tud.gdi1.risk.tests.students.testcases;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -10,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended1;
-import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterMinimal;
 
 public class StartPhaseTest {
 

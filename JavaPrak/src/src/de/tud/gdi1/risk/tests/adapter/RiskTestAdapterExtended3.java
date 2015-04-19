@@ -7,8 +7,8 @@ import src.de.tud.gdi1.risk.model.entities.Country;
 public class RiskTestAdapterExtended3 extends RiskTestAdapterExtended2 {
 
 	
-	public static final int DOMINATION_MODE = 0;
-	public static final int MISSION_MODE = 1;
+	public final int DOMINATION_MODE = 0;
+	public final int MISSION_MODE = 1;
 
 	/**
 	 * returns the missiontext for Player p

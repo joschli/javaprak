@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended1;
 import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended2;
 
 public class CardTests {
@@ -146,7 +145,6 @@ public class CardTests {
 		
 		assertTrue("Karten werden dem Spieler nicht richtig gegeben", values.size() == 42);
 		
-		int reinforcements = adapter.getReinforcementsForPlayer(0);
 		
 		int[] tradeIn = new int[3];
 		int index = 0;

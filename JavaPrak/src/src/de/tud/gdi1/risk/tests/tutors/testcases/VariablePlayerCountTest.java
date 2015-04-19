@@ -3,7 +3,6 @@ package src.de.tud.gdi1.risk.tests.tutors.testcases;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +31,6 @@ public class VariablePlayerCountTest {
 		try {
 			adapter.initializeGame();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -42,7 +40,6 @@ public class VariablePlayerCountTest {
 		try {
 			adapter.initializeGame();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -55,7 +52,6 @@ public class VariablePlayerCountTest {
 		try {
 			adapter.initializeGame();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -68,7 +64,6 @@ public class VariablePlayerCountTest {
 		try {
 			adapter.initializeGame();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertTrue("Spiel wird nicht richtig mit vier Spielern initialisiert bei Verringern der Spieleranzahl",adapter.getPlayerCount() == 3);

@@ -3,26 +3,22 @@ package src.de.tud.gdi1.risk.tests.adapter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.StateBasedGame;
 
-import eea.engine.entity.StateBasedEntityManager;
-import eea.engine.test.TestAppGameContainer;
 import src.de.tud.gdi1.risk.controller.GameController;
 import src.de.tud.gdi1.risk.model.Continent;
 import src.de.tud.gdi1.risk.model.Options;
 import src.de.tud.gdi1.risk.model.Player;
 import src.de.tud.gdi1.risk.model.entities.Country;
 import src.de.tud.gdi1.risk.ui.GameplayState;
-import src.de.tud.gdi1.risk.ui.Launch;
+
 
 public class RiskTestAdapterMinimal {
 
 	GameController risk;
 	GameplayState view;
-	public static final int REINFORCEMENT_PHASE = 0;
-	public static final int ATTACKING_PHASE = 1;
-	public static final int FORTIFYING_PHASE = 2;
+	public final int REINFORCEMENT_PHASE = 0;
+	public final int ATTACKING_PHASE = 1;
+	public final int FORTIFYING_PHASE = 2;
 	
 	
 	public RiskTestAdapterMinimal() {

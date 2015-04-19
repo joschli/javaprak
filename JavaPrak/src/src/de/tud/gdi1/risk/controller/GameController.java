@@ -57,20 +57,20 @@ public class GameController {
 		switch(state)
 		{
 		case REINFORCEMENT_PHASE:
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			break;
 		case ATTACKING_PHASE:
 			state = 2;
 			view.reset();
 			break;
 		case FORTIFYING_PHASE:
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			break;
 		case STARTING_PHASE: 
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			break;
 		case WIN_PHASE:
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			break;
 		default:
 			break;
@@ -237,7 +237,7 @@ public class GameController {
 	public void setReinforceCountry(Country ownerEntity) {
 		if((ownerEntity.getOwner() != this.getTurnPlayer()))
 		{
-			printer.printError(printer.CANTREINFORCEENEMYCOUNTRIESERROR);
+			printer.printError(ErrorPrinter.CANTREINFORCEENEMYCOUNTRIESERROR);
 			return;
 		}
 		if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == STARTING_PHASE){
@@ -265,28 +265,28 @@ public class GameController {
 		
 		if(this.state != ATTACKING_PHASE)
 		{
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			return;
 		}
 			
 		if(countries[0].getOwner() == countries[1].getOwner())
 		{
-			printer.printError(printer.OWNERATTACKERROR);
+			printer.printError(ErrorPrinter.OWNERATTACKERROR);
 			return;
 		}
 		if(!countries[0].isNeighbor(countries[1]))
 		{
-			printer.printError(printer.NOTNEIGHBORERROR);
+			printer.printError(ErrorPrinter.NOTNEIGHBORERROR);
 			return;
 		}
 		if(diceCount > countries[0].getTroops()-1)
 		{
-			printer.printError(printer.NOTENOUGHTROOPSATTACKERROR);
+			printer.printError(ErrorPrinter.NOTENOUGHTROOPSATTACKERROR);
 			return;
 		}
 		if(countries[1].getTroops() <= 0)
 		{
-			printer.printError(printer.NOTENOUGHTROOPSDEFENDERROR);
+			printer.printError(ErrorPrinter.NOTENOUGHTROOPSDEFENDERROR);
 			return;
 		}
 
@@ -328,6 +328,7 @@ public class GameController {
 		
 	}
 	
+	/*
 	private String diceToString() {
 		String s = "AttackDices: ";
 		for(int i : attackDices)
@@ -339,7 +340,7 @@ public class GameController {
 			s = s + i + "|";
 		return s;
 	}
-
+	*/
 	/**
 	 * Called in the Attackphase after a Country got conquered and Troops are moved into the conquered Country
 	 * Or in the Fortifying Phase when moving troops
@@ -350,25 +351,25 @@ public class GameController {
 	{	
 		if(this.state != ATTACKING_PHASE && this.state != FORTIFYING_PHASE)
 		{
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			return;
 		}
 			
 		if(countries[0].getOwner() != countries[1].getOwner())
 		{
-			printer.printError(printer.OWNERMOVEERROR);
+			printer.printError(ErrorPrinter.OWNERMOVEERROR);
 			return;
 		}
 			
 		if(!countries[0].isNeighbor(countries[1]))
 		{
-			printer.printError(printer.NOTNEIGHBORERROR);
+			printer.printError(ErrorPrinter.NOTNEIGHBORERROR);
 			return;
 		}
 		
 		if(countries[0].getTroops()-amount <= 0)
 		{
-			printer.printError(printer.ZEROTROOPSLEFTERROR);
+			printer.printError(ErrorPrinter.ZEROTROOPSLEFTERROR);
 			return;
 		}
 			
@@ -379,7 +380,7 @@ public class GameController {
 		}
 		else
 		{
-			printer.printError(printer.NOTENOUGHTROOPSMOVEERROR);
+			printer.printError(ErrorPrinter.NOTENOUGHTROOPSMOVEERROR);
 		}
 		
 	}
@@ -388,7 +389,7 @@ public class GameController {
 	{
 		if(state != REINFORCEMENT_PHASE)
 		{
-			printer.printError(printer.PHASEERROR);
+			printer.printError(ErrorPrinter.PHASEERROR);
 			return false;
 		}
 		
@@ -399,7 +400,7 @@ public class GameController {
 		
 		if(cards.length!= 3)
 		{
-			printer.printError(printer.CARDERROR);
+			printer.printError(ErrorPrinter.CARDERROR);
 			return false;
 		}
 		
@@ -407,13 +408,13 @@ public class GameController {
 		{
 			if(!turnPlayerCards.contains(cards[i]))
 			{
-				printer.printError(printer.OWNERCARDERROR);
+				printer.printError(ErrorPrinter.OWNERCARDERROR);
 				return false;
 			}
 			c[i] = cards[i].getValue();
 			if(c[i] > 3 || c[i] < 0)
 			{
-				printer.printError(printer.CARDVALUEERROR);
+				printer.printError(ErrorPrinter.CARDVALUEERROR);
 				return false;
 			}
 			if(cards[i].getCountry().isOwner(map.getPlayer(currentPlayer)) && country == null)
@@ -446,7 +447,7 @@ public class GameController {
 		}
 		else
 		{
-			printer.printError(printer.INCORRECTCARDSETERROR);
+			printer.printError(ErrorPrinter.INCORRECTCARDSETERROR);
 		}
 		
 		return false;

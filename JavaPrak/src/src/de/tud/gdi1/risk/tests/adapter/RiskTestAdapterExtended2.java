@@ -7,9 +7,9 @@ import src.de.tud.gdi1.risk.model.entities.Card;
 
 public class RiskTestAdapterExtended2 extends RiskTestAdapterExtended1 {
 
-	public static final int INFANTRY = 1;
-	public static final int CAVALRY = 2;
-	public static final int ARTILLERY = 3;
+	public final int INFANTRY = 1;
+	public final int CAVALRY = 2;
+	public final int ARTILLERY = 3;
 	
 	/**
 	 * This should skip the starting phase by automatically placing units randomly

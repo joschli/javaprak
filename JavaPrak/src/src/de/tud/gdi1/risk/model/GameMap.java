@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 
 
+
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -129,8 +131,6 @@ public class GameMap {
 		Vector2f position = new Vector2f(0,0);
 		ArrayList<String> neighborStrings = new ArrayList<String>();
 		int count = 0;
-		double x = 0;
-		double y = 0;
 		int bonusTroops = 0;
 		int r = 0;
 		int b = 0;
@@ -142,13 +142,6 @@ public class GameMap {
 			{
 				count++;
 				continue;
-			}
-			
-			if(count == 1)
-			{
-				String[] entrys = line.split("\\|");
-				x = Double.parseDouble(entrys[0]);
-				y = Double.parseDouble(entrys[1]);
 			}
 			
 			if(count == 2)
@@ -382,17 +375,18 @@ public class GameMap {
 		}else
 		{
 			missions = new ArrayList<Mission>();
-			for(Player p : players)
+			for(@SuppressWarnings("unused") Player p : players)
 			{
 				missions.add(new Mission("Conquer the World!", countries.size()));
 			}
 		}
 		
+		/*
 		for(Mission m : missions)
 		{
 			//System.out.println(m.getMissionText());
 		}
-	
+		*/
 		boolean[] taken = new boolean[missions.size()];
 		for (Player p : players) {
 			int random = (int) (Math.random() * missions.size());
@@ -412,6 +406,7 @@ public class GameMap {
 	 */
 	private void createCards() {
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<Country> notUsedCountries = (ArrayList<Country>) countries.clone();
 		int value = 0;
 		for(int i = 0; i < countries.size(); i++)
