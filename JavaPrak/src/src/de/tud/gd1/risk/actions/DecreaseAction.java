@@ -3,12 +3,12 @@ package src.de.tud.gd1.risk.actions;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
-import src.de.tud.gdi1.risk.ui.GameplayState;
+
 import src.de.tud.gdi1.risk.ui.UIButton;
 import src.de.tud.gdi1.risk.ui.UICounter;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
-import eea.engine.entity.Entity;
+
 
 public class DecreaseAction implements Action{
 

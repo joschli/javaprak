@@ -103,7 +103,6 @@ public class GameController {
 		Arrays.sort(defenseDices);
 		reverse(attackDices);
 		reverse(defenseDices);
-		
 		for(int i = 0; i < attackDices.length && i < defenseDices.length; i++)
 		{
 			if(attackDices[i] > defenseDices[i])

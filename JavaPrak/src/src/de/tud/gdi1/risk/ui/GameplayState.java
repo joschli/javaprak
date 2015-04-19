@@ -9,14 +9,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Polygon;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import src.de.tud.gd1.risk.actions.AttackAction;
-import src.de.tud.gd1.risk.actions.CancelAttackAction;
+import src.de.tud.gd1.risk.actions.CancelAction;
 import src.de.tud.gd1.risk.actions.DiceAction;
 import src.de.tud.gd1.risk.actions.EndTurnAction;
 import src.de.tud.gd1.risk.actions.FortifyAction;
@@ -32,17 +29,15 @@ import src.de.tud.gdi1.risk.model.entities.Country;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
-import eea.engine.entity.StateBasedEntityManager;
+
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 
 
-public class GameplayState extends BasicGameState {
+public class GameplayState extends SuperBasicGameState {
 
-	private int stateID; 							// Identifier dieses BasicGameState
-	private StateBasedEntityManager entityManager;
 	private GameController gameController;// zugehoeriger entityManager
 	private UserInterface userInterface;
 	private boolean attackButtonPressed = false;
@@ -51,9 +46,12 @@ public class GameplayState extends BasicGameState {
 	private ArrayList<ImageRenderComponent[]> redDiceImages = new ArrayList<ImageRenderComponent[]>();
 	private boolean showCards = false;
 	private Entity background;
+	private boolean showMessage = false;
+	private int timer = 0;
+	private int timerDelay = 2000;
+	private boolean playerWon = false;
     public GameplayState( int sid) {
-       stateID = sid;
-       entityManager = StateBasedEntityManager.getInstance();
+       super(sid);
        
     }
     
@@ -83,12 +81,12 @@ public class GameplayState extends BasicGameState {
 		UILabel phaseName = new UILabel("phaseNameLabel", null, Color.red, new Vector2f(container.getWidth()/5+150,30));
 		UILabel reinforcementCount = new UILabel("reinforcementCountLabel", null, null, new Vector2f(container.getWidth()/5+350, 30));
 		// Buttons
-		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f((int)5*buttonWidth+20, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f((int)2*buttonWidth+5, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)4*buttonWidth+15, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth+10, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton showCardButton = new UIButton("showCardButton", "Show Cards", new Vector2f((int)6* buttonWidth+25, container.getHeight() - buttonHeight+buttonHeight/4), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+		UIButton turnButton = new UIButton("turnButton", "End Turn", new Vector2f((int)5*buttonWidth+20, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), Color.gray, Color.black);
+		UIButton attackButton = new UIButton("attackButton", "Attack!", new Vector2f((int)2*buttonWidth+5, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), Color.gray, Color.black);
+		UIButton phaseButton = new UIButton("nextPhaseButton", "Next Phase", new Vector2f((int)4*buttonWidth+15, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128, 32), Color.gray, Color.black);
+		UIButton fortifyButton = new UIButton("fortifyButton", "Fortify!", new Vector2f((int)3*buttonWidth+10, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), Color.gray, Color.black);
+		UIButton showMissionButton = new UIButton("showMissionButton", "Show Mission", new Vector2f((int)1 *buttonWidth, container.getHeight()-buttonHeight+buttonHeight/4), new Vector2f(128,32), Color.gray, Color.black);
+		UIButton showCardButton = new UIButton("showCardButton", "Show Cards", new Vector2f((int)6* buttonWidth+25, container.getHeight() - buttonHeight+buttonHeight/4), new Vector2f(128, 32), Color.gray, Color.black);
 		turnButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
 		attackButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
 		phaseButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
@@ -104,7 +102,7 @@ public class GameplayState extends BasicGameState {
 		ANDEvent diceEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		diceEvent.addAction(new DiceAction());
 		ANDEvent cancelAttackEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-		cancelAttackEvent.addAction(new CancelAttackAction());
+		cancelAttackEvent.addAction(new CancelAction());
 		ANDEvent fortifyEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		fortifyEvent.addAction(new FortifyAction());
 		ANDEvent nextPhaseEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
@@ -131,22 +129,26 @@ public class GameplayState extends BasicGameState {
 		//UIGroup attackWindow = new UIGroup("commandGroup", new Vector2f(container.getWidth()-100, container.getHeight()-150), new Vector2f(200, 300));
 		UILabel aw_description = new UILabel("description", "Attack Window", Color.red, new Vector2f(commandWindow.getSize().x/2,15));
 		UICounter aw_counter = new UICounter("counter", new Vector2f(commandWindow.getSize().x/2, 50), 3, 1);
-		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(commandWindow.getSize().x/2,116), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton aw_cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(commandWindow.getSize().x/2, 164), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-		UIButton redButton1 = new UIButton("red1Button", "", new Vector2f(commandWindow.getSize().x/2-32, 228), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
-		UIButton redButton2 = new UIButton("red2Button", "", new Vector2f(commandWindow.getSize().x/2-32, 308), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
-		UIButton redButton3 = new UIButton("red3Button", "", new Vector2f(commandWindow.getSize().x/2-32, 388), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
-		UIButton blueButton1 = new UIButton("blue1Button", "", new Vector2f(commandWindow.getSize().x/2+32, 228), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
-		UIButton blueButton2 = new UIButton("blue2Button", "", new Vector2f(commandWindow.getSize().x/2+32, 308), new Vector2f(64,64), new Vector2f(0,0), Color.gray, Color.black);
+		UIButton aw_diceButton = new UIButton("diceButton", "Roll!", new Vector2f(commandWindow.getSize().x/2,116), new Vector2f(128,32), Color.gray, Color.black);
+		UIButton aw_cancelButton = new UIButton("cancelButton", "Cancel", new Vector2f(commandWindow.getSize().x/2, 164), new Vector2f(128, 32), Color.gray, Color.black);
+		UIButton redButton1 = new UIButton("red1Button", "", new Vector2f(commandWindow.getSize().x/2-32, 228), new Vector2f(64,64), Color.gray, Color.black);
+		UIButton redButton2 = new UIButton("red2Button", "", new Vector2f(commandWindow.getSize().x/2-32, 308), new Vector2f(64,64), Color.gray, Color.black);
+		UIButton redButton3 = new UIButton("red3Button", "", new Vector2f(commandWindow.getSize().x/2-32, 388), new Vector2f(64,64), Color.gray, Color.black);
+		UIButton blueButton1 = new UIButton("blue1Button", "", new Vector2f(commandWindow.getSize().x/2+32, 228), new Vector2f(64,64), Color.gray, Color.black);
+		UIButton blueButton2 = new UIButton("blue2Button", "", new Vector2f(commandWindow.getSize().x/2+32, 308), new Vector2f(64,64), Color.gray, Color.black);
 		UILabel firstAttack = new UILabel("firstAttackLabel", ">", Color.red, new Vector2f(commandWindow.getSize().x/2, 228));
 		UILabel secondAttack = new UILabel("secondAttackLabel", ">", Color.red, new Vector2f(commandWindow.getSize().x/2, 308));
-		UILabel countryConquered = new UILabel("countryConqueredLabel", "Player 0 conquered Country 0", Color.red, new Vector2f(commandWindow.getSize().x/2, 450));
+		aw_diceButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		aw_cancelButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+		aw_counter.setIncreaseImageRendererComponent(new ImageRenderComponent(new Image("assets/counter_button.jpg")));
+		aw_counter.setDecreaseImageRendererComponent(new ImageRenderComponent(new Image("assets/counter_button.jpg")));
+		aw_description.setColor(Color.black);
+		aw_counter.setColor(Color.black);
 		redButton2.setScale(0.312f);
 		redButton3.setScale(0.312f);
 		blueButton1.setScale(0.312f);
 		blueButton2.setScale(0.312f);
 		redButton1.setScale(0.312f);
-		countryConquered.setSize(new Vector2f(110,1000));
 		commandWindow.setBorder(true, 3, Color.black);
 		redButton1.setVisible(false);
 		redButton2.setVisible(false);
@@ -166,7 +168,6 @@ public class GameplayState extends BasicGameState {
 		commandWindow.addComponent(blueButton2);
 		commandWindow.addComponent(firstAttack);
 		commandWindow.addComponent(secondAttack);
-		commandWindow.addComponent(countryConquered);
 		// MISSION WINDOW
 		UIGroup missionWindow = new UIGroup("missionGroup", new Vector2f(container.getWidth() - 500, container.getWidth() - 750), new Vector2f(250, 250));
 		UILabel mw_mission = new UILabel("mission", "", Color.white, new Vector2f(missionWindow.getSize().x/2, missionWindow.getSize().y/4));
@@ -207,18 +208,17 @@ public class GameplayState extends BasicGameState {
     	background.addComponent(new ImageRenderComponent(new Image("assets/Blank Risk.PNG"))); // Bildkomponente
     	    	
     	// Hintergrund-Entitaet an StateBasedEntityManager uebergeben
-    	entityManager.addEntity(stateID, background);
+    	entityManager.addEntity(this.getID(), background);
     	
     	// Bei Drücken der ESC-Taste zurueck ins Hauptmenue wechseln
     	Entity esc_Listener = new Entity("ESC_Listener");
     	KeyPressedEvent esc_pressed = new KeyPressedEvent(Input.KEY_ESCAPE);
     	esc_pressed.addAction(new ChangeStateAction(Launch.MAINMENU_STATE));
     	esc_Listener.addComponent(esc_pressed);    	
-    	entityManager.addEntity(stateID, esc_Listener);
+    	entityManager.addEntity(this.getID(), esc_Listener);
     	try {
 			gameController = new GameController(this);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	gameController.init();
@@ -240,14 +240,30 @@ public class GameplayState extends BasicGameState {
     @Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities aktualisieren
+    	if(showMessage){
+    		timer += delta;
+    		if(timer > this.timerDelay)
+    		{
+    			this.showMessage = false;
+    			timer = 0;
+    			userInterface.setVisibility("missionGroup", false);
+    		}else
+    			return;
+    	}
     	entityManager.updateEntities(container, game, delta);
     	for(Country c: countries)
     		c.update(container, game, delta);
     	gameController.update();
     	userInterface.update(container, game, delta);
-    	
+    	if(playerWon){
+    		MainMenuState state = (MainMenuState) game.getState(Launch.MAINMENU_STATE);
+    		state.setGameStarted(false);
+    		game.enterState(Launch.MAINMENU_STATE);
+    	}
     	if(gameController.getState() == 4){
-    		game.enterState(Launch.WIN_STATE);
+    		this.playerWon(gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()));
+    		playerWon = true;
+    		return;
     	}
     	else if(showCards)
     	{
@@ -258,7 +274,16 @@ public class GameplayState extends BasicGameState {
     	}
 	}
     
-    public void updateUserInterface() {
+    private void playerWon(Player player) {
+    	this.showMessage = true;
+    	this.timerDelay = 5000;
+		UIGroup missionWindow = (UIGroup) userInterface.getComponent("missionGroup");
+		UILabel missionLabel = (UILabel) missionWindow.getComponent("mission");
+		missionLabel.setLabelName(gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getName() + "won!");
+		userInterface.setVisibility("missionGroup", true);
+	}
+
+	public void updateUserInterface() {
     	UISelection selection_1 = (UISelection) userInterface.getComponent("selection1");
 		UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
 		ArrayList<UIElement> labels = userInterface.getComponents("Label");
@@ -352,7 +377,7 @@ public class GameplayState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// StatedBasedEntityManager soll alle Entities rendern
-		Entity e = entityManager.getEntity(this.stateID, "map");
+		Entity e = entityManager.getEntity(this.getID(), "map");
 		this.background.render(container, game, g);
 		g.setLineWidth(1);
 		entityManager.renderEntities(container, game, g);
@@ -404,11 +429,6 @@ public class GameplayState extends BasicGameState {
 		}
 	}
 
-	@Override
-	public int getID() {
-		return stateID;
-	}
-
 	public boolean attackButtonPressed() {
 		if(attackButtonPressed)
 		{
@@ -447,53 +467,7 @@ public class GameplayState extends BasicGameState {
 		event.addAction(new FortifyAction());
 		userInterface.setVisibility("commandGroup", true);
 	}
-
-	public void selectCountry(Country ownerEntity) {
-		System.out.println("Country selected= " + ownerEntity.getName());
-		System.out.println("Owner: " + ownerEntity.getOwner().getName());
-		if(!userInterface.isComponenetVisible("missionGroup")){
-			if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("commandGroup")){
-				if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID())
-					&& ownerEntity.isOwner(gameController.getTurnPlayer()) 
-					&& ownerEntity.getTroops() > 1)
-				{
-					this.updateSelection(ownerEntity);
-				}
-				else if(this.getFirstCountrySelected() != null
-						&& !ownerEntity.isOwner(gameController.getTurnPlayer()) 
-						&& ownerEntity.isNeighbor((Country) this.getFirstCountrySelected()))
-				{
-					this.updateSelection(ownerEntity);
-				}
-			}
-			else if(ownerEntity != null && gameController.getState() == 3)
-			{
-				if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
-					gameController.setReinforceCountry(ownerEntity);
-			}
-			else if(ownerEntity != null && gameController.getState() == 0)
-			{
-				if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
-					gameController.setReinforceCountry(ownerEntity);
-			}
-			else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("commandGroup"))
-			{
-				if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
-					if(this.getFirstCountrySelected() != null &&
-						(ownerEntity.isNeighbor((Country) this.getFirstCountrySelected())
-								|| ownerEntity.getID() == this.getFirstCountrySelected().getID() ))
-						this.updateSelection(ownerEntity);
-					else if(this.getFirstCountrySelected() == null && ownerEntity.getTroops() > 1)
-						this.updateSelection(ownerEntity);
-			}
-		}
-		
-	}
-
-	public void cancelAttack() {
-		this.reset();
-	}
-
+	
 	public void rollDices() {
 		gameController.rollDiceEvent(this.getDiceCount(), this.getSelectedCountries());
 	}
@@ -507,7 +481,6 @@ public class GameplayState extends BasicGameState {
 		UIButton blueButton2 = (UIButton) attackWindow.getComponent("blue2Button");
 		UILabel firstAttackLabel = (UILabel) attackWindow.getComponent("firstAttackLabel");
 		UILabel secondAttackLabel = (UILabel) attackWindow.getComponent("secondAttackLabel");
-		UILabel countryConqueredLabel = (UILabel) attackWindow.getComponent("countryConqueredLabel");
 		redButton1.setRenderComponent(redDiceImages.get(attackDices[0]-1)[0]);
 		redButton1.setVisible(true);
 		if(attackDices.length > 1){
@@ -546,13 +519,20 @@ public class GameplayState extends BasicGameState {
 		{
 			UISelection selection_2 = (UISelection) userInterface.getComponent("selection2");
 			Country country = (Country) selection_2.getSelectedEntity();
-			countryConqueredLabel.setLabelName( gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getName() + " conquered " + country.getName());
-			countryConqueredLabel.setVisible(true);
-		}else
-			countryConqueredLabel.setVisible(false);
+			this.countryConquered(country);
+		}
 	}
 	
 	
+	private void countryConquered(Country country) {
+		this.showMessage = true;
+		this.timerDelay = 2000;
+		UIGroup missionWindow = (UIGroup) userInterface.getComponent("missionGroup");
+		UILabel missionLabel = (UILabel) missionWindow.getComponent("mission");
+		missionLabel.setLabelName(gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getName() + " conquered " + country.getName());
+		userInterface.setVisibility("missionGroup", true);
+	}
+
 	public void adjustCounter()
 	{
 		UIGroup attackWindow = (UIGroup) userInterface.getComponent("commandGroup");
@@ -769,9 +749,64 @@ public class GameplayState extends BasicGameState {
 	}
 
 	public void playerDefeated(Player defendingPlayer) {
-		// TODO Auto-generated method stub
+		this.showMessage = true;
+		this.timerDelay = 2000;
+		UIGroup missionWindow = (UIGroup) userInterface.getComponent("missionGroup");
+		UILabel missionLabel = (UILabel) missionWindow.getComponent("mission");
+		missionLabel.setLabelName(gameController.getMap().getPlayer(gameController.getCurrentPlayerIndex()).getMissionText());
+		userInterface.setVisibility("missionGroup", true);
+	}
+
+	@Override
+	public void selectAction(Entity entity) {
+		Country ownerEntity = (Country) entity;
+		System.out.println("Country selected= " + ownerEntity.getName());
+		System.out.println("Owner: " + ownerEntity.getOwner().getName());
+		if(!userInterface.isComponenetVisible("missionGroup")){
+			if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("commandGroup")){
+				if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID())
+					&& ownerEntity.isOwner(gameController.getTurnPlayer()) 
+					&& ownerEntity.getTroops() > 1)
+				{
+					this.updateSelection(ownerEntity);
+				}
+				else if(this.getFirstCountrySelected() != null
+						&& !ownerEntity.isOwner(gameController.getTurnPlayer()) 
+						&& ownerEntity.isNeighbor((Country) this.getFirstCountrySelected()))
+				{
+					this.updateSelection(ownerEntity);
+				}
+			}
+			else if(ownerEntity != null && gameController.getState() == 3)
+			{
+				if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
+					gameController.setReinforceCountry(ownerEntity);
+			}
+			else if(ownerEntity != null && gameController.getState() == 0)
+			{
+				if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
+					gameController.setReinforceCountry(ownerEntity);
+			}
+			else if(ownerEntity != null && gameController.getState() == 2 && !userInterface.isComponenetVisible("commandGroup"))
+			{
+				if(ownerEntity.getOwner().getName() == gameController.getTurnPlayer().getName())
+					if(this.getFirstCountrySelected() != null &&
+						(ownerEntity.isNeighbor((Country) this.getFirstCountrySelected())
+								|| ownerEntity.getID() == this.getFirstCountrySelected().getID() ))
+						this.updateSelection(ownerEntity);
+					else if(this.getFirstCountrySelected() == null && ownerEntity.getTroops() > 1)
+						this.updateSelection(ownerEntity);
+			}
+		}
 		
 	}
+
+	@Override
+	public void cancelAction(StateBasedGame game) {
+		this.reset();
+	}
+
+
 
 
 }

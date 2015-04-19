@@ -7,14 +7,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
-
-import src.de.tud.gdi1.risk.model.entities.Country;
-import eea.engine.action.Action;
-import eea.engine.component.Component;
-import eea.engine.component.RenderComponent;
 import eea.engine.component.render.ImageRenderComponent;
-import eea.engine.event.ANDEvent;
-import eea.engine.event.Event;
+
 
 public class UIGroup extends UIElement{
 	

@@ -1,18 +1,14 @@
 package src.de.tud.gdi1.risk.model;
 
-import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
+
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
@@ -49,19 +45,6 @@ public class GameMap {
 		createCards();
 		createReinforcements();
 		colorizeCountries();
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
-		this.players[0].addCard(this.getRandomCard());
 	}
 
 	private void colorizeCountries() {

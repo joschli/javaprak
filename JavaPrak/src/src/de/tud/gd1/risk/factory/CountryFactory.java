@@ -1,32 +1,25 @@
 package src.de.tud.gd1.risk.factory;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.GameState;
-import org.newdawn.slick.state.StateBasedGame;
 
-import eea.engine.action.Action;
-import eea.engine.component.Component;
-import eea.engine.component.render.ImageRenderComponent;
+import org.newdawn.slick.geom.Vector2f;
+
+
+
 import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 import eea.engine.interfaces.IEntityFactory;
 import src.de.tud.gd1.risk.actions.SelectAction;
-import src.de.tud.gdi1.risk.controller.GameController;
+
 import src.de.tud.gdi1.risk.model.entities.Country;
-import src.de.tud.gdi1.risk.ui.GameplayState;
+
 
 public class CountryFactory implements IEntityFactory {
 
 	private String name;
 	private Vector2f position;
 	private Country country;
-	private int cardValue;
 	
 	public CountryFactory(String name, Vector2f position)
 	{

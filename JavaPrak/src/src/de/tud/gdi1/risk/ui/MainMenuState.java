@@ -10,10 +10,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import src.de.tud.gd1.risk.actions.ResumeAction;
-import src.de.tud.gd1.risk.factory.ButtonFactory;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
-import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
@@ -61,9 +59,12 @@ public class MainMenuState extends BasicGameState {
     	
     	ANDEvent resumeEvent = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
     	resumeEvent.addAction(new ResumeAction());
-    	UIButton resumeButton = new UIButton("resumeButton", "Resume Game", new Vector2f(container.getWidth()/2, container.getHeight()/2-64), new Vector2f(128,32), new Vector2f(10,10), Color.gray, Color.black);
-    	UIButton newGameButton = new UIButton("newGameButton", "New Game", new Vector2f(container.getWidth()/2, container.getHeight()/2), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
-    	UIButton exitGameButton = new UIButton("exitGameButton", "Exit Game", new Vector2f(container.getWidth()/2, container.getHeight()/2+64), new Vector2f(128, 32), new Vector2f(10,10), Color.gray, Color.black);
+    	UIButton resumeButton = new UIButton("resumeButton", "Resume Game", new Vector2f(container.getWidth()/2, container.getHeight()/2-64), new Vector2f(128,32), Color.gray, Color.black);
+    	UIButton newGameButton = new UIButton("newGameButton", "New Game", new Vector2f(container.getWidth()/2, container.getHeight()/2), new Vector2f(128, 32), Color.gray, Color.black);
+    	UIButton exitGameButton = new UIButton("exitGameButton", "Exit Game", new Vector2f(container.getWidth()/2, container.getHeight()/2+64), new Vector2f(128, 32), Color.gray, Color.black);
+    	resumeButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+    	newGameButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
+    	exitGameButton.setRenderComponent(new ImageRenderComponent(new Image("assets/button_texture2.jpg")));
     	newGameButton.addComponent(mainEvents);
     	exitGameButton.addComponent(mainEvents_q);
     	resumeButton.addComponent(resumeEvent);
@@ -99,9 +100,12 @@ public class MainMenuState extends BasicGameState {
 		return stateID;
 	}
 
-	public void setGameStarted() {
+	public void setGameStarted(boolean b) {
 		UIButton button = (UIButton) entityManager.getEntity(this.stateID, "resumeButton");
-		button.enableButton();
+		if(b)
+			button.enableButton();
+		else
+			button.disableButton();
 	}
 	
 }
