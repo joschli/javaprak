@@ -1,4 +1,4 @@
-package src.de.tud.gd1.risk.factory;
+package src.de.tud.gdi1.risk.factory;
 
 
 import org.newdawn.slick.geom.Vector2f;

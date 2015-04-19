@@ -12,10 +12,11 @@ import java.util.ArrayList;
 
 
 
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Vector2f;
 
-import src.de.tud.gd1.risk.factory.CountryFactory;
+import src.de.tud.gdi1.risk.factory.CountryFactory;
 import src.de.tud.gdi1.risk.model.entities.Card;
 import src.de.tud.gdi1.risk.model.entities.Country;
 
