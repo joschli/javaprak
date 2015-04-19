@@ -3,31 +3,27 @@ package src.de.tud.gdi1.risk.ui;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import eea.engine.component.Component;
-import eea.engine.component.RenderComponent;
+
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 
 public class UIButton extends UIElement{
 	
-	private Color color, borderColor;
+	private Color color, borderColor, labelColor;
 	private ImageRenderComponent renderComponent;
-	private Vector2f padding;
 	private UILabel label;
 	private Entity owner;
 	private boolean usable = true;
 	
-	public UIButton(String entityID, String buttonName, Vector2f position, Vector2f size, Vector2f padding, Color buttonColor, Color labelColor) {
+	public UIButton(String entityID, String buttonName, Vector2f position, Vector2f size, Color buttonColor, Color labelColor) {
 		super(entityID);
 		
 		this.color = buttonColor;
 		this.setScale(1);
-		this.padding = padding;
 		this.borderColor = Color.black;
 		/*
 		try {
@@ -40,8 +36,9 @@ public class UIButton extends UIElement{
 		*/
 		//this.setSize(renderComponent.getSize());
 		
-		label = new UILabel(entityID+"Label", buttonName, labelColor, new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
+		label = new UILabel(entityID+"Label", buttonName, labelColor, new Vector2f((this.getPosition().x-this.getSize().x/2), (this.getPosition().y-this.getSize().y/2) ));
 		label.setVisible(true);
+		this.labelColor = labelColor;
 		this.setPosition(position);
 		this.setSize(size);
 	}
@@ -72,6 +69,10 @@ public class UIButton extends UIElement{
 				}
 				g.fillRect(x, y, this.getSize().x, this.getSize().y);
 			}
+			if(!usable)
+				label.setColor(new Color(100,100,100));
+			else
+				label.setColor(labelColor);
 			this.setLabelPosition(g);
 			label.render(container, game, g);
 			g.setColor(borderColor);
@@ -115,6 +116,7 @@ public class UIButton extends UIElement{
 	public void setLabelColor(Color color)
 	{
 		this.label.setColor(color);
+		this.labelColor = color;
 	}
 	
 	public void setOwner(Entity owner)
@@ -130,13 +132,14 @@ public class UIButton extends UIElement{
 	public void setPosition(Vector2f position)
 	{
 		super.setPosition(position);
-		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
+		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2), (this.getPosition().y-this.getSize().y/2) ));
+		
 	}
 	
 	public void setSize(Vector2f size)
 	{
 		super.setSize(size);
-		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2)+padding.x, (this.getPosition().y-this.getSize().y/2)+padding.y ));
+		label.setPosition(new Vector2f((this.getPosition().x-this.getSize().x/2), (this.getPosition().y-this.getSize().y/2) ));
 	}
 	
 	public void setBorderColor(Color color)

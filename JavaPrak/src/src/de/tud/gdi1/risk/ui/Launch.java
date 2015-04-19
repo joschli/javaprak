@@ -4,8 +4,6 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-
-import src.de.tud.gdi1.risk.model.Player;
 import eea.engine.entity.StateBasedEntityManager;
 
 /**
@@ -19,10 +17,8 @@ public class Launch extends StateBasedGame {
 	// Jeder State wird durch einen Integer-Wert gekennzeichnet
     public static final int MAINMENU_STATE = 0;
     public static final int GAMEPLAY_STATE = 1;
-    public static final int WIN_STATE = 2;
-    public static final int OPTIONS_STATE = 3;
-    public static final int PAUSE_STATE = 4;
-    public static final int CARD_STATE = 5;
+    public static final int OPTIONS_STATE = 2;
+    public static final int CARD_STATE = 3;
     
     public Launch()
     {
@@ -58,17 +54,13 @@ public class Launch extends StateBasedGame {
 		// (der zuerst hinzugefuegte State wird als erster State gestartet)
 		addState(new MainMenuState(MAINMENU_STATE));
         addState(new GameplayState(GAMEPLAY_STATE));
-        addState(new WinState(WIN_STATE));
         addState(new OptionState(OPTIONS_STATE));
-        addState(new PauseState(PAUSE_STATE));
         addState(new CardState(CARD_STATE));
         
         // Fuege dem StateBasedEntityManager die States hinzu
         StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
         StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
-        StateBasedEntityManager.getInstance().addState(WIN_STATE);
         StateBasedEntityManager.getInstance().addState(OPTIONS_STATE);
-        StateBasedEntityManager.getInstance().addState(PAUSE_STATE);
         StateBasedEntityManager.getInstance().addState(CARD_STATE);
 		
 	}

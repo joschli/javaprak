@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import src.de.tud.gd1.risk.actions.IncreaseAction;
 import src.de.tud.gd1.risk.actions.DecreaseAction;
+import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
@@ -21,8 +22,8 @@ public class UICounter extends UIElement {
 	public UICounter(String entityID, Vector2f position, int maxCount, int minCount) {
 		super(entityID);
 		
-		increaseButton = new UIButton("increaseButton"+entityID, "+", new Vector2f(this.getPosition().x+32, this.getPosition().y), new Vector2f(32,32), new Vector2f(12,8), Color.gray, Color.red);
-		decreaseButton = new UIButton("decreaseButton"+entityID, "-", new Vector2f(this.getPosition().x-32, this.getPosition().y), new Vector2f(32,32), new Vector2f(12,8), Color.gray, Color.red);
+		increaseButton = new UIButton("increaseButton"+entityID, "+", new Vector2f(this.getPosition().x+32, this.getPosition().y), new Vector2f(32,32), Color.gray, Color.red);
+		decreaseButton = new UIButton("decreaseButton"+entityID, "-", new Vector2f(this.getPosition().x-32, this.getPosition().y), new Vector2f(32,32), Color.gray, Color.red);
 		this.maxCount = maxCount;
 		this.minCount = minCount;
 		this.currentCount = minCount;
@@ -121,5 +122,21 @@ public class UICounter extends UIElement {
 		}
 		else
 			this.count.setPosition(new Vector2f(this.count.getPosition().x, this.getPosition().y - this.getSize().y/2 + heightPadding/2));
+	}
+	
+	public void setIncreaseImageRendererComponent(ImageRenderComponent irc)
+	{
+		this.increaseButton.setRenderComponent(irc);
+	}
+	
+	public void setDecreaseImageRendererComponent(ImageRenderComponent irc)
+	{
+		this.decreaseButton.setRenderComponent(irc);
+	}
+
+	public void setColor(Color color) {
+		this.decreaseButton.setLabelColor(color);
+		this.increaseButton.setLabelColor(color);
+		this.count.setColor(color);
 	}
 }

@@ -8,15 +8,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import eea.engine.entity.Entity;
-
 public class UILabel extends UIElement{
 
 	public Color color;
 	private String labelName;
 	private boolean setPosition = false;
 	private boolean lineBreak = false;
-	private int lineCount = 1;
 	
 	public UILabel(String entityID, String labelName, Color color, Vector2f position) {
 		super(entityID);
@@ -28,7 +25,6 @@ public class UILabel extends UIElement{
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) {
 		if(this.isVisible()){
-			String text = labelName;
 			if(!lineBreak || !setPosition)
 			{
 				checkName(g);
@@ -96,7 +92,6 @@ public class UILabel extends UIElement{
 				//System.out.println(test);
 				this.labelName = test;
 				lineBreak = true;
-				lineCount = lines.size();
 				text = test;
 			}
 		}
@@ -126,6 +121,11 @@ public class UILabel extends UIElement{
 
 	public String getContent() {
 		return labelName;
+	}
+	
+	public Color getColor()
+	{
+		return this.color;
 	}
 
 }
