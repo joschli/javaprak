@@ -26,20 +26,23 @@ public class GameController {
 	private static final int STARTING_PHASE = 3;
 	private static final int WIN_PHASE = 4;
 	
+	
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
+	
 	private Country[] countries;	
 	
 	public GameController(GameplayState view) throws IOException{
 		this.view = view;
 		options = Options.getInstance();
+		boolean missions = options.getMissions();
 		Player[] players = new Player[options.getPlayerCount()];
 		for(int i = 0; i < players.length; i++)
 			players[i] = new Player(options.getColor(i), "Player " + i);
 		this.currentPlayer = 0;
 		this.state = 3;
-		map = new GameMap(players);
+		map = new GameMap(players, missions);
 		
 		this.printer = new ErrorPrinter();
 	}
@@ -232,6 +235,11 @@ public class GameController {
 	 * @param ownerEntity Country in which the Troop is placed
 	 */
 	public void setReinforceCountry(Country ownerEntity) {
+		if((ownerEntity.getOwner() != this.getTurnPlayer()))
+		{
+			printer.printError(printer.CANTREINFORCEENEMYCOUNTRIESERROR);
+			return;
+		}
 		if(map.getPlayer(currentPlayer).getReinforcement() > 0 && this.getState() == STARTING_PHASE){
 			ownerEntity.addTroops(1);
 			map.getPlayer(currentPlayer).substractReinforcement(1);
@@ -281,11 +289,7 @@ public class GameController {
 			printer.printError(printer.NOTENOUGHTROOPSDEFENDERROR);
 			return;
 		}
-		if(countries[1].getTroops() == 0)
-		{
-			//TODO: Show Error!
-			return;
-		}
+
 		this.countries = countries;
 		attackDices = this.rollDice(diceCount);
 		defenseDices = this.rollDice(countries[1].getTroops() > 1 ? 2 : 1);
@@ -401,7 +405,6 @@ public class GameController {
 		
 		for(int i = 0; i < cards.length; i++)
 		{
-			
 			if(!turnPlayerCards.contains(cards[i]))
 			{
 				printer.printError(printer.OWNERCARDERROR);
@@ -413,13 +416,13 @@ public class GameController {
 				printer.printError(printer.CARDVALUEERROR);
 				return false;
 			}
-			if(cards[i].getCountry().isOwner(map.getPlayer(currentPlayer)) && country != null)
+			if(cards[i].getCountry().isOwner(map.getPlayer(currentPlayer)) && country == null)
 			{
 				country = cards[i].getCountry();
 			}
 		}
 		
-		if(c[0] == c[1] || c[1] == c[2])
+		if(c[0] == c[1] && c[1] == c[2])
 		{
 			
 			if(c[0] == Card.ARTILLERY)
@@ -439,9 +442,11 @@ public class GameController {
 				country.addTroops(Card.COUNTRYVALUE);
 			map.getPlayer(currentPlayer).removeCards(cards);
 			map.addCardsBack(cards);
-			if(map.getPlayer(currentPlayer).getCardList().size() >= 5)
-				view.showCards();
 			return true;	
+		}
+		else
+		{
+			printer.printError(printer.INCORRECTCARDSETERROR);
 		}
 		
 		return false;
@@ -463,6 +468,15 @@ public class GameController {
 		return map;
 	}
 	
+	public int[] getAttackDices()
+	{
+		return attackDices;
+	}
+	
+	public int[] getDefenseDices()
+	{
+		return defenseDices;
+	}
 
 
 }

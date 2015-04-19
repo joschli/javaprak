@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import java.util.ArrayList;
+
 
 
 
@@ -29,19 +29,15 @@ public class GameMap {
 	private ArrayList<Country> countries = new ArrayList<Country>();
 	private ArrayList<Card> cards = new ArrayList<Card>();
 
-	// Constructor for loading a map from a txt file
-	public GameMap(String path) {
-		loadMap(path);
-	}
 
-	public GameMap(Player[] players) throws IOException {
+	public GameMap(Player[] players, boolean missionMode) throws IOException {
 		this.continents = new ArrayList<Continent>();
 		this.players = new Player[players.length];
 		this.players = players;
 
 		init("world.txt");
 		assignCountries();
-		initPossibleMissions();
+		initPossibleMissions(missionMode);
 		createCards();
 		createReinforcements();
 		colorizeCountries();
@@ -63,22 +59,15 @@ public class GameMap {
 	*/
 	private void createReinforcements() {
 		for (Player p : players) {
-			p.addReinforcement(3);
-			//p.addReinforcement((2 * getCountries().size()) / players.length);
+			//p.addReinforcement(3);
+			p.addReinforcement((2 * getCountries().size()) / players.length);
 
 		}
 	}
 	
-	
-	// loads a Map txt-file and creates the continents and countries for it
-	private static void loadMap(String path) {
-
-	}
-
-	public void saveMap(String path) {
-
-	}
-
+	/**
+	 * Not in use anymore, but this might be an init method for Minimal
+	 */
 	public void init() {
 		Continent A = new Continent(2, new Color(100,0,0,100), "A");
 		Continent B = new Continent(1, new Color(0,100,0,100), "B");
@@ -125,6 +114,14 @@ public class GameMap {
 		continents.add(C);
 	}
 
+	/**
+	 * Initialization Method for a map
+	 * reads all data from a given path
+	 * Might throw an IOException if the file cant be found or 
+	 * is in any other way corrupt
+	 * @param path to the world map if in assets its just filename
+	 * @throws IOException
+	 */
 	public void init(String path) throws IOException {
 		
 		countryFactory = new CountryFactory("", new Vector2f(0,0));
@@ -138,7 +135,7 @@ public class GameMap {
 		int r = 0;
 		int b = 0;
 		int g = 0;
-		Path f  = FileSystems.getDefault().getPath("src/assets", "world.txt");
+		Path f  = FileSystems.getDefault().getPath("src/assets", path);
 		
 		for (String line : Files.readAllLines(f)) {
 			if(line.startsWith("-"))
@@ -202,7 +199,11 @@ public class GameMap {
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @param name of a country
+	 * @returns country which has name as name
+	 */
 	public Country getCountry(String name)
 	{
 		for(Country c: countries)
@@ -215,6 +216,11 @@ public class GameMap {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param name of a continent
+	 * @returns continent which has name as name
+	 */
 	public Continent getContinent(String name)
 	{
 		for(Continent c : continents)
@@ -232,6 +238,7 @@ public class GameMap {
 
 	}
 
+	
 	public void setCountries(ArrayList<Country> c) {
 		countries = c;
 	}
@@ -240,14 +247,29 @@ public class GameMap {
 		return players;
 	}
 
+	/**
+	 * 
+	 * @param index of the player
+	 * @returns player which is the indexth player of the game starting with 0 
+	 */
 	public Player getPlayer(int index) {
 		return players[index];
 	}
 
+	/**
+	 * 
+	 * @param index of the player
+	 * @returns number of owned countries for a player
+	 */
 	public int getOwnedCountriesForPlayer(int index) {
 		return getOwnedCountriesForPlayer(players[index]);
 	}
 	
+	/**
+	 * 
+	 * @param player a player
+	 * @returns number of owned countries for a player
+	 */
 	public int getOwnedCountriesForPlayer(Player player){
 		int count = 0;
 
@@ -261,6 +283,11 @@ public class GameMap {
 
 	}
 	
+	/**
+	 * 
+	 * @param player
+	 * @returns a list of countries for the player
+	 */
 	public ArrayList<Country> getCountryListForPlayer(Player player)
 	{
 		ArrayList<Country> ret = new ArrayList<Country>();
@@ -273,7 +300,10 @@ public class GameMap {
 		return ret;
 	}
 	
-
+	/**
+	 * used to assign Countries to players at the start of the game
+	 * Automatically adds 1 troop to a  country for the new Owner
+	 */
 	private void assignCountries() {
 
 		int index = 0;
@@ -291,53 +321,71 @@ public class GameMap {
 		}
 	}
 
-	
-	private void initPossibleMissions() throws IOException
+	/**
+	 * initializes all risk Missions from the missions.txt file
+	 * If the mode is world domination it creates as many Conquer World missions as there 
+	 * are players in the game
+	 * @param missionMode true = mission mode false= Worlddominationmode
+	 * @throws IOException
+	 */
+	private void initPossibleMissions(boolean missionMode) throws IOException
 	{
-		missions = new ArrayList<Mission>();
-		//String missionText, Player player,
-		//ArrayList<Continent> continents, int countryCount
-
-		for(int i = 0; i < players.length; i++)
-		{
-			missions.add( new Mission("Defeat " + players[i].getName() + "! If you are " +players[i].getName() + " conquer " 
-					+ NR_OF_COUNTRIES_FOR_DEFEAT_MISSION + " countries instead!", players[i], NR_OF_COUNTRIES_FOR_DEFEAT_MISSION));	
-		}
 		
-		Path f  = FileSystems.getDefault().getPath("src/assets", MISSIONS_FILE);
+		if(missionMode)
+		{
 
-		for (String line : Files.readAllLines(f)) {
-			if(line.startsWith("1"))
+			missions = new ArrayList<Mission>();
+			//String missionText, Player player,
+			//ArrayList<Continent> continents, int countryCount
+	
+			for(int i = 0; i < players.length; i++)
 			{
-				ArrayList<Continent> consToConquer = new ArrayList<Continent>();
-				String [] cons = line.split("-")[1].split(",");
-				consToConquer.add(this.getContinent(cons[0]));
-				consToConquer.add(this.getContinent(cons[1]));
-				missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + " and a third continent!", consToConquer, true));
+				missions.add( new Mission("Defeat " + players[i].getName() + "! If you are " +players[i].getName() + " conquer " 
+						+ NR_OF_COUNTRIES_FOR_DEFEAT_MISSION + " countries instead!", players[i], NR_OF_COUNTRIES_FOR_DEFEAT_MISSION));	
 			}
 			
-			if(line.startsWith("2"))
-			{
-				ArrayList<Continent> consToConquer = new ArrayList<Continent>();
-				String [] cons = line.split("-")[1].split(",");
-				consToConquer.add(this.getContinent(cons[0]));
-				consToConquer.add(this.getContinent(cons[1]));
-				missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + "!", consToConquer));
-			}
+			Path f  = FileSystems.getDefault().getPath("src/assets", MISSIONS_FILE);
+	
+			for (String line : Files.readAllLines(f)) {
+				if(line.startsWith("1"))
+				{
+					ArrayList<Continent> consToConquer = new ArrayList<Continent>();
+					String [] cons = line.split("-")[1].split(",");
+					consToConquer.add(this.getContinent(cons[0]));
+					consToConquer.add(this.getContinent(cons[1]));
+					missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + " and a third continent!", consToConquer, true));
+				}
+				
+				if(line.startsWith("2"))
+				{
+					ArrayList<Continent> consToConquer = new ArrayList<Continent>();
+					String [] cons = line.split("-")[1].split(",");
+					consToConquer.add(this.getContinent(cons[0]));
+					consToConquer.add(this.getContinent(cons[1]));
+					missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + "!", consToConquer));
+				}
+				
+				if(line.startsWith("3"))
+				{
+					int countryCount = Integer.parseInt(line.split("-")[1]);
+					missions.add(new Mission("Conquer " + countryCount + " Countries!", countryCount));
+				}
+				
+				if(line.startsWith("4"))
+				{
+					int countryCount = Integer.parseInt(line.split("-")[1].split("\\|")[0]);
+					int troopCount = Integer.parseInt(line.split("-")[1].split("\\|")[1]);
+					missions.add(new Mission("Conquer " + countryCount + " Countries and have " + troopCount+" troops in them", countryCount, troopCount));
+				}
 			
-			if(line.startsWith("3"))
+			}	
+		}else
+		{
+			missions = new ArrayList<Mission>();
+			for(Player p : players)
 			{
-				int countryCount = Integer.parseInt(line.split("-")[1]);
-				missions.add(new Mission("Conquer " + countryCount + " Countries!", countryCount));
+				missions.add(new Mission("Conquer the World!", countries.size()));
 			}
-			
-			if(line.startsWith("4"))
-			{
-				int countryCount = Integer.parseInt(line.split("-")[1].split("\\|")[0]);
-				int troopCount = Integer.parseInt(line.split("-")[1].split("\\|")[1]);
-				missions.add(new Mission("Conquer " + countryCount + " Countries and have " + troopCount+" troops in them", countryCount, troopCount));
-			}
-			
 		}
 		
 		for(Mission m : missions)
@@ -353,30 +401,82 @@ public class GameMap {
 			p.assignMission(missions.get(random));
 			taken[random] = true;
 		}
-		
-		for (Player p : players) {
-			
-			//System.out.println(p.getName() + " -> " + p.getMissionText());
-			
-		}
 
 	}
 
+	/**
+	 * Creates all cards at the beginning
+	 * For every country a card is created and a random value is assigned to the card
+	 * The Value is between 1 and 3 for the Values that a card can have
+	 * 
+	 */
 	private void createCards() {
-		for (Country c : countries) {
-			cards.add(new Card(c, (int)(Math.random()*3+1)));
+		
+		ArrayList<Country> notUsedCountries = (ArrayList<Country>) countries.clone();
+		int value = 0;
+		for(int i = 0; i < countries.size(); i++)
+		{
+			Country c = notUsedCountries.get((int) (Math.random()*notUsedCountries.size()));
+			cards.add(new Card(c, value+1));
+			notUsedCountries.remove(c);
+			value = (value+1)%3;
 		}
+	
 	}
-
+	
+	/**
+	 * 
+	 * @returns a random card from all available cards at the moment
+	 */
 	public Card getRandomCard() {
 		int random = (int) (Math.random() * cards.size());
 		return cards.remove(random);
 	}
 
+	/**
+	 * adds an array of cards back to the available cards
+	 * @param cardArray
+	 */
 	public void addCardsBack(Card[] cardArray) {
 		for(Card c : cardArray)
 		{
 			cards.add(c);
 		}
+	}
+	
+	/**
+	 * For test purposes only
+	 * @returns cardValues for all cards 
+	 */
+	public ArrayList<Integer> getAllCardValues()
+	{
+
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		for(Card c : this.cards)
+		{
+			ret.add(c.getValue());
+		}
+		return ret;
+		
+	}
+	
+	/**
+	 * For test purposes only
+	 * @returns the names of all countries that are on cards
+	 */
+	public ArrayList<String> getAllCardCountryNames()
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		for(Card c : this.cards)
+		{
+			ret.add(c.getCountry().getName());
+		}
+		return ret;
+		
+	}
+
+	
+	public int getNumberOfMissions() {
+		return missions.size();
 	}
 }

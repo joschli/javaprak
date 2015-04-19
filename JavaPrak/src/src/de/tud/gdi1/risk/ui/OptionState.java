@@ -10,9 +10,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import src.de.tud.gd1.risk.actions.CancelAction;
-import src.de.tud.gd1.risk.actions.SelectAction;
-import src.de.tud.gd1.risk.actions.StartGameAction;
+import src.de.tud.gdi1.risk.actions.CancelAction;
+import src.de.tud.gdi1.risk.actions.SelectAction;
+import src.de.tud.gdi1.risk.actions.StartGameAction;
 import src.de.tud.gdi1.risk.model.Options;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;

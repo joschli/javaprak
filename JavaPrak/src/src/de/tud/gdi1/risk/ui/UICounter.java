@@ -6,8 +6,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import src.de.tud.gd1.risk.actions.IncreaseAction;
-import src.de.tud.gd1.risk.actions.DecreaseAction;
+import src.de.tud.gdi1.risk.actions.DecreaseAction;
+import src.de.tud.gdi1.risk.actions.IncreaseAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;

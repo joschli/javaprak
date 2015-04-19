@@ -17,9 +17,9 @@ import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
-import src.de.tud.gd1.risk.actions.CancelAction;
-import src.de.tud.gd1.risk.actions.SelectAction;
-import src.de.tud.gd1.risk.actions.TradeInCardsAction;
+import src.de.tud.gdi1.risk.actions.CancelAction;
+import src.de.tud.gdi1.risk.actions.SelectAction;
+import src.de.tud.gdi1.risk.actions.TradeInCardsAction;
 import src.de.tud.gdi1.risk.model.entities.Card;
 
 public class CardState extends SuperBasicGameState {

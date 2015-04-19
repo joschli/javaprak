@@ -1,26 +1,24 @@
-package src.de.tud.gd1.risk.actions;
+package src.de.tud.gdi1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
-
-
-import src.de.tud.gdi1.risk.ui.Launch;
-import src.de.tud.gdi1.risk.ui.MainMenuState;
+import src.de.tud.gdi1.risk.ui.SuperBasicGameState;
 import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
 /**
- * This action gets called when the resumeButton is pressed for entering the GamePlayState.
+ * Action that is used for canceling the current state / window
  * It only works if the button is enabled.
  */
-public class ResumeAction implements Action{
+public class CancelAction implements Action{
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta,
 			Component event) {
-		if(sb.getCurrentState() instanceof MainMenuState)
+		if(sb.getCurrentState() instanceof SuperBasicGameState)
 		{
+			SuperBasicGameState state = (SuperBasicGameState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)
 			{
@@ -28,7 +26,7 @@ public class ResumeAction implements Action{
 				usable = button.getUsability();
 			}
 			if(event.getOwnerEntity().isVisible() && usable){
-				sb.enterState(Launch.GAMEPLAY_STATE);
+				state.cancelAction(sb);
 			}
 		}
 	}
