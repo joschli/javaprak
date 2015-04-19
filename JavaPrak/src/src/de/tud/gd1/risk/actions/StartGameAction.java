@@ -19,7 +19,6 @@ public class StartGameAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof OptionState)
 		{
-			System.out.println("Start Game");
 			OptionState state = (OptionState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)

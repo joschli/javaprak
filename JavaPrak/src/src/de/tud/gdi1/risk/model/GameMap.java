@@ -289,11 +289,6 @@ public class GameMap {
 					: playerIndex + 1;
 			index++;
 		}
-
-	/*	for (int i = 0; i < countries.size(); ++i) {
-			System.out.println("Country: " + countries.get(i).getName()
-					+ " | Owner: " + countries.get(i).getOwner().getName());
-		}*/
 	}
 
 	
@@ -361,7 +356,7 @@ public class GameMap {
 		
 		for (Player p : players) {
 			
-			System.out.println(p.getName() + " -> " + p.getMissionText());
+			//System.out.println(p.getName() + " -> " + p.getMissionText());
 			
 		}
 

@@ -32,7 +32,6 @@ public class GameController {
 	private Country[] countries;	
 	
 	public GameController(GameplayState view) throws IOException{
-		System.out.println("Gamecontroller Konstructor");
 		this.view = view;
 		options = Options.getInstance();
 		Player[] players = new Player[options.getPlayerCount()];
@@ -175,11 +174,8 @@ public class GameController {
 		}
 		if(state != REINFORCEMENT_PHASE)
 		{
-			System.out.println(map.getPlayer(currentPlayer).getName());
-			System.out.println(map.getPlayer(currentPlayer).getMissionText());
 			if(map.getPlayer(currentPlayer).checkMissionForWin(map))
 			{
-				System.out.println("PLAYER WINS");
 				state = WIN_PHASE;
 				options.setWinner(map.getPlayer(currentPlayer).getName());
 				return;
@@ -288,16 +284,12 @@ public class GameController {
 		if(countries[1].getTroops() == 0)
 		{
 			//TODO: Show Error!
-			System.out.println("Länder ohne Truppen können nicht angegriffen werden");
 			return;
 		}
 		this.countries = countries;
 		attackDices = this.rollDice(diceCount);
 		defenseDices = this.rollDice(countries[1].getTroops() > 1 ? 2 : 1);
 		countryConquered = this.attack();
-		
-		System.out.println("ROLL THE DICE");
-		System.out.println(diceToString());
 	
 		view.showDiceResult(attackDices, defenseDices, countryConquered);
 		view.adjustCounter();
@@ -321,7 +313,6 @@ public class GameController {
 			
 			if(map.getOwnedCountriesForPlayer(defendingPlayer) == 0)
 			{
-				System.out.println(defendingPlayer.getName() + " defeated!");
 				view.playerDefeated(defendingPlayer);
 				for(Card c : defendingPlayer.getCardList())
 				{

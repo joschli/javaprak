@@ -93,8 +93,6 @@ public class Mission {
 	 */
 	
 	public boolean isFullfilled(GameMap map, Player p){
-		System.out.println(p.getMissionText());
-		System.out.println(missionText + " -> " + (player!= null? player.getName() : "Null") + " -> " + optionalContinent + " -> " + countryCount);
 		if(player != null)
 		{
 			if(player != p)

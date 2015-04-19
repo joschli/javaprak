@@ -115,12 +115,9 @@ public class CardState extends SuperBasicGameState {
 			if(i == 5 || i == 10){
 				index -= 5;
 				line++;
-				System.out.println(line);
 			}
 			float cardWidth = width/3+(i+index)*112;
 			float cardHeight = height/5+line*161;
-			System.out.println(cardHeight);
-			System.out.println(cardWidth);
 			this.setUpCard(cards.get(i), cardWidth, cardHeight);
 		}
 		UIButton button = (UIButton) entityManager.getEntity(this.getID(), "cancelButton");
@@ -197,7 +194,6 @@ public class CardState extends SuperBasicGameState {
 			if(selections.get(i).hasEntitySelected())
 				count++;
 		}
-		System.out.println(count);
 		UIButton button = (UIButton) entityManager.getEntity(this.getID(), "tradeButton");
 		if(count == selections.size()){
 			result[0] = (Card) selections.get(0).getSelectedEntity();

@@ -23,7 +23,6 @@ public class TradeInCardsAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof CardState)
 		{
-			System.out.println("Trade In");
 			CardState state = (CardState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)

@@ -600,8 +600,6 @@ public class GameplayState extends SuperBasicGameState {
 		else{
 			selection_1.selectEntity(country);
 		}
-		System.out.println("Selector1:" + selection_1.hasEntitySelected());
-		System.out.println("Selector2:" + selection_2.hasEntitySelected());
 	}
 	
 	/**
@@ -844,8 +842,6 @@ public class GameplayState extends SuperBasicGameState {
 	@Override
 	public void selectAction(Entity entity) {
 		Country ownerEntity = (Country) entity;
-		System.out.println("Country selected= " + ownerEntity.getName());
-		System.out.println("Owner: " + ownerEntity.getOwner().getName());
 		if(!userInterface.isComponenetVisible("missionGroup")){
 			if(ownerEntity != null && gameController.getState() == 1 && !userInterface.isComponenetVisible("commandGroup")){
 				if((this.getFirstCountrySelected() == null || this.getFirstCountrySelected().getID() == ownerEntity.getID())
