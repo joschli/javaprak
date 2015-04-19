@@ -1,4 +1,4 @@
-package src.de.tud.gdi1.risk.tests.tutors.suited;
+package src.de.tud.gdi1.risk.tests.tutors.suites;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
