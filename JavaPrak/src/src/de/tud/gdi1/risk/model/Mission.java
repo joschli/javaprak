@@ -85,6 +85,12 @@ public class Mission {
 	private int troopsPerCountry = 0;
 	private int countryCount = 0;
 
+	/**
+	 * checks if the player has fullfilled this mission
+	 * @param map the gameMap
+	 * @param the player
+	 * @return true if the player fullfilled the mission, else false
+	 */
 	
 	public boolean isFullfilled(GameMap map, Player p){
 		System.out.println(p.getMissionText());

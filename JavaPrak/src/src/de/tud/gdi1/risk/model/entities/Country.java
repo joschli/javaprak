@@ -15,7 +15,6 @@ public class Country extends Entity {
 	private Player owner;
 	private Color color;
 	
-	//owner bei initialisierung wird als Spieler "neutral" mitgegeben?
 	public Country(String name){
 		super(name);
 		troops = 0;
@@ -34,6 +33,11 @@ public class Country extends Entity {
 		this.owner = newOwner;
 	}
 	
+	/**
+	 * checks if the country is the neighbor of a given country
+	 * @param neighbor country to check
+	 * @return true if the country is a neighbor, else false
+	 */
 	public boolean isNeighbor(Country neighbor)
 	{
 		if(neighbors == null)
@@ -41,6 +45,11 @@ public class Country extends Entity {
 		return neighbors.contains(neighbor);
 	}
 	
+	/**
+	 * checks if the given player owns this country
+	 * @param player to check
+	 * @return true if the player owns this country, else false
+	 */
 	public boolean isOwner(Player player)
 	{
 		if(player == null)
@@ -53,15 +62,15 @@ public class Country extends Entity {
 		return name;
 	}
 
-
-	public void addForce(int reinforcement) {
-		troops += reinforcement;
-	}
-
 	public int getTroops() {
 		return troops;
 	}
 
+	/**
+	 * moves Troops from this country
+	 * @param force to be moved
+	 * @return true if there are enough Troops on the country to move (this.troops < force), else false
+	 */
 	public boolean moveTroops(int force) {
 		if(this.troops < force)
 			return false;
@@ -69,10 +78,18 @@ public class Country extends Entity {
 		return true;
 	}
 
+	/**
+	 * adds Troops to this country
+	 * @param reinforcement, Troops to be added
+	 */
 	public void addTroops(int force) {
 		this.troops += force;
 	}
 
+	/**
+	 * Checks if the country is owned by a player
+	 * @return true if it is owned, else false
+	 */
 	public boolean hasOwner() {
 		return owner != null;
 	}

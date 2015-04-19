@@ -8,6 +8,12 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * Action for ending the turn.
+ * @see GamePlayState.endTurnButtonPressed()
+ * It only works if the button is enabled.
+ */
+
 public class EndTurnAction implements Action{
 
 	@Override
@@ -24,7 +30,6 @@ public class EndTurnAction implements Action{
 			}
 			if(event.getOwnerEntity().isVisible() && usable){
 				state.endTurnButtonPressed();
-				System.out.println("END TURN");
 			}
 		}
 	}

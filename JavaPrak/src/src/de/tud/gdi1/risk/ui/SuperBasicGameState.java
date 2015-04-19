@@ -9,6 +9,11 @@ import org.newdawn.slick.state.StateBasedGame;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 
+/**
+ * Abstract Class for the GameStates that are using UISelections and CancelButtons
+ * @author jonas_000
+ *
+ */
 public abstract class SuperBasicGameState extends BasicGameState {
 
 	private int stateID;
@@ -36,8 +41,16 @@ public abstract class SuperBasicGameState extends BasicGameState {
 		return this.stateID;
 	}
 	
+	/**
+	 * Selection method that is called by the SelectAction
+	 * @param entity that the player wants to select
+	 */
 	public abstract void selectAction(Entity entity);
 
+	/**
+	 * Cancel method that is called by the CancelAction
+	 * @param game for changing states
+	 */
 	public abstract void cancelAction(StateBasedGame game);
 
 }

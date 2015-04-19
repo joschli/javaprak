@@ -2,7 +2,6 @@ package src.de.tud.gd1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
-
 import src.de.tud.gdi1.risk.ui.CardState;
 import src.de.tud.gdi1.risk.ui.GameplayState;
 import src.de.tud.gdi1.risk.ui.Launch;
@@ -10,6 +9,13 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This action is called when the TradeInButton in the CardState is pressed.
+ * It trades in the selected Cards and enters the GameplayState again.
+ * @author jonas_000
+ * It only works if the button is enabled.
+ *
+ */
 public class TradeInCardsAction implements Action{
 
 	@Override

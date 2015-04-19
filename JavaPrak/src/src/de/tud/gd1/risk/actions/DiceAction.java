@@ -8,6 +8,12 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This action is called when the Attack Button is pressed, its starts the attack from the first
+ * selected Country on the second one.
+ * It only works if the button is enabled.
+ * @see GamePlayState.rollDices()
+ */
 
 public class DiceAction implements Action{
 

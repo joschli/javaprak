@@ -8,6 +8,11 @@ import src.de.tud.gdi1.risk.ui.UICounter;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * Action called by the increaseButton of a UICounter to increase the Counters value.
+ * @see UICounter.increaseCount()
+ * 
+ */
 public class IncreaseAction implements Action{
 
 	@Override

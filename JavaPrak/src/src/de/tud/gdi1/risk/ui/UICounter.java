@@ -21,13 +21,16 @@ public class UICounter extends UIElement {
 	
 	public UICounter(String entityID, Vector2f position, int maxCount, int minCount) {
 		super(entityID);
-		
+		// + and - buttons
 		increaseButton = new UIButton("increaseButton"+entityID, "+", new Vector2f(this.getPosition().x+32, this.getPosition().y), new Vector2f(32,32), Color.gray, Color.red);
 		decreaseButton = new UIButton("decreaseButton"+entityID, "-", new Vector2f(this.getPosition().x-32, this.getPosition().y), new Vector2f(32,32), Color.gray, Color.red);
 		this.maxCount = maxCount;
 		this.minCount = minCount;
 		this.currentCount = minCount;
+		// currentCount label
 		count = new UILabel("count"+entityID, new Integer(minCount).toString(), Color.red, new Vector2f(this.getPosition().x, this.getPosition().y));
+		
+		// increase and decrease Actions
 		ANDEvent event2 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		ANDEvent event = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		event.addAction(new IncreaseAction());
@@ -56,6 +59,9 @@ public class UICounter extends UIElement {
 	}
 	
 
+	/**
+	 * increases the counter
+	 */
 	public void increaseCount() {
 		currentCount++;
 		if(currentCount <= maxCount)
@@ -64,6 +70,9 @@ public class UICounter extends UIElement {
 			currentCount = maxCount;
 	}
 	
+	/**
+	 * decreases the counter
+	 */
 	public void decreaseCount()
 	{
 		currentCount--;
@@ -73,6 +82,10 @@ public class UICounter extends UIElement {
 			currentCount = minCount;
 	}
 	
+	/**
+	 * sets the MinCount of the Counter
+	 * @param minCount
+	 */
 	public void setMinCount(int minCount)
 	{
 		this.minCount = minCount;
@@ -81,6 +94,10 @@ public class UICounter extends UIElement {
 		count.setLabelName(new Integer(currentCount).toString());
 	}
 	
+	/**
+	 * sets the maxCount of the Counter
+	 * @param maxCount
+	 */
 	public void setMaxCount(int maxCount)
 	{
 		this.maxCount = maxCount;
@@ -89,6 +106,10 @@ public class UICounter extends UIElement {
 		count.setLabelName(new Integer(currentCount).toString());
 	}
 
+	/**
+	 * returns the currentCount of the Counter
+	 * @return
+	 */
 	public int getCounter() {
 		return this.currentCount;
 	}
@@ -101,6 +122,10 @@ public class UICounter extends UIElement {
 		count.setPosition(new Vector2f(position.x, position.y));
 	}
 	
+	/**
+	 * autoposition of the label of the counter
+	 * @param g
+	 */
 	private void setLabelPosition(Graphics g) {
 		String text = count.getContent();
 		float textWidth = g.getFont().getWidth(text);
@@ -124,16 +149,28 @@ public class UICounter extends UIElement {
 			this.count.setPosition(new Vector2f(this.count.getPosition().x, this.getPosition().y - this.getSize().y/2 + heightPadding/2));
 	}
 	
+	/**
+	 * sets a ImageRenderComponent for the increaseButton
+	 * @param irc the ImageRenderComponent
+	 */
 	public void setIncreaseImageRendererComponent(ImageRenderComponent irc)
 	{
 		this.increaseButton.setRenderComponent(irc);
 	}
 	
+	/**
+	 * sets a ImageRenderComponent for the decreaseButton
+	 * @param irc the ImageRenderComponent
+	 */
 	public void setDecreaseImageRendererComponent(ImageRenderComponent irc)
 	{
 		this.decreaseButton.setRenderComponent(irc);
 	}
 
+	/**
+	 * sets the color of the labels of the counter
+	 * @param color
+	 */
 	public void setColor(Color color) {
 		this.decreaseButton.setLabelColor(color);
 		this.increaseButton.setLabelColor(color);

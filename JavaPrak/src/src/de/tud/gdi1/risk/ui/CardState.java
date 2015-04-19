@@ -24,12 +24,13 @@ import src.de.tud.gdi1.risk.model.entities.Card;
 
 public class CardState extends SuperBasicGameState {
 
-	private ArrayList<Card> cards = new ArrayList<Card>();
+	private ArrayList<Card> cards = new ArrayList<Card>(); // CardList of the current player
 	private float height = 0;
 	private float width = 0;
-	private ArrayList<UISelection> selections = new ArrayList<UISelection>();
-	private Card[] result;
+	private ArrayList<UISelection> selections = new ArrayList<UISelection>(); 
+	private Card[] result; // Cards the player has selected to trade in
 	private Entity background;
+	
 	public CardState(int stateID)
 	{
 		super(stateID);
@@ -97,6 +98,12 @@ public class CardState extends SuperBasicGameState {
 			c.update(container, game, delta);
 	}
 	
+	
+	/**
+	 * sets the cardset of the current Player, it prepares the cards to be shown to the player
+	 * @param cards of the current player
+	 * @throws SlickException
+	 */
 	public void setCards(ArrayList<Card> cards) throws SlickException
 	{
 		
@@ -123,6 +130,9 @@ public class CardState extends SuperBasicGameState {
 			button.enableButton();
 	}
 	
+	/**
+	 * resets the CardState. It clears the cards, the selection and alle cardNames
+	 */
 	private void reset() {
 		this.cards.clear();
 		List<Entity> entities = entityManager.getEntitiesByState(this.getID());
@@ -138,7 +148,13 @@ public class CardState extends SuperBasicGameState {
 		this.result = new Card[3];
 	}
 
-
+	/**
+	 * gives the card the right ImageRendererComponent, a SelectAction and it gets added to the cardlist
+	 * @param c
+	 * @param cardWidth
+	 * @param cardHeight
+	 * @throws SlickException
+	 */
 
 	private void setUpCard(Card c, float cardWidth, float cardHeight) throws SlickException
 	{
@@ -162,11 +178,18 @@ public class CardState extends SuperBasicGameState {
 		this.cards.add(c);
 	}
 
-
+	/**
+	 * returns the cards that the player would like to trade in.
+	 * @return 3 cards that the player wants to trade
+	 */
 	public Card[] getTradeIn() {
 		return result;
 	}
 
+	/**
+	 * checks if the player has selected 3 cards that he can trade in.
+	 * If he has selected 3 cards the cards will be saved in the result cardlist.
+	 */
 	private void checkForTradeIn() {
 		int count = 0;
 		for(int i = 0; i < selections.size(); ++i)
@@ -187,6 +210,11 @@ public class CardState extends SuperBasicGameState {
 
 
 
+	/**
+	 * Implementation of the abstract SelectAction
+	 * This Method is called when a selectable Entity in this state is pressed.
+	 * It determines if the given entity should be selected or not.
+	 */
 	@Override
 	public void selectAction(Entity entity) {
 		Card ownerEntity = (Card) entity;
@@ -244,6 +272,10 @@ public class CardState extends SuperBasicGameState {
 
 
 
+	/**
+	 * Implementation of the abstract CancelAction method.
+	 * This method is called from a CancelButton to enter the GameplayState again.
+	 */
 	@Override
 	public void cancelAction(StateBasedGame game) {
 		game.enterState(Launch.GAMEPLAY_STATE);

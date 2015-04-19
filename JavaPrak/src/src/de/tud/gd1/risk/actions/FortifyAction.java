@@ -8,6 +8,11 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This action is called when the Fortify-Button is pressed,
+ * is calls GamePlayState.fortifyCountry() the selected Countries.
+ * It only works if the button is enabled.
+ */
 public class FortifyAction implements Action{
 
 	@Override
@@ -15,7 +20,6 @@ public class FortifyAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			System.out.println("Fortify");
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)

@@ -2,13 +2,16 @@ package src.de.tud.gd1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
-
 import src.de.tud.gdi1.risk.ui.GameplayState;
-
 import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This Action is called when the ShowCardsButton is pressed for entering the
+ * CardState.
+ * It only works if the button is enabled.
+ */
 public class ShowCardAction implements Action{
 
 	@Override
@@ -16,7 +19,6 @@ public class ShowCardAction implements Action{
 			Component event) {
 		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			System.out.println("Start Game");
 			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)
@@ -26,7 +28,6 @@ public class ShowCardAction implements Action{
 			}
 			if(event.getOwnerEntity().isVisible() && usable){
 				state.showCards();
-				//sb.enterState(Launch.CARD_STATE);
 			}
 		}
 	}

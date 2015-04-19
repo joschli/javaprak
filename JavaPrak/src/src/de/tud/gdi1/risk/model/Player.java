@@ -5,7 +5,6 @@ import src.de.tud.gdi1.risk.model.entities.Card;
 
 import java.util.ArrayList;
 
-
 public class Player {
 
 	private Color color;
@@ -22,7 +21,6 @@ public class Player {
 	}
 	
 	public void assignMission(Mission mission){
-		System.out.println("assigning Mission: " + mission.getMissionText());
 		this.mission = mission;
 	}
 	
@@ -38,6 +36,11 @@ public class Player {
 		return mission.getMissionText();
 	}
 	
+	/**
+	 * checks if the player fullfilled his mission.
+	 * @param map the GameMap
+	 * @return true if the player fullfilled his mission, else false
+	 */
 	public boolean checkMissionForWin(GameMap map){
 		return mission.isFullfilled(map,this);
 	}
@@ -58,11 +61,19 @@ public class Player {
 		return cardlist;
 	}
 	
+	/**
+	 * adds reinforcements to the players reinforcement troops
+	 * @param reinforcement to be added
+	 */
 	public void addReinforcement(int reinforcement)
 	{
 		this.reinforcementUnits += reinforcement;
 	}
 	
+	/**
+	 * subtracts reinforcements from the players reinforcement troops
+	 * @param units to subtract
+	 */
 	public void substractReinforcement(int units)
 	{
 		this.reinforcementUnits -= units;
@@ -72,6 +83,10 @@ public class Player {
 		return this.reinforcementUnits;
 	}
 
+	/**
+	 * removes Cards from the players cards.
+	 * @param cards to be removed
+	 */
 	public void removeCards(Card[] cards) {
 		for(Card c: cards)
 			removeCard(c);

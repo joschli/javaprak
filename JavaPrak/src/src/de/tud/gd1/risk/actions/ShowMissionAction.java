@@ -8,6 +8,10 @@ import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
+/**
+ * This Action is called when the showMissionButton is pressed and shows the missionWindow.
+ * It only works if the button is enabled.
+ */
 public class ShowMissionAction implements Action{
 
 	@Override
@@ -24,7 +28,6 @@ public class ShowMissionAction implements Action{
 				usable = button.getUsability();
 			}
 			if(event.getOwnerEntity().isVisible() && usable && !state.isMissionTextVisibible()){
-				System.out.println("Show Mission");
 				state.showMissionText();
 			}
 		}
