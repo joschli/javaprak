@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import java.util.ArrayList;
+
 
 
 
@@ -34,14 +34,14 @@ public class GameMap {
 		loadMap(path);
 	}
 
-	public GameMap(Player[] players) throws IOException {
+	public GameMap(Player[] players, boolean missionMode) throws IOException {
 		this.continents = new ArrayList<Continent>();
 		this.players = new Player[players.length];
 		this.players = players;
 
 		init("world.txt");
 		assignCountries();
-		initPossibleMissions();
+		initPossibleMissions(missionMode);
 		createCards();
 		createReinforcements();
 		colorizeCountries();
@@ -57,8 +57,8 @@ public class GameMap {
 
 	private void createReinforcements() {
 		for (Player p : players) {
-			p.addReinforcement(3);
-			//p.addReinforcement((2 * getCountries().size()) / players.length);
+			//p.addReinforcement(3);
+			p.addReinforcement((2 * getCountries().size()) / players.length);
 
 		}
 	}
@@ -291,52 +291,64 @@ public class GameMap {
 	}
 
 	
-	private void initPossibleMissions() throws IOException
+	private void initPossibleMissions(boolean missionMode) throws IOException
 	{
-		missions = new ArrayList<Mission>();
-		//String missionText, Player player,
-		//ArrayList<Continent> continents, int countryCount
-
-		for(int i = 0; i < players.length; i++)
-		{
-			missions.add( new Mission("Defeat " + players[i].getName() + "! If you are " +players[i].getName() + " conquer " 
-					+ NR_OF_COUNTRIES_FOR_DEFEAT_MISSION + " countries instead!", players[i], NR_OF_COUNTRIES_FOR_DEFEAT_MISSION));	
-		}
 		
-		Path f  = FileSystems.getDefault().getPath("src/assets", MISSIONS_FILE);
+		if(missionMode)
+		{
 
-		for (String line : Files.readAllLines(f)) {
-			if(line.startsWith("1"))
+			missions = new ArrayList<Mission>();
+			//String missionText, Player player,
+			//ArrayList<Continent> continents, int countryCount
+	
+			for(int i = 0; i < players.length; i++)
 			{
-				ArrayList<Continent> consToConquer = new ArrayList<Continent>();
-				String [] cons = line.split("-")[1].split(",");
-				consToConquer.add(this.getContinent(cons[0]));
-				consToConquer.add(this.getContinent(cons[1]));
-				missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + " and a third continent!", consToConquer, true));
+				missions.add( new Mission("Defeat " + players[i].getName() + "! If you are " +players[i].getName() + " conquer " 
+						+ NR_OF_COUNTRIES_FOR_DEFEAT_MISSION + " countries instead!", players[i], NR_OF_COUNTRIES_FOR_DEFEAT_MISSION));	
 			}
 			
-			if(line.startsWith("2"))
-			{
-				ArrayList<Continent> consToConquer = new ArrayList<Continent>();
-				String [] cons = line.split("-")[1].split(",");
-				consToConquer.add(this.getContinent(cons[0]));
-				consToConquer.add(this.getContinent(cons[1]));
-				missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + "!", consToConquer));
-			}
+			Path f  = FileSystems.getDefault().getPath("src/assets", MISSIONS_FILE);
+	
+			for (String line : Files.readAllLines(f)) {
+				if(line.startsWith("1"))
+				{
+					ArrayList<Continent> consToConquer = new ArrayList<Continent>();
+					String [] cons = line.split("-")[1].split(",");
+					consToConquer.add(this.getContinent(cons[0]));
+					consToConquer.add(this.getContinent(cons[1]));
+					missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + " and a third continent!", consToConquer, true));
+				}
+				
+				if(line.startsWith("2"))
+				{
+					ArrayList<Continent> consToConquer = new ArrayList<Continent>();
+					String [] cons = line.split("-")[1].split(",");
+					consToConquer.add(this.getContinent(cons[0]));
+					consToConquer.add(this.getContinent(cons[1]));
+					missions.add(new Mission("Conquer " + cons[0] + " and " + cons[1] + "!", consToConquer));
+				}
+				
+				if(line.startsWith("3"))
+				{
+					int countryCount = Integer.parseInt(line.split("-")[1]);
+					missions.add(new Mission("Conquer " + countryCount + " Countries!", countryCount));
+				}
+				
+				if(line.startsWith("4"))
+				{
+					int countryCount = Integer.parseInt(line.split("-")[1].split("\\|")[0]);
+					int troopCount = Integer.parseInt(line.split("-")[1].split("\\|")[1]);
+					missions.add(new Mission("Conquer " + countryCount + " Countries and have " + troopCount+" troops in them", countryCount, troopCount));
+				}
 			
-			if(line.startsWith("3"))
+			}	
+		}else
+		{
+			missions = new ArrayList<Mission>();
+			for(Player p : players)
 			{
-				int countryCount = Integer.parseInt(line.split("-")[1]);
-				missions.add(new Mission("Conquer " + countryCount + " Countries!", countryCount));
+				missions.add(new Mission("Conquer the World!", countries.size()));
 			}
-			
-			if(line.startsWith("4"))
-			{
-				int countryCount = Integer.parseInt(line.split("-")[1].split("\\|")[0]);
-				int troopCount = Integer.parseInt(line.split("-")[1].split("\\|")[1]);
-				missions.add(new Mission("Conquer " + countryCount + " Countries and have " + troopCount+" troops in them", countryCount, troopCount));
-			}
-			
 		}
 		
 		for(Mission m : missions)
@@ -362,9 +374,17 @@ public class GameMap {
 	}
 
 	private void createCards() {
-		for (Country c : countries) {
-			cards.add(new Card(c, (int)(Math.random()*3+1)));
+		
+		ArrayList<Country> notUsedCountries = (ArrayList<Country>) countries.clone();
+		int value = 0;
+		for(int i = 0; i < countries.size(); i++)
+		{
+			Country c = countries.get((int) (Math.random()*notUsedCountries.size()));
+			notUsedCountries.remove(c);
+			cards.add(new Card(c, value+1));
+			value = (value+1)%3;
 		}
+		
 	}
 
 	public Card getRandomCard() {
@@ -377,5 +397,31 @@ public class GameMap {
 		{
 			cards.add(c);
 		}
+	}
+	
+	public ArrayList<Integer> getAllCardValues()
+	{
+
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		for(Card c : this.cards)
+		{
+			ret.add(c.getValue());
+		}
+		return ret;
+		
+	}
+	public ArrayList<String> getAllCardCountryNames()
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		for(Card c : this.cards)
+		{
+			ret.add(c.getCountry().getName());
+		}
+		return ret;
+		
+	}
+
+	public int getNumberOfMissions() {
+		return missions.size();
 	}
 }

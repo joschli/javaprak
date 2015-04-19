@@ -7,7 +7,7 @@ public class Options {
 
 	private static Options options = new Options();
 	private int playerCount;
-	private Color[] colors = {Color.red, Color.gray, new Color(0,100,0), Color.yellow};
+	private Color[] colors = {Color.red, Color.gray, new Color(0,100,0), Color.yellow, new Color(0,100,100), new Color(255,0,255)};
 	private int minimalPlayerCount = 2;
 	private int maximalPlayerCount = colors.length;
 	private String winner = "";
@@ -57,7 +57,7 @@ public class Options {
 		this.missions = b;
 	}
 	
-	public boolean getMissions(boolean b)
+	public boolean getMissions()
 	{
 		return missions;
 	}

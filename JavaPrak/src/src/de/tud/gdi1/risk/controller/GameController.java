@@ -36,12 +36,13 @@ public class GameController {
 		System.out.println("Gamecontroller Konstructor");
 		this.view = view;
 		options = Options.getInstance();
+		boolean missions = options.getMissions();
 		Player[] players = new Player[options.getPlayerCount()];
 		for(int i = 0; i < players.length; i++)
 			players[i] = new Player(options.getColor(i), "Player " + i);
 		this.currentPlayer = 0;
 		this.state = 3;
-		map = new GameMap(players);
+		map = new GameMap(players, missions);
 		
 		this.printer = new ErrorPrinter();
 	}
@@ -411,7 +412,6 @@ public class GameController {
 		
 		for(int i = 0; i < cards.length; i++)
 		{
-			
 			if(!turnPlayerCards.contains(cards[i]))
 			{
 				printer.printError(printer.OWNERCARDERROR);
@@ -423,13 +423,13 @@ public class GameController {
 				printer.printError(printer.CARDVALUEERROR);
 				return false;
 			}
-			if(cards[i].getCountry().isOwner(map.getPlayer(currentPlayer)) && country != null)
+			if(cards[i].getCountry().isOwner(map.getPlayer(currentPlayer)) && country == null)
 			{
 				country = cards[i].getCountry();
 			}
 		}
 		
-		if(c[0] == c[1] || c[1] == c[2])
+		if(c[0] == c[1] && c[1] == c[2])
 		{
 			
 			if(c[0] == Card.ARTILLERY)
@@ -450,6 +450,10 @@ public class GameController {
 			map.getPlayer(currentPlayer).removeCards(cards);
 			map.addCardsBack(cards);
 			return true;	
+		}
+		else
+		{
+			printer.printError(printer.INCORRECTCARDSETERROR);
 		}
 		
 		return false;
