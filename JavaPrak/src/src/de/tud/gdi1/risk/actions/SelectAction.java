@@ -1,4 +1,4 @@
-package src.de.tud.gd1.risk.actions;
+package src.de.tud.gdi1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;

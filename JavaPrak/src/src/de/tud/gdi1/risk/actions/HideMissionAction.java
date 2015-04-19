@@ -1,34 +1,39 @@
-package src.de.tud.gd1.risk.actions;
+package src.de.tud.gdi1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
-import src.de.tud.gdi1.risk.ui.SuperBasicGameState;
+
+import src.de.tud.gdi1.risk.ui.GameplayState;
 import src.de.tud.gdi1.risk.ui.UIButton;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
 
 /**
- * Action that is used for canceling the current state / window
+ * This action is called when the HideMissionButton is pressed, and hides the Mission Window.
  * It only works if the button is enabled.
  */
-public class CancelAction implements Action{
+
+public class HideMissionAction implements Action{
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta,
 			Component event) {
-		if(sb.getCurrentState() instanceof SuperBasicGameState)
+		if(sb.getCurrentState() instanceof GameplayState)
 		{
-			SuperBasicGameState state = (SuperBasicGameState) sb.getCurrentState();
+			
+			GameplayState state = (GameplayState) sb.getCurrentState();
 			boolean usable = true;
 			if(event.getOwnerEntity() instanceof UIButton)
 			{
 				UIButton button = (UIButton) event.getOwnerEntity();
 				usable = button.getUsability();
 			}
-			if(event.getOwnerEntity().isVisible() && usable){
-				state.cancelAction(sb);
+			if(event.getOwnerEntity().isVisible() && usable && state.isMissionTextVisibible()){
+				state.hideMissionText();
 			}
 		}
+			
 	}
 
 }
+

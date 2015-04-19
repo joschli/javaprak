@@ -1,4 +1,4 @@
-package src.de.tud.gd1.risk.actions;
+package src.de.tud.gdi1.risk.actions;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
@@ -9,11 +9,10 @@ import eea.engine.action.Action;
 import eea.engine.component.Component;
 
 /**
- * This action is called when the Fortify-Button is pressed,
- * is calls GamePlayState.fortifyCountry() the selected Countries.
+ * Action for entering a new phase
  * It only works if the button is enabled.
  */
-public class FortifyAction implements Action{
+public class NextPhaseAction implements Action{
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sb, int delta,
@@ -28,7 +27,7 @@ public class FortifyAction implements Action{
 				usable = button.getUsability();
 			}
 			if(event.getOwnerEntity().isVisible() && usable){
-				state.fortifyCountry();
+				state.gotoNextPhase();
 			}
 		}
 	}

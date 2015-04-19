@@ -8,8 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.de.tud.gdi.risk.tests.adapter.RiskTestAdapterExtended2;
-import src.de.tud.gdi.risk.tests.adapter.RiskTestAdapterExtended3;
+import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended2;
+import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterExtended3;
 
 public class MissionTests {
 

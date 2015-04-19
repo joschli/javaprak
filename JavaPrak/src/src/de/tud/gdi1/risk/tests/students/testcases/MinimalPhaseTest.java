@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.de.tud.gdi.risk.tests.adapter.RiskTestAdapterMinimal;
+import src.de.tud.gdi1.risk.tests.adapter.RiskTestAdapterMinimal;
 import src.de.tud.gdi1.risk.ui.Launch;
 
 public class MinimalPhaseTest {

@@ -9,7 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import src.de.tud.gd1.risk.actions.ResumeAction;
+import src.de.tud.gdi1.risk.actions.ResumeAction;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.QuitAction;

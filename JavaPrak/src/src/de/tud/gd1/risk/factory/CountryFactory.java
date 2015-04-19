@@ -5,13 +5,13 @@ import org.newdawn.slick.geom.Vector2f;
 
 
 
+
 import eea.engine.entity.Entity;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 import eea.engine.interfaces.IEntityFactory;
-import src.de.tud.gd1.risk.actions.SelectAction;
-
+import src.de.tud.gdi1.risk.actions.SelectAction;
 import src.de.tud.gdi1.risk.model.entities.Country;
 
 /**

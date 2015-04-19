@@ -1,4 +1,4 @@
-package src.de.tud.gdi.risk.tests.adapter;
+package src.de.tud.gdi1.risk.tests.adapter;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;

@@ -1,4 +1,4 @@
-package src.de.tud.gdi.risk.tests.adapter;
+package src.de.tud.gdi1.risk.tests.adapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
