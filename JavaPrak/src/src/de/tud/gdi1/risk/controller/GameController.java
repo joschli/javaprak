@@ -29,6 +29,7 @@ public class GameController {
 	private boolean forcesAdded = false;
 	private boolean countryConquered = false;
 	private int[] attackDices, defenseDices;
+	
 	private Country[] countries;	
 	
 	public GameController(GameplayState view) throws IOException{
@@ -449,8 +450,6 @@ public class GameController {
 				country.addTroops(Card.COUNTRYVALUE);
 			map.getPlayer(currentPlayer).removeCards(cards);
 			map.addCardsBack(cards);
-			if(map.getPlayer(currentPlayer).getCardList().size() >= 5)
-				view.showCards();
 			return true;	
 		}
 		
@@ -473,6 +472,15 @@ public class GameController {
 		return map;
 	}
 	
+	public int[] getAttackDices()
+	{
+		return attackDices;
+	}
+	
+	public int[] getDefenseDices()
+	{
+		return defenseDices;
+	}
 
 
 }
